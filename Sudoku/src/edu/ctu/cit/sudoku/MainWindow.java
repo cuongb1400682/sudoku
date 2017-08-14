@@ -62,6 +62,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuGame.setText("Game");
 
+        menuNewGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
         menuNewGame.setText("New game");
         menuNewGame.setName("menuNewGame"); // NOI18N
         menuNewGame.addActionListener(new java.awt.event.ActionListener() {
@@ -75,24 +76,30 @@ public class MainWindow extends javax.swing.JFrame {
         menuGame.add(jMenuItem1);
         menuGame.add(jSeparator1);
 
+        menuSavePuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         menuSavePuzzle.setText("Save game state...");
         menuGame.add(menuSavePuzzle);
 
+        menuLoadPuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         menuLoadPuzzle.setText("Load game state...");
         menuGame.add(menuLoadPuzzle);
         menuGame.add(jSeparator4);
 
+        menuUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         menuUndo.setText("Undo");
         menuGame.add(menuUndo);
 
+        menuRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         menuRedo.setText("Redo");
         menuGame.add(menuRedo);
         menuGame.add(jSeparator3);
 
+        menuGiveUp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, java.awt.event.InputEvent.CTRL_MASK));
         menuGiveUp.setText("Give up");
         menuGame.add(menuGiveUp);
         menuGame.add(jSeparator2);
 
+        menuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         menuExit.setText("Exit");
         menuGame.add(menuExit);
 
@@ -107,6 +114,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuHelp.setText("Help");
 
+        menuAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, 0));
         menuAbout.setText("About");
         menuHelp.add(menuAbout);
 
