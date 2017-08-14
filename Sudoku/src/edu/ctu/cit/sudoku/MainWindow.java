@@ -77,11 +77,11 @@ public class MainWindow extends javax.swing.JFrame {
         menuGame.add(jSeparator1);
 
         menuSavePuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
-        menuSavePuzzle.setText("Save game state...");
+        menuSavePuzzle.setText("Save puzzle...");
         menuGame.add(menuSavePuzzle);
 
         menuLoadPuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
-        menuLoadPuzzle.setText("Load game state...");
+        menuLoadPuzzle.setText("Load puzzle...");
         menuGame.add(menuLoadPuzzle);
         menuGame.add(jSeparator4);
 
@@ -114,7 +114,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuHelp.setText("Help");
 
-        menuAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_1, 0));
+        menuAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuAbout.setText("About");
         menuHelp.add(menuAbout);
 
@@ -137,7 +137,7 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
-        // TODO add your handling code here:
+        
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
