@@ -48,6 +48,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuOptions = new javax.swing.JMenu();
         menuHintForRepeatedNumbers = new javax.swing.JCheckBoxMenuItem();
         menuHelp = new javax.swing.JMenu();
+        jMenuItem2 = new javax.swing.JMenuItem();
         menuAbout = new javax.swing.JMenuItem();
 
         jMenu4.setText("jMenu4");
@@ -101,6 +102,11 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         menuExit.setText("Exit");
+        menuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuExitActionPerformed(evt);
+            }
+        });
         menuGame.add(menuExit);
 
         jMenuBar1.add(menuGame);
@@ -113,6 +119,10 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuBar1.add(menuOptions);
 
         menuHelp.setText("Help");
+
+        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+        jMenuItem2.setText("High score");
+        menuHelp.add(jMenuItem2);
 
         menuAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuAbout.setText("About");
@@ -140,10 +150,15 @@ public class MainWindow extends javax.swing.JFrame {
         
     }//GEN-LAST:event_menuNewGameActionPerformed
 
+    private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExitActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuExitActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
+    private javax.swing.JMenuItem jMenuItem2;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
     private javax.swing.JMenuItem jMenuItem8;
