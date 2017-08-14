@@ -32,23 +32,23 @@ public class MainWindow extends javax.swing.JFrame {
         jMenuItem5 = new javax.swing.JMenuItem();
         jMenuItem8 = new javax.swing.JMenuItem();
         jMenuBar1 = new javax.swing.JMenuBar();
-        jMenu1 = new javax.swing.JMenu();
+        menuGame = new javax.swing.JMenu();
+        menuNewGame = new javax.swing.JMenuItem();
         jMenuItem1 = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem7 = new javax.swing.JMenuItem();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menuSavePuzzle = new javax.swing.JMenuItem();
+        menuLoadPuzzle = new javax.swing.JMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem10 = new javax.swing.JMenuItem();
-        jMenuItem11 = new javax.swing.JMenuItem();
+        menuUndo = new javax.swing.JMenuItem();
+        menuRedo = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem6 = new javax.swing.JMenuItem();
+        menuGiveUp = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        jMenuItem3 = new javax.swing.JMenuItem();
-        jMenu2 = new javax.swing.JMenu();
-        jCheckBoxMenuItem1 = new javax.swing.JCheckBoxMenuItem();
-        jCheckBoxMenuItem2 = new javax.swing.JCheckBoxMenuItem();
-        jMenu3 = new javax.swing.JMenu();
-        jMenuItem9 = new javax.swing.JMenuItem();
+        menuExit = new javax.swing.JMenuItem();
+        menuOptions = new javax.swing.JMenu();
+        menuHintForRepeatedNumbers = new javax.swing.JCheckBoxMenuItem();
+        menuHelp = new javax.swing.JMenu();
+        menuAbout = new javax.swing.JMenuItem();
 
         jMenu4.setText("jMenu4");
 
@@ -60,51 +60,57 @@ public class MainWindow extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jMenu1.setText("Game");
+        menuGame.setText("Game");
 
-        jMenuItem1.setText("New game");
-        jMenu1.add(jMenuItem1);
-        jMenu1.add(jSeparator1);
+        menuNewGame.setText("New game");
+        menuNewGame.setName("menuNewGame"); // NOI18N
+        menuNewGame.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuNewGameActionPerformed(evt);
+            }
+        });
+        menuGame.add(menuNewGame);
 
-        jMenuItem7.setText("Save game state...");
-        jMenu1.add(jMenuItem7);
+        jMenuItem1.setText("Manually enter puzzle");
+        menuGame.add(jMenuItem1);
+        menuGame.add(jSeparator1);
 
-        jMenuItem2.setText("Load game state...");
-        jMenu1.add(jMenuItem2);
-        jMenu1.add(jSeparator4);
+        menuSavePuzzle.setText("Save game state...");
+        menuGame.add(menuSavePuzzle);
 
-        jMenuItem10.setText("Undo");
-        jMenu1.add(jMenuItem10);
+        menuLoadPuzzle.setText("Load game state...");
+        menuGame.add(menuLoadPuzzle);
+        menuGame.add(jSeparator4);
 
-        jMenuItem11.setText("Redo");
-        jMenu1.add(jMenuItem11);
-        jMenu1.add(jSeparator3);
+        menuUndo.setText("Undo");
+        menuGame.add(menuUndo);
 
-        jMenuItem6.setText("Give up");
-        jMenu1.add(jMenuItem6);
-        jMenu1.add(jSeparator2);
+        menuRedo.setText("Redo");
+        menuGame.add(menuRedo);
+        menuGame.add(jSeparator3);
 
-        jMenuItem3.setText("Exit");
-        jMenu1.add(jMenuItem3);
+        menuGiveUp.setText("Give up");
+        menuGame.add(menuGiveUp);
+        menuGame.add(jSeparator2);
 
-        jMenuBar1.add(jMenu1);
+        menuExit.setText("Exit");
+        menuGame.add(menuExit);
 
-        jMenu2.setText("Options");
+        jMenuBar1.add(menuGame);
 
-        jCheckBoxMenuItem1.setText("Hint for repeated numbers");
-        jMenu2.add(jCheckBoxMenuItem1);
+        menuOptions.setText("Options");
 
-        jCheckBoxMenuItem2.setText("Manually input game state");
-        jMenu2.add(jCheckBoxMenuItem2);
+        menuHintForRepeatedNumbers.setText("Hint for repeated numbers");
+        menuOptions.add(menuHintForRepeatedNumbers);
 
-        jMenuBar1.add(jMenu2);
+        jMenuBar1.add(menuOptions);
 
-        jMenu3.setText("Help");
+        menuHelp.setText("Help");
 
-        jMenuItem9.setText("About");
-        jMenu3.add(jMenuItem9);
+        menuAbout.setText("About");
+        menuHelp.add(menuAbout);
 
-        jMenuBar1.add(jMenu3);
+        jMenuBar1.add(menuHelp);
 
         setJMenuBar(jMenuBar1);
 
@@ -122,28 +128,32 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_menuNewGameActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem1;
-    private javax.swing.JCheckBoxMenuItem jCheckBoxMenuItem2;
-    private javax.swing.JMenu jMenu1;
-    private javax.swing.JMenu jMenu2;
-    private javax.swing.JMenu jMenu3;
     private javax.swing.JMenu jMenu4;
     private javax.swing.JMenuBar jMenuBar1;
     private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem10;
-    private javax.swing.JMenuItem jMenuItem11;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem3;
     private javax.swing.JMenuItem jMenuItem4;
     private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem6;
-    private javax.swing.JMenuItem jMenuItem7;
     private javax.swing.JMenuItem jMenuItem8;
-    private javax.swing.JMenuItem jMenuItem9;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JMenuItem menuAbout;
+    private javax.swing.JMenuItem menuExit;
+    private javax.swing.JMenu menuGame;
+    private javax.swing.JMenuItem menuGiveUp;
+    private javax.swing.JMenu menuHelp;
+    private javax.swing.JCheckBoxMenuItem menuHintForRepeatedNumbers;
+    private javax.swing.JMenuItem menuLoadPuzzle;
+    private javax.swing.JMenuItem menuNewGame;
+    private javax.swing.JMenu menuOptions;
+    private javax.swing.JMenuItem menuRedo;
+    private javax.swing.JMenuItem menuSavePuzzle;
+    private javax.swing.JMenuItem menuUndo;
     // End of variables declaration//GEN-END:variables
 }
