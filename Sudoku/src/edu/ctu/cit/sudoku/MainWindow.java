@@ -27,39 +27,57 @@ public class MainWindow extends javax.swing.JFrame {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
-        jMenu4 = new javax.swing.JMenu();
-        jMenuItem4 = new javax.swing.JMenuItem();
-        jMenuItem5 = new javax.swing.JMenuItem();
-        jMenuItem8 = new javax.swing.JMenuItem();
-        jMenuBar1 = new javax.swing.JMenuBar();
+        upperPanel = new javax.swing.JPanel();
+        lableTime = new javax.swing.JLabel();
+        lowerPanel = new javax.swing.JPanel();
+        mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
         menuNewGame = new javax.swing.JMenuItem();
-        jMenuItem1 = new javax.swing.JMenuItem();
+        menuManuallyEnterPuzzle = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuSavePuzzle = new javax.swing.JMenuItem();
         menuLoadPuzzle = new javax.swing.JMenuItem();
+        menuClearPuzzle = new javax.swing.JMenuItem();
+        jSeparator5 = new javax.swing.JPopupMenu.Separator();
+        menuPause = new javax.swing.JCheckBoxMenuItem();
+        menuHintForRepeatedNumbers = new javax.swing.JCheckBoxMenuItem();
         jSeparator4 = new javax.swing.JPopupMenu.Separator();
         menuUndo = new javax.swing.JMenuItem();
         menuRedo = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         menuGiveUp = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
-        menuExit = new javax.swing.JMenuItem();
-        menuOptions = new javax.swing.JMenu();
-        menuHintForRepeatedNumbers = new javax.swing.JCheckBoxMenuItem();
-        menuHelp = new javax.swing.JMenu();
-        jMenuItem2 = new javax.swing.JMenuItem();
+        menuHighScore = new javax.swing.JMenuItem();
+        jSeparator7 = new javax.swing.JPopupMenu.Separator();
         menuAbout = new javax.swing.JMenuItem();
-
-        jMenu4.setText("jMenu4");
-
-        jMenuItem4.setText("jMenuItem4");
-
-        jMenuItem5.setText("jMenuItem5");
-
-        jMenuItem8.setText("jMenuItem8");
+        jSeparator6 = new javax.swing.JPopupMenu.Separator();
+        menuExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+
+        upperPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
+        upperPanel.setPreferredSize(new java.awt.Dimension(384, 50));
+        upperPanel.setLayout(new java.awt.BorderLayout());
+
+        lableTime.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        lableTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        lableTime.setText("00:00");
+        upperPanel.add(lableTime, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
+
+        javax.swing.GroupLayout lowerPanelLayout = new javax.swing.GroupLayout(lowerPanel);
+        lowerPanel.setLayout(lowerPanelLayout);
+        lowerPanelLayout.setHorizontalGroup(
+            lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 384, Short.MAX_VALUE)
+        );
+        lowerPanelLayout.setVerticalGroup(
+            lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGap(0, 357, Short.MAX_VALUE)
+        );
+
+        getContentPane().add(lowerPanel, java.awt.BorderLayout.CENTER);
 
         menuGame.setText("Game");
 
@@ -73,8 +91,8 @@ public class MainWindow extends javax.swing.JFrame {
         });
         menuGame.add(menuNewGame);
 
-        jMenuItem1.setText("Manually enter puzzle");
-        menuGame.add(jMenuItem1);
+        menuManuallyEnterPuzzle.setText("Manually enter puzzle");
+        menuGame.add(menuManuallyEnterPuzzle);
         menuGame.add(jSeparator1);
 
         menuSavePuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
@@ -84,6 +102,18 @@ public class MainWindow extends javax.swing.JFrame {
         menuLoadPuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         menuLoadPuzzle.setText("Load puzzle...");
         menuGame.add(menuLoadPuzzle);
+
+        menuClearPuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
+        menuClearPuzzle.setText("Clear puzzle");
+        menuGame.add(menuClearPuzzle);
+        menuGame.add(jSeparator5);
+
+        menuPause.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));
+        menuPause.setText("Pause");
+        menuGame.add(menuPause);
+
+        menuHintForRepeatedNumbers.setText("Hint for repeated numbers");
+        menuGame.add(menuHintForRepeatedNumbers);
         menuGame.add(jSeparator4);
 
         menuUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
@@ -100,48 +130,23 @@ public class MainWindow extends javax.swing.JFrame {
         menuGame.add(menuGiveUp);
         menuGame.add(jSeparator2);
 
-        menuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
-        menuExit.setText("Exit");
-        menuExit.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                menuExitActionPerformed(evt);
-            }
-        });
-        menuGame.add(menuExit);
-
-        jMenuBar1.add(menuGame);
-
-        menuOptions.setText("Options");
-
-        menuHintForRepeatedNumbers.setText("Hint for repeated numbers");
-        menuOptions.add(menuHintForRepeatedNumbers);
-
-        jMenuBar1.add(menuOptions);
-
-        menuHelp.setText("Help");
-
-        jMenuItem2.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
-        jMenuItem2.setText("High score");
-        menuHelp.add(jMenuItem2);
+        menuHighScore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
+        menuHighScore.setText("High score");
+        menuGame.add(menuHighScore);
+        menuGame.add(jSeparator7);
 
         menuAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuAbout.setText("About");
-        menuHelp.add(menuAbout);
+        menuGame.add(menuAbout);
+        menuGame.add(jSeparator6);
 
-        jMenuBar1.add(menuHelp);
+        menuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
+        menuExit.setText("Exit");
+        menuGame.add(menuExit);
 
-        setJMenuBar(jMenuBar1);
+        mainMenu.add(menuGame);
 
-        javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
-        getContentPane().setLayout(layout);
-        layout.setHorizontalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 384, Short.MAX_VALUE)
-        );
-        layout.setVerticalGroup(
-            layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 407, Short.MAX_VALUE)
-        );
+        setJMenuBar(mainMenu);
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
@@ -150,33 +155,31 @@ public class MainWindow extends javax.swing.JFrame {
         
     }//GEN-LAST:event_menuNewGameActionPerformed
 
-    private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExitActionPerformed
-        // TODO add your handling code here:
-    }//GEN-LAST:event_menuExitActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JMenu jMenu4;
-    private javax.swing.JMenuBar jMenuBar1;
-    private javax.swing.JMenuItem jMenuItem1;
-    private javax.swing.JMenuItem jMenuItem2;
-    private javax.swing.JMenuItem jMenuItem4;
-    private javax.swing.JMenuItem jMenuItem5;
-    private javax.swing.JMenuItem jMenuItem8;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
     private javax.swing.JPopupMenu.Separator jSeparator4;
+    private javax.swing.JPopupMenu.Separator jSeparator5;
+    private javax.swing.JPopupMenu.Separator jSeparator6;
+    private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JLabel lableTime;
+    private javax.swing.JPanel lowerPanel;
+    private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem menuAbout;
+    private javax.swing.JMenuItem menuClearPuzzle;
     private javax.swing.JMenuItem menuExit;
     private javax.swing.JMenu menuGame;
     private javax.swing.JMenuItem menuGiveUp;
-    private javax.swing.JMenu menuHelp;
+    private javax.swing.JMenuItem menuHighScore;
     private javax.swing.JCheckBoxMenuItem menuHintForRepeatedNumbers;
     private javax.swing.JMenuItem menuLoadPuzzle;
+    private javax.swing.JMenuItem menuManuallyEnterPuzzle;
     private javax.swing.JMenuItem menuNewGame;
-    private javax.swing.JMenu menuOptions;
+    private javax.swing.JCheckBoxMenuItem menuPause;
     private javax.swing.JMenuItem menuRedo;
     private javax.swing.JMenuItem menuSavePuzzle;
     private javax.swing.JMenuItem menuUndo;
+    private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
 }
