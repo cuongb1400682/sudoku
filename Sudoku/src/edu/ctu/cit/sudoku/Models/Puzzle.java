@@ -9,13 +9,14 @@ package edu.ctu.cit.sudoku.Models;
  *
  * @author charlie
  */
-public class Puzzle {
+public final class Puzzle {
     public static final int BOARD_SIZE = 9;
             
     private final int[][] board;
     
     public Puzzle() {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
+        this.clear();
     }
     
     private boolean isValidCoordinate(int x, int y) {
@@ -34,5 +35,17 @@ public class Puzzle {
             throw new ArrayIndexOutOfBoundsException("Board coordinate must be between 0 to 8");
         }
         board[x][y] = value;
+    }
+    
+    public void clear() {
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                board[i][j] = 0;
+            }
+        }
+    }
+    
+    public void solve() {
+        
     }
 }
