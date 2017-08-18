@@ -147,13 +147,10 @@ public final class Puzzle {
         return false;
     }
 
-    public void generateNewPuzzle(int level) throws Exception {        
-        while (true) {
+    public void generateNewPuzzle() {        
+        do {
             this.board = this.randomBoard(30);
-            if (this.solve() != null) {
-                break;
-            }
-        }
+        } while (this.solve() == null);
     }
 
     public int[][] solve() {

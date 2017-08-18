@@ -5,6 +5,8 @@
  */
 package edu.ctu.cit.sudoku;
 
+import edu.ctu.cit.sudoku.Models.Puzzle;
+
 /**
  *
  * @author charlie
@@ -152,7 +154,13 @@ public class MainWindow extends javax.swing.JFrame {
     }// </editor-fold>//GEN-END:initComponents
 
     private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
-        
+        Puzzle p = new Puzzle();
+        try {
+            p.generateNewPuzzle();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        System.out.println(p.toString());
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
