@@ -5,9 +5,14 @@
  */
 package edu.ctu.cit.sudoku.Models;
 
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Random;
+import java.util.Scanner;
 
 /**
  *
@@ -89,22 +94,78 @@ public final class Puzzle {
         return can.isEmpty() ? null : resultBoard;
     }
 
-    private boolean checkSolution(int[][] board) {
-        boolean[][] colMark = new boolean[BOARD_SIZE][20];
-        boolean[][] rowMark = new boolean[BOARD_SIZE][20];
-        boolean[][][] groupMark = new boolean[BOARD_SIZE][BOARD_SIZE][20];
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                int number = board[i][j];
-                if (groupMark[i / 3][j / 3][number] || colMark[j][number] || rowMark[i][number]) {
-                    return false;
+    public void fromFile(String inputFile) throws FileNotFoundException {
+        Scanner scanner = new Scanner(new File(inputFile));
+        int rowIndex = 0;
+        this.board = new int[BOARD_SIZE][BOARD_SIZE];
+        while (scanner.hasNext()) {
+            String line = scanner.nextLine();
+            String[] tokens = line.split(" ");
+            int columnIndex = 0;
+            for (String token : tokens) {
+                this.board[rowIndex][columnIndex] = Integer.parseInt(token);
+                columnIndex++;
+            }
+            rowIndex++;
+        }
+    }
+
+    public void toFile(String outputFile) throws FileNotFoundException, IOException {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile))) {
+            writer.print(this.toString());
+        }
+    }
+
+    public ArrayList<Cell> checkColumn(int columnNumber) {
+        Cell[] colMark = new Cell[20];
+        boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
+        ArrayList<Cell> violatedCells = new ArrayList<>();
+
+        for (int rowIndex = 0; rowIndex < BOARD_SIZE; rowIndex++) {
+            int value = this.board[rowIndex][columnNumber];
+            if (value > 0) {
+                Cell previousCell = colMark[value];
+                if (previousCell != null) {
+                    if (!inResult[previousCell.getX()][previousCell.getY()]) {
+                        violatedCells.add(previousCell);
+                        inResult[previousCell.getX()][previousCell.getY()] = true;
+                    }
+                    if (!inResult[rowIndex][columnNumber]) {
+                        violatedCells.add(new Cell(rowIndex, columnNumber));
+                        inResult[rowIndex][columnNumber] = true;
+                    }
                 }
-                groupMark[i / 3][j / 3][number] = true;
-                colMark[j][number] = true;
-                rowMark[i][number] = true;
+                colMark[value]= new Cell(rowIndex, columnNumber);
             }
         }
-        return true;
+
+        return violatedCells;
+    }
+
+    public ArrayList<Cell> checkRow(int rowNumber) {
+        Cell[] rowMark = new Cell[20];
+        boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
+        ArrayList<Cell> violatedCells = new ArrayList<>();
+
+        for (int colIndex = 0; colIndex < BOARD_SIZE; colIndex++) {
+            int value = this.board[rowNumber][colIndex];
+            if (value > 0) {
+                Cell previousCell = rowMark[value];
+                if (previousCell != null) {
+                    if (!inResult[previousCell.getX()][previousCell.getY()]) {
+                        violatedCells.add(previousCell);
+                        inResult[previousCell.getX()][previousCell.getY()] = true;
+                    }
+                    if (!inResult[rowNumber][colIndex]) {
+                        violatedCells.add(new Cell(rowNumber, colIndex));
+                        inResult[rowNumber][colIndex] = true;
+                    }
+                }
+                rowMark[value]= new Cell(rowNumber, colIndex);
+            }
+        }
+
+        return violatedCells;
     }
 
     private boolean exhaustedSearch(

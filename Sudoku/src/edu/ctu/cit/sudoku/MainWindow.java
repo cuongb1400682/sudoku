@@ -6,6 +6,11 @@
 package edu.ctu.cit.sudoku;
 
 import edu.ctu.cit.sudoku.Models.Puzzle;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  *
@@ -17,6 +22,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
+        this.p = new Puzzle();
         initComponents();
     }
 
@@ -99,10 +105,20 @@ public class MainWindow extends javax.swing.JFrame {
 
         menuSavePuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
         menuSavePuzzle.setText("Save puzzle...");
+        menuSavePuzzle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuSavePuzzleActionPerformed(evt);
+            }
+        });
         menuGame.add(menuSavePuzzle);
 
         menuLoadPuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_O, java.awt.event.InputEvent.CTRL_MASK));
         menuLoadPuzzle.setText("Load puzzle...");
+        menuLoadPuzzle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuLoadPuzzleActionPerformed(evt);
+            }
+        });
         menuGame.add(menuLoadPuzzle);
 
         menuClearPuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
@@ -153,8 +169,9 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private Puzzle p;
+
     private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
-        Puzzle p = new Puzzle();
         try {
             p.generateNewPuzzle();
         } catch (Exception e) {
@@ -162,6 +179,26 @@ public class MainWindow extends javax.swing.JFrame {
         }
         System.out.println(p.toString());
     }//GEN-LAST:event_menuNewGameActionPerformed
+
+    private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
+        try {
+            this.p.fromFile("/home/charlie/Desktop/puzzle.txt");
+            System.out.println(this.p.checkRow(0));
+            System.out.println(this.p.toString());
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_menuLoadPuzzleActionPerformed
+
+    private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
+        try {
+            this.p.toFile("/home/charlie/Desktop/new_puzzle.txt");
+        } catch (FileNotFoundException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        } catch (IOException ex) {
+            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+        }
+    }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
