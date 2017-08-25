@@ -36,4 +36,9 @@ public class Cell {
     public void setY(int y) {
         this.y = y;
     }
+
+    @Override
+    public String toString() {
+        return "Cell{" + "x=" + x + ", y=" + y + '}';
+    }    
 }
