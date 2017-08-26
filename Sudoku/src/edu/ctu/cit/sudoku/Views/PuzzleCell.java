@@ -54,6 +54,7 @@ public class PuzzleCell extends JLabel {
 
     private void implementDefaultEventHandlers() {
         addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
             public void mousePressed(java.awt.event.MouseEvent evt) {
                 if (PuzzleCell.this.state != PuzzleCell.STATE_DISABLE) {
                     PuzzleCell.this.requestFocus();
