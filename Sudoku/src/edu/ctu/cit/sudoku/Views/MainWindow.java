@@ -3,14 +3,20 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.ctu.cit.sudoku;
+package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Models.Puzzle;
+import edu.ctu.cit.sudoku.Views.PuzzleCell;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.GroupLayout;
 
 /**
  *
@@ -37,7 +43,7 @@ public class MainWindow extends javax.swing.JFrame {
 
         upperPanel = new javax.swing.JPanel();
         lableTime = new javax.swing.JLabel();
-        lowerPanel = new javax.swing.JPanel();
+        jPanel1 = new javax.swing.JPanel();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
         menuNewGame = new javax.swing.JMenuItem();
@@ -62,6 +68,11 @@ public class MainWindow extends javax.swing.JFrame {
         menuExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         upperPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         upperPanel.setPreferredSize(new java.awt.Dimension(384, 50));
@@ -74,18 +85,18 @@ public class MainWindow extends javax.swing.JFrame {
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
 
-        javax.swing.GroupLayout lowerPanelLayout = new javax.swing.GroupLayout(lowerPanel);
-        lowerPanel.setLayout(lowerPanelLayout);
-        lowerPanelLayout.setHorizontalGroup(
-            lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
+        jPanel1.setLayout(jPanel1Layout);
+        jPanel1Layout.setHorizontalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 384, Short.MAX_VALUE)
         );
-        lowerPanelLayout.setVerticalGroup(
-            lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+        jPanel1Layout.setVerticalGroup(
+            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGap(0, 357, Short.MAX_VALUE)
         );
 
-        getContentPane().add(lowerPanel, java.awt.BorderLayout.CENTER);
+        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
         menuGame.setText("Game");
 
@@ -200,7 +211,22 @@ public class MainWindow extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        GridLayout layout = new GridLayout(Puzzle.BOARD_SIZE, Puzzle.BOARD_SIZE);
+        jPanel1.setLayout(layout);
+        PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {            
+            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
+                grid[i][j] = new PuzzleCell();                
+                jPanel1.add(grid[i][j]);
+            }            
+        }
+        
+
+    }//GEN-LAST:event_formWindowOpened
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
@@ -209,7 +235,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
     private javax.swing.JLabel lableTime;
-    private javax.swing.JPanel lowerPanel;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem menuAbout;
     private javax.swing.JMenuItem menuClearPuzzle;
