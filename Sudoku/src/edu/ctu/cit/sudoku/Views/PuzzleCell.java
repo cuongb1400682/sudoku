@@ -66,15 +66,13 @@ public class PuzzleCell extends JLabel {
                 if (PuzzleCell.this.state != STATE_DISABLE) {
                     PuzzleCell.this.requestFocus();
 
-                    if (currentLocation == null) {
-                        currentLocation = new Point();
-                        Component currentComponent = PuzzleCell.this;
-                        while (currentComponent != null) {
-                            currentLocation.translate(currentComponent.getX(), currentComponent.getY());
-                            currentComponent = currentComponent.getParent();
-                        }
-                        currentLocation.translate(0, PuzzleCell.this.getHeight());
+                    currentLocation = new Point();
+                    Component currentComponent = PuzzleCell.this;
+                    while (currentComponent != null) {
+                        currentLocation.translate(currentComponent.getX(), currentComponent.getY());
+                        currentComponent = currentComponent.getParent();
                     }
+                    currentLocation.translate(0, PuzzleCell.this.getHeight());
 
                     if (PuzzleCell.this.onPuzzleCellClicked != null) {
                         PuzzleCell.this.onPuzzleCellClicked.onPuzzleCellClicked(PuzzleCell.this);
