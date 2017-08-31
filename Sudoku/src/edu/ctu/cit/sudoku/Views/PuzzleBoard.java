@@ -17,7 +17,6 @@ import java.awt.event.MouseListener;
  * @author charlie
  */
 public class PuzzleBoard extends javax.swing.JPanel {
-
     private final PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private final NumberChooser numberChooser = new NumberChooser();
 
@@ -30,6 +29,16 @@ public class PuzzleBoard extends javax.swing.JPanel {
     public PuzzleBoard() {
         initComponents();
         addPuzzleCells();
+        numberChooser.setNumberSelected(new NumberChooser.NumberSelected() {
+            @Override
+            public void numberSelected(int number) {
+                System.out.println(number);
+                System.out.println(PuzzleBoard.this.selectedPuzzleCell);
+                if (PuzzleBoard.this.selectedPuzzleCell != null) {
+                    PuzzleBoard.this.selectedPuzzleCell.setValue("0123456789".charAt(number % 10));
+                }
+            }
+        });
     }
 
     private void addPuzzleCells() {

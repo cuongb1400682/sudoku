@@ -10,6 +10,8 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JLabel;
@@ -61,20 +63,22 @@ public class PuzzleCell extends JLabel {
         addMouseListener(new MouseListener() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                PuzzleCell.this.requestFocus();
+                if (PuzzleCell.this.state != STATE_DISABLE) {
+                    PuzzleCell.this.requestFocus();
 
-                if (currentLocation == null) {
-                    currentLocation = new Point();
-                    Component currentComponent = PuzzleCell.this;
-                    while (currentComponent != null) {
-                        currentLocation.translate(currentComponent.getX(), currentComponent.getY());
-                        currentComponent = currentComponent.getParent();
+                    if (currentLocation == null) {
+                        currentLocation = new Point();
+                        Component currentComponent = PuzzleCell.this;
+                        while (currentComponent != null) {
+                            currentLocation.translate(currentComponent.getX(), currentComponent.getY());
+                            currentComponent = currentComponent.getParent();
+                        }
+                        currentLocation.translate(0, PuzzleCell.this.getHeight());
                     }
-                    currentLocation.translate(0, PuzzleCell.this.getHeight());
-                }
 
-                if (PuzzleCell.this.onPuzzleCellClicked != null) {
-                    PuzzleCell.this.onPuzzleCellClicked.onPuzzleCellClicked(PuzzleCell.this);
+                    if (PuzzleCell.this.onPuzzleCellClicked != null) {
+                        PuzzleCell.this.onPuzzleCellClicked.onPuzzleCellClicked(PuzzleCell.this);
+                    }
                 }
             }
 
@@ -95,6 +99,22 @@ public class PuzzleCell extends JLabel {
             }
         });
 
+        addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+            }
+
+            @Override
+            public void keyPressed(KeyEvent e) {
+                if (PuzzleCell.this.state != STATE_DISABLE) {
+                    PuzzleCell.this.setValue(e.getKeyChar());
+                }
+            }
+
+            @Override
+            public void keyReleased(KeyEvent e) {
+            }
+        });
     }
 
     public void changeState(int state) {
@@ -117,11 +137,22 @@ public class PuzzleCell extends JLabel {
         this.state = state;
     }
 
-    private int getValue() {
+    public int getValue() {
         if (getText().trim().isEmpty()) {
             return 0;
         } else {
             return Integer.parseInt(getText());
+        }
+    }
+
+    public void setValue(char keyChar) {
+        if (PuzzleCell.this.state != STATE_DISABLE) {
+            if (Character.isDigit(keyChar)) {
+                int num = keyChar - '0';
+                if (num >= 1 && num <= 9) {
+                    PuzzleCell.this.setText("" + num);
+                }
+            }
         }
     }
 
@@ -132,4 +163,5 @@ public class PuzzleCell extends JLabel {
     public void setOnPuzzleCellClicked(OnPuzzleCellClicked onPuzzleCellClicked) {
         this.onPuzzleCellClicked = onPuzzleCellClicked;
     }
+
 }
