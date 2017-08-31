@@ -28,7 +28,6 @@ public class PuzzleCell extends JLabel {
         super();
         setDefaultProperties();
         changeState(STATE_ENABLE);
-        implementDefaultEventHandlers();
     }
 
     public PuzzleCell(int value) throws Exception {
@@ -38,7 +37,6 @@ public class PuzzleCell extends JLabel {
         setDefaultProperties();
         changeState(STATE_DISABLE);
         setText("" + value);
-        implementDefaultEventHandlers();
     }
 
     private void setDefaultProperties() {
@@ -50,35 +48,6 @@ public class PuzzleCell extends JLabel {
         setFont(new java.awt.Font("Dialog", 1, 36));
         setForeground(new java.awt.Color(0, 0, 0));
         setOpaque(true);
-    }
-
-    private void implementDefaultEventHandlers() {
-        addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mousePressed(java.awt.event.MouseEvent evt) {
-                if (PuzzleCell.this.state != PuzzleCell.STATE_DISABLE) {
-                    PuzzleCell.this.requestFocus();
-                    PuzzleCell.this.grabFocus();
-                    PuzzleCell.this.setFocusable(true);
-                }
-            }
-        });
-
-        addFocusListener(new FocusListener() {
-            @Override
-            public void focusGained(FocusEvent e) {
-                if (PuzzleCell.this.state != PuzzleCell.STATE_DISABLE) {
-                    PuzzleCell.this.changeState(PuzzleCell.STATE_SELECTED);
-                }
-            }
-
-            @Override
-            public void focusLost(FocusEvent e) {
-                if (PuzzleCell.this.state != PuzzleCell.STATE_DISABLE) {
-                    PuzzleCell.this.changeState(PuzzleCell.STATE_ENABLE);
-                }
-            }
-        });
     }
 
     private void changeState(int state) {
