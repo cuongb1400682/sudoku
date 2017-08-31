@@ -30,8 +30,10 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
-        this.puzzle = new Puzzle();
         initComponents();
+        this.puzzle = new Puzzle();
+        puzzleBoard = new PuzzleBoard();
+        getContentPane().add(puzzleBoard, java.awt.BorderLayout.CENTER);
     }
 
     /**
@@ -202,8 +204,7 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        puzzleBoard = new PuzzleBoard();
-        getContentPane().add(puzzleBoard, java.awt.BorderLayout.CENTER);
+        newGame();
     }//GEN-LAST:event_formWindowOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -232,4 +233,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuUndo;
     private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
+
+    private void newGame() {
+        this.puzzle.generateNewPuzzle();
+        this.puzzleBoard.setPuzzle(puzzle);
+    }
 }
