@@ -6,6 +6,8 @@
 package edu.ctu.cit.sudoku.Views;
 
 import java.awt.AWTEventMulticaster;
+import java.awt.Component;
+import java.awt.Point;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
@@ -22,7 +24,14 @@ public class PuzzleCell extends JLabel {
     public static final int STATE_DISABLE = 1;
     public static final int STATE_SELECTED = 2;
 
+    public interface OnPuzzleCellClicked {
+
+        public void onPuzzleCellClicked(PuzzleCell cell);
+    }
+
     private int state = 0;
+    private Point currentLocation = null;
+    private OnPuzzleCellClicked onPuzzleCellClicked = null;
 
     public PuzzleCell() {
         super();
@@ -43,14 +52,55 @@ public class PuzzleCell extends JLabel {
         setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         setToolTipText("");
         setBorder(javax.swing.BorderFactory.createLineBorder(new java.awt.Color(102, 102, 0)));
-        setFocusable(false);
+        setFocusable(true);
         setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         setFont(new java.awt.Font("Dialog", 1, 36));
         setForeground(new java.awt.Color(0, 0, 0));
         setOpaque(true);
+
+        addMouseListener(new MouseListener() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                PuzzleCell.this.requestFocus();
+
+                if (currentLocation == null) {
+                    currentLocation = new Point();
+                    Component currentComponent = PuzzleCell.this;
+                    while (currentComponent != null) {
+                        currentLocation.translate(currentComponent.getX(), currentComponent.getY());
+                        currentComponent = currentComponent.getParent();
+                    }
+                    currentLocation.translate(0, PuzzleCell.this.getHeight());
+                }
+
+                if (PuzzleCell.this.onPuzzleCellClicked != null) {
+                    PuzzleCell.this.onPuzzleCellClicked.onPuzzleCellClicked(PuzzleCell.this);
+                }
+            }
+
+            @Override
+            public void mousePressed(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseReleased(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseEntered(MouseEvent e) {
+            }
+
+            @Override
+            public void mouseExited(MouseEvent e) {
+            }
+        });
+
     }
 
-    private void changeState(int state) {
+    public void changeState(int state) {
+        if (this.state == STATE_DISABLE) {
+            return;
+        }
         switch (state) {
             case STATE_ENABLE:
                 setBackground(new java.awt.Color(255, 255, 204));
@@ -73,5 +123,13 @@ public class PuzzleCell extends JLabel {
         } else {
             return Integer.parseInt(getText());
         }
+    }
+
+    public Point getCurrentLocation() {
+        return currentLocation;
+    }
+
+    public void setOnPuzzleCellClicked(OnPuzzleCellClicked onPuzzleCellClicked) {
+        this.onPuzzleCellClicked = onPuzzleCellClicked;
     }
 }

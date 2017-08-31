@@ -7,6 +7,8 @@ package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.GridLayout;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.event.WindowEvent;
@@ -20,7 +22,6 @@ import javax.swing.plaf.basic.BasicArrowButton;
 public class NumberChooser extends javax.swing.JFrame {
 
     public interface NumberSelected {
-
         public void numberSelected(int number);
     }
 
@@ -33,6 +34,16 @@ public class NumberChooser extends javax.swing.JFrame {
     public NumberChooser() {
         initComponents();
         addButtons();
+        addFocusListener(new FocusListener() {
+            @Override
+            public void focusGained(FocusEvent e) {
+            }
+
+            @Override
+            public void focusLost(FocusEvent e) {
+                NumberChooser.this.close();
+            }
+        });
     }
 
     private void addButtons() {
@@ -56,7 +67,7 @@ public class NumberChooser extends javax.swing.JFrame {
                 if (numberSelected != null) {
                     numberSelected.numberSelected(Integer.parseInt(numberButtons[i][j].getText()));
                 }
-                NumberChooser.this.dispatchEvent(new WindowEvent(NumberChooser.this, WindowEvent.WINDOW_CLOSING));                
+                NumberChooser.this.close();
             }
 
             @Override
@@ -81,6 +92,11 @@ public class NumberChooser extends javax.swing.JFrame {
         this.numberSelected = numberSelected;
     }
 
+    public void close() {
+        this.setVisible(false);
+        NumberChooser.this.dispatchEvent(new WindowEvent(NumberChooser.this, WindowEvent.WINDOW_CLOSING));        
+    }
+
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -92,19 +108,21 @@ public class NumberChooser extends javax.swing.JFrame {
 
         panel = new javax.swing.JPanel();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setAutoRequestFocus(false);
         setUndecorated(true);
+        setPreferredSize(new java.awt.Dimension(128, 128));
         setResizable(false);
+        setType(java.awt.Window.Type.POPUP);
 
         javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
         panel.setLayout(panelLayout);
         panelLayout.setHorizontalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 159, Short.MAX_VALUE)
+            .addGap(0, 151, Short.MAX_VALUE)
         );
         panelLayout.setVerticalGroup(
             panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 106, Short.MAX_VALUE)
+            .addGap(0, 140, Short.MAX_VALUE)
         );
 
         getContentPane().add(panel, java.awt.BorderLayout.CENTER);

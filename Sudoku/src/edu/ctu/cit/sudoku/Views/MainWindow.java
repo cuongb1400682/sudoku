@@ -11,6 +11,8 @@ import java.awt.GridBagConstraints;
 import java.awt.GridBagLayout;
 import java.awt.GridLayout;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -28,7 +30,7 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
-        this.p = new Puzzle();
+        this.puzzle = new Puzzle();
         initComponents();
     }
 
@@ -43,7 +45,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         upperPanel = new javax.swing.JPanel();
         lableTime = new javax.swing.JLabel();
-        jPanel1 = new javax.swing.JPanel();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
         menuNewGame = new javax.swing.JMenuItem();
@@ -68,6 +69,7 @@ public class MainWindow extends javax.swing.JFrame {
         menuExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(384, 384));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -84,19 +86,6 @@ public class MainWindow extends javax.swing.JFrame {
         upperPanel.add(lableTime, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
-
-        javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
-        jPanel1.setLayout(jPanel1Layout);
-        jPanel1Layout.setHorizontalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 384, Short.MAX_VALUE)
-        );
-        jPanel1Layout.setVerticalGroup(
-            jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 357, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(jPanel1, java.awt.BorderLayout.CENTER);
 
         menuGame.setText("Game");
 
@@ -180,22 +169,23 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private Puzzle p;
+    private Puzzle puzzle;
+    private PuzzleBoard puzzleBoard;
 
     private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
         try {
-            p.generateNewPuzzle();
+            puzzle.generateNewPuzzle();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(p.toString());
+        System.out.println(puzzle.toString());
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
         try {
-            this.p.fromFile("/home/charlie/Desktop/puzzle.txt");
-            System.out.println(this.p.checkRow(0));
-            System.out.println(this.p.toString());
+            this.puzzle.fromFile("/home/charlie/Desktop/puzzle.txt");
+            System.out.println(this.puzzle.checkRow(0));
+            System.out.println(this.puzzle.toString());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -203,7 +193,7 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
         try {
-            this.p.toFile("/home/charlie/Desktop/new_puzzle.txt");
+            this.puzzle.toFile("/home/charlie/Desktop/new_puzzle.txt");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
@@ -212,21 +202,11 @@ public class MainWindow extends javax.swing.JFrame {
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
-        GridLayout layout = new GridLayout(Puzzle.BOARD_SIZE, Puzzle.BOARD_SIZE);
-        jPanel1.setLayout(layout);
-        PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
-        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {            
-            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
-                grid[i][j] = new PuzzleCell();                
-                jPanel1.add(grid[i][j]);
-            }            
-        }
-        
-
+        puzzleBoard = new PuzzleBoard();
+        getContentPane().add(puzzleBoard, java.awt.BorderLayout.CENTER);
     }//GEN-LAST:event_formWindowOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JPanel jPanel1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;

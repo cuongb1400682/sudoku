@@ -6,7 +6,9 @@
 package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Models.Puzzle;
+import java.awt.Component;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 
@@ -16,9 +18,12 @@ import java.awt.event.MouseListener;
  */
 public class PuzzleBoard extends javax.swing.JPanel {
 
-    final PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
-    final NumberChooser numberChooser = new NumberChooser();
-    
+    private final PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
+    private final NumberChooser numberChooser = new NumberChooser();
+
+    private PuzzleCell selectedPuzzleCell = null;
+    private Puzzle puzzle = null;
+
     /**
      * Creates new form PuzzleBoard
      */
@@ -26,43 +31,43 @@ public class PuzzleBoard extends javax.swing.JPanel {
         initComponents();
         addPuzzleCells();
     }
-    
+
     private void addPuzzleCells() {
         GridLayout layout = new GridLayout(Puzzle.BOARD_SIZE, Puzzle.BOARD_SIZE);
         this.setLayout(layout);
-        
-        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {            
+
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
                 grid[i][j] = new PuzzleCell();
-                final PuzzleCell gridIJ = grid[i][j];
-                grid[i][j].addMouseListener(new MouseListener() {
+                final PuzzleCell finalGridIJ = grid[i][j];
+                grid[i][j].setOnPuzzleCellClicked(new PuzzleCell.OnPuzzleCellClicked() {
                     @Override
-                    public void mouseClicked(MouseEvent e) {                        
-                        numberChooser.setLocationRelativeTo(PuzzleBoard.this);
-                        numberChooser.setLocation(gridIJ.getX(), gridIJ.getY());
-                        numberChooser.setVisible(true);                        
-                    }
+                    public void onPuzzleCellClicked(PuzzleCell cell) {
+                        if (selectedPuzzleCell != null) {
+                            selectedPuzzleCell.changeState(PuzzleCell.STATE_ENABLE);
+                        }
+                        finalGridIJ.changeState(PuzzleCell.STATE_SELECTED);
+                        selectedPuzzleCell = finalGridIJ;
 
-                    @Override
-                    public void mousePressed(MouseEvent e) {
-                    }
-
-                    @Override
-                    public void mouseReleased(MouseEvent e) {
-                    }
-
-                    @Override
-                    public void mouseEntered(MouseEvent e) {
-                    }
-
-                    @Override
-                    public void mouseExited(MouseEvent e) {
+                        PuzzleBoard.this.numberChooser.setLocation(cell.getCurrentLocation());
+                        PuzzleBoard.this.numberChooser.setVisible(true);
                     }
                 });
                 this.add(grid[i][j]);
-            }            
+            }
         }
+    }
 
+    public void setPuzzle(Puzzle puzzle) {
+        this.puzzle = puzzle;
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
+                if (puzzle.get(i, j) != 0) {
+                    grid[i][j].setText("" + puzzle.get(i, j));
+                    grid[i][j].changeState(PuzzleCell.STATE_DISABLE);
+                }
+            }
+        }
     }
 
     /**
