@@ -5,11 +5,8 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
-import java.awt.AWTEventMulticaster;
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -27,13 +24,17 @@ public class PuzzleCell extends JLabel {
     public static final int STATE_SELECTED = 2;
 
     public interface OnPuzzleCellClicked {
-
         public void onPuzzleCellClicked(PuzzleCell cell);
+    }
+    
+    public interface OnPuzzleCellValueChanged {
+        public void onPuzzleCellValueChanged(PuzzleCell cell, int oldValue, int newValue);
     }
 
     private int state = 0;
     private Point currentLocation = null;
     private OnPuzzleCellClicked onPuzzleCellClicked = null;
+    private OnPuzzleCellValueChanged onPuzzleCellValueChanged = null;
 
     public PuzzleCell() {
         super();
@@ -146,9 +147,13 @@ public class PuzzleCell extends JLabel {
     public void setValue(char keyChar) {
         if (PuzzleCell.this.state != STATE_DISABLE) {
             if (Character.isDigit(keyChar)) {
-                int num = keyChar - '0';
-                if (num >= 1 && num <= 9) {
-                    PuzzleCell.this.setText("" + num);
+                int oldValue = this.getValue();
+                int newValue = (int) (keyChar - '0');
+                if (newValue >= 1 && newValue <= 9) {
+                    PuzzleCell.this.setText("" + newValue);
+                    if (this.onPuzzleCellValueChanged != null) {
+                        this.onPuzzleCellValueChanged.onPuzzleCellValueChanged(this, oldValue, newValue);
+                    }
                 }
             }
         }
@@ -162,4 +167,7 @@ public class PuzzleCell extends JLabel {
         this.onPuzzleCellClicked = onPuzzleCellClicked;
     }
 
+    public void setOnPuzzleCellValueChanged(OnPuzzleCellValueChanged onPuzzleCellValueChanged) {
+        this.onPuzzleCellValueChanged = onPuzzleCellValueChanged;
+    }
 }
