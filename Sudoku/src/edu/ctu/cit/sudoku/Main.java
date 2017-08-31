@@ -5,6 +5,7 @@
  */
 package edu.ctu.cit.sudoku;
 
+import edu.ctu.cit.sudoku.Views.MainWindow;
 import java.lang.reflect.InvocationTargetException;
 
 /**

@@ -3,14 +3,22 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package edu.ctu.cit.sudoku;
+package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Models.Puzzle;
+import edu.ctu.cit.sudoku.Views.PuzzleCell;
+import java.awt.GridBagConstraints;
+import java.awt.GridBagLayout;
+import java.awt.GridLayout;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.GroupLayout;
 
 /**
  *
@@ -22,8 +30,10 @@ public class MainWindow extends javax.swing.JFrame {
      * Creates new form MainWindow
      */
     public MainWindow() {
-        this.p = new Puzzle();
         initComponents();
+        this.puzzle = new Puzzle();
+        puzzleBoard = new PuzzleBoard();
+        getContentPane().add(puzzleBoard, java.awt.BorderLayout.CENTER);
     }
 
     /**
@@ -37,7 +47,6 @@ public class MainWindow extends javax.swing.JFrame {
 
         upperPanel = new javax.swing.JPanel();
         lableTime = new javax.swing.JLabel();
-        lowerPanel = new javax.swing.JPanel();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
         menuNewGame = new javax.swing.JMenuItem();
@@ -62,6 +71,12 @@ public class MainWindow extends javax.swing.JFrame {
         menuExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(384, 384));
+        addWindowListener(new java.awt.event.WindowAdapter() {
+            public void windowOpened(java.awt.event.WindowEvent evt) {
+                formWindowOpened(evt);
+            }
+        });
 
         upperPanel.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.RAISED));
         upperPanel.setPreferredSize(new java.awt.Dimension(384, 50));
@@ -73,19 +88,6 @@ public class MainWindow extends javax.swing.JFrame {
         upperPanel.add(lableTime, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
-
-        javax.swing.GroupLayout lowerPanelLayout = new javax.swing.GroupLayout(lowerPanel);
-        lowerPanel.setLayout(lowerPanelLayout);
-        lowerPanelLayout.setHorizontalGroup(
-            lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 384, Short.MAX_VALUE)
-        );
-        lowerPanelLayout.setVerticalGroup(
-            lowerPanelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 357, Short.MAX_VALUE)
-        );
-
-        getContentPane().add(lowerPanel, java.awt.BorderLayout.CENTER);
 
         menuGame.setText("Game");
 
@@ -169,22 +171,23 @@ public class MainWindow extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private Puzzle p;
+    private Puzzle puzzle;
+    private PuzzleBoard puzzleBoard;
 
     private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
         try {
-            p.generateNewPuzzle();
+            puzzle.generateNewPuzzle();
         } catch (Exception e) {
             e.printStackTrace();
         }
-        System.out.println(p.toString());
+        System.out.println(puzzle.toString());
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
         try {
-            this.p.fromFile("/home/charlie/Desktop/puzzle.txt");
-            System.out.println(this.p.checkRow(0));
-            System.out.println(this.p.toString());
+            this.puzzle.fromFile("/home/charlie/Desktop/puzzle.txt");
+            System.out.println(this.puzzle.checkRow(0));
+            System.out.println(this.puzzle.toString());
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -192,13 +195,17 @@ public class MainWindow extends javax.swing.JFrame {
 
     private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
         try {
-            this.p.toFile("/home/charlie/Desktop/new_puzzle.txt");
+            this.puzzle.toFile("/home/charlie/Desktop/new_puzzle.txt");
         } catch (FileNotFoundException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         } catch (IOException ex) {
             Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
         }
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
+
+    private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
+        newGame();
+    }//GEN-LAST:event_formWindowOpened
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
@@ -209,7 +216,6 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
     private javax.swing.JLabel lableTime;
-    private javax.swing.JPanel lowerPanel;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem menuAbout;
     private javax.swing.JMenuItem menuClearPuzzle;
@@ -227,4 +233,9 @@ public class MainWindow extends javax.swing.JFrame {
     private javax.swing.JMenuItem menuUndo;
     private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
+
+    private void newGame() {
+        this.puzzle.generateNewPuzzle();
+        this.puzzleBoard.setPuzzle(puzzle);
+    }
 }
