@@ -19,6 +19,7 @@ import java.util.Scanner;
  * @author charlie
  */
 public final class Puzzle {
+
     public static final int BOARD_SIZE = 9;
 
     private int[][] board;
@@ -27,7 +28,7 @@ public final class Puzzle {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
         this.clear();
     }
-    
+
     public Puzzle(Puzzle that) {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
         this.clear();
@@ -143,7 +144,7 @@ public final class Puzzle {
                         inResult[rowIndex][columnNumber] = true;
                     }
                 }
-                colMark[value]= new Cell(rowIndex, columnNumber);
+                colMark[value] = new Cell(rowIndex, columnNumber);
             }
         }
 
@@ -169,10 +170,40 @@ public final class Puzzle {
                         inResult[rowNumber][colIndex] = true;
                     }
                 }
-                rowMark[value]= new Cell(rowNumber, colIndex);
+                rowMark[value] = new Cell(rowNumber, colIndex);
             }
         }
 
+        return violatedCells;
+    }
+
+    public ArrayList<Cell> checkGroup(int rowIndex, int colIndex) {
+        Cell[] groupMark = new Cell[20];
+        boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
+        ArrayList<Cell> violatedCells = new ArrayList<>();
+
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (i / 3 == rowIndex && j / 3 == colIndex) {
+                    int value = this.board[i][j];
+                    if (value > 0) {
+                        Cell previousCell = groupMark[value];
+                        if (previousCell != null) {
+                            if (!inResult[previousCell.getX()][previousCell.getY()]) {
+                                violatedCells.add(previousCell);
+                                inResult[previousCell.getX()][previousCell.getY()] = true;
+                            }
+                            if (!inResult[i][j]) {
+                                violatedCells.add(new Cell(i, j));
+                                inResult[i][j] = true;
+                            }
+                        }
+                        groupMark[value] = new Cell(i, j);
+                    }
+                }
+            }
+        }
+        
         return violatedCells;
     }
 
@@ -216,7 +247,7 @@ public final class Puzzle {
         return false;
     }
 
-    public void generateNewPuzzle() {        
+    public void generateNewPuzzle() {
         do {
             this.board = this.randomBoard(30);
         } while (this.solve() == null);
