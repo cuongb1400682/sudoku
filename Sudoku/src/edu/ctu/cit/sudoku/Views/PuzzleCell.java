@@ -5,6 +5,7 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
@@ -24,14 +25,17 @@ public class PuzzleCell extends JLabel {
     public static final int STATE_SELECTED = 2;
 
     public interface OnPuzzleCellClicked {
+
         public void onPuzzleCellClicked(PuzzleCell cell);
     }
-    
+
     public interface OnPuzzleCellValueChanged {
+
         public void onPuzzleCellValueChanged(PuzzleCell cell, int oldValue, int newValue);
     }
 
     private int state = 0;
+    private boolean isRepeated = false;
     private Point currentLocation = null;
     private OnPuzzleCellClicked onPuzzleCellClicked = null;
     private OnPuzzleCellValueChanged onPuzzleCellValueChanged = null;
@@ -39,7 +43,7 @@ public class PuzzleCell extends JLabel {
     public PuzzleCell() {
         super();
         setDefaultProperties();
-        changeState(STATE_ENABLE);
+        setState(STATE_ENABLE);
     }
 
     public PuzzleCell(int value) throws Exception {
@@ -47,7 +51,7 @@ public class PuzzleCell extends JLabel {
             throw new Exception("value must be in [1, 9]");
         }
         setDefaultProperties();
-        changeState(STATE_DISABLE);
+        setState(STATE_DISABLE);
         setText("" + value);
     }
 
@@ -116,8 +120,9 @@ public class PuzzleCell extends JLabel {
         });
     }
 
-    public void changeState(int state) {
-        if (this.state == STATE_DISABLE) {
+    private void changeColorCorrespondsToState(int state) {
+        if (isRepeated) {
+            setBackground(Color.red);
             return;
         }
         switch (state) {
@@ -133,7 +138,27 @@ public class PuzzleCell extends JLabel {
             default:
                 break;
         }
+    }
+
+    public void setState(int state) {
+        if (this.state == STATE_DISABLE) {
+            return;
+        }
+        changeColorCorrespondsToState(state);
         this.state = state;
+    }
+
+    public int getState() {
+        return this.state;
+    }
+
+    public void setRepeated(boolean isRepeated) {
+        this.isRepeated = isRepeated;
+        changeColorCorrespondsToState(state);
+    }
+
+    public boolean isRepeated() {
+        return this.isRepeated;
     }
 
     public int getValue() {
