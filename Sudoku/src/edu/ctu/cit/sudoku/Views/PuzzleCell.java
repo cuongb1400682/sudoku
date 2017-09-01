@@ -25,12 +25,10 @@ public class PuzzleCell extends JLabel {
     public static final int STATE_SELECTED = 2;
 
     public interface OnPuzzleCellClicked {
-
         public void onPuzzleCellClicked(PuzzleCell cell);
     }
 
     public interface OnPuzzleCellValueChanged {
-
         public void onPuzzleCellValueChanged(PuzzleCell cell, int oldValue, int newValue);
     }
 
@@ -47,6 +45,7 @@ public class PuzzleCell extends JLabel {
     }
 
     public PuzzleCell(int value) throws Exception {
+        super();
         if (value < 1 && value > 9) {
             throw new Exception("value must be in [1, 9]");
         }
@@ -194,5 +193,13 @@ public class PuzzleCell extends JLabel {
 
     public void setOnPuzzleCellValueChanged(OnPuzzleCellValueChanged onPuzzleCellValueChanged) {
         this.onPuzzleCellValueChanged = onPuzzleCellValueChanged;
+    }
+
+    public void reset() {
+        state = STATE_ENABLE;
+        isRepeated = false;
+        currentLocation = null;
+        setState(STATE_ENABLE);
+        setText("");
     }
 }
