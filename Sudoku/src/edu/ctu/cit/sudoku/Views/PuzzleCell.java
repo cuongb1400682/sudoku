@@ -5,11 +5,9 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
-import java.awt.AWTEventMulticaster;
+import java.awt.Color;
 import java.awt.Component;
 import java.awt.Point;
-import java.awt.event.FocusEvent;
-import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
@@ -31,14 +29,21 @@ public class PuzzleCell extends JLabel {
         public void onPuzzleCellClicked(PuzzleCell cell);
     }
 
+    public interface OnPuzzleCellValueChanged {
+
+        public void onPuzzleCellValueChanged(PuzzleCell cell, int oldValue, int newValue);
+    }
+
     private int state = 0;
+    private boolean isRepeated = false;
     private Point currentLocation = null;
     private OnPuzzleCellClicked onPuzzleCellClicked = null;
+    private OnPuzzleCellValueChanged onPuzzleCellValueChanged = null;
 
     public PuzzleCell() {
         super();
         setDefaultProperties();
-        changeState(STATE_ENABLE);
+        setState(STATE_ENABLE);
     }
 
     public PuzzleCell(int value) throws Exception {
@@ -46,7 +51,7 @@ public class PuzzleCell extends JLabel {
             throw new Exception("value must be in [1, 9]");
         }
         setDefaultProperties();
-        changeState(STATE_DISABLE);
+        setState(STATE_DISABLE);
         setText("" + value);
     }
 
@@ -66,15 +71,13 @@ public class PuzzleCell extends JLabel {
                 if (PuzzleCell.this.state != STATE_DISABLE) {
                     PuzzleCell.this.requestFocus();
 
-                    if (currentLocation == null) {
-                        currentLocation = new Point();
-                        Component currentComponent = PuzzleCell.this;
-                        while (currentComponent != null) {
-                            currentLocation.translate(currentComponent.getX(), currentComponent.getY());
-                            currentComponent = currentComponent.getParent();
-                        }
-                        currentLocation.translate(0, PuzzleCell.this.getHeight());
+                    currentLocation = new Point();
+                    Component currentComponent = PuzzleCell.this;
+                    while (currentComponent != null) {
+                        currentLocation.translate(currentComponent.getX(), currentComponent.getY());
+                        currentComponent = currentComponent.getParent();
                     }
+                    currentLocation.translate(0, PuzzleCell.this.getHeight());
 
                     if (PuzzleCell.this.onPuzzleCellClicked != null) {
                         PuzzleCell.this.onPuzzleCellClicked.onPuzzleCellClicked(PuzzleCell.this);
@@ -117,8 +120,9 @@ public class PuzzleCell extends JLabel {
         });
     }
 
-    public void changeState(int state) {
-        if (this.state == STATE_DISABLE) {
+    private void changeColorCorrespondsToState(int state) {
+        if (isRepeated) {
+            setBackground(Color.red);
             return;
         }
         switch (state) {
@@ -134,7 +138,27 @@ public class PuzzleCell extends JLabel {
             default:
                 break;
         }
+    }
+
+    public void setState(int state) {
+        if (this.state == STATE_DISABLE) {
+            return;
+        }
+        changeColorCorrespondsToState(state);
         this.state = state;
+    }
+
+    public int getState() {
+        return this.state;
+    }
+
+    public void setRepeated(boolean isRepeated) {
+        this.isRepeated = isRepeated;
+        changeColorCorrespondsToState(state);
+    }
+
+    public boolean isRepeated() {
+        return this.isRepeated;
     }
 
     public int getValue() {
@@ -148,9 +172,13 @@ public class PuzzleCell extends JLabel {
     public void setValue(char keyChar) {
         if (PuzzleCell.this.state != STATE_DISABLE) {
             if (Character.isDigit(keyChar)) {
-                int num = keyChar - '0';
-                if (num >= 1 && num <= 9) {
-                    PuzzleCell.this.setText("" + num);
+                int oldValue = this.getValue();
+                int newValue = (int) (keyChar - '0');
+                if (newValue >= 1 && newValue <= 9) {
+                    PuzzleCell.this.setText("" + newValue);
+                    if (this.onPuzzleCellValueChanged != null) {
+                        this.onPuzzleCellValueChanged.onPuzzleCellValueChanged(this, oldValue, newValue);
+                    }
                 }
             }
         }
@@ -164,4 +192,7 @@ public class PuzzleCell extends JLabel {
         this.onPuzzleCellClicked = onPuzzleCellClicked;
     }
 
+    public void setOnPuzzleCellValueChanged(OnPuzzleCellValueChanged onPuzzleCellValueChanged) {
+        this.onPuzzleCellValueChanged = onPuzzleCellValueChanged;
+    }
 }

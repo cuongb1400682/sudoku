@@ -133,6 +133,11 @@ public class MainWindow extends javax.swing.JFrame {
         menuGame.add(menuPause);
 
         menuHintForRepeatedNumbers.setText("Hint for repeated numbers");
+        menuHintForRepeatedNumbers.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuHintForRepeatedNumbersActionPerformed(evt);
+            }
+        });
         menuGame.add(menuHintForRepeatedNumbers);
         menuGame.add(jSeparator4);
 
@@ -206,6 +211,10 @@ public class MainWindow extends javax.swing.JFrame {
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
         newGame();
     }//GEN-LAST:event_formWindowOpened
+
+    private void menuHintForRepeatedNumbersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHintForRepeatedNumbersActionPerformed
+        puzzleBoard.setRepeatedCellCheck(menuHintForRepeatedNumbers.isSelected());
+    }//GEN-LAST:event_menuHintForRepeatedNumbersActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
