@@ -5,23 +5,24 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
+import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
-import java.awt.Component;
 import java.awt.GridLayout;
-import java.awt.Point;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
+import java.util.ArrayList;
 
 /**
  *
  * @author charlie
  */
 public class PuzzleBoard extends javax.swing.JPanel {
+
     private final PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private final NumberChooser numberChooser = new NumberChooser();
 
     private PuzzleCell selectedPuzzleCell = null;
     private Puzzle puzzle = null;
+    private Puzzle puzzleUserAnswer = null;
+    private boolean isRepeatedCellCheck = false;
 
     /**
      * Creates new form PuzzleBoard
@@ -32,8 +33,6 @@ public class PuzzleBoard extends javax.swing.JPanel {
         numberChooser.setNumberSelected(new NumberChooser.NumberSelected() {
             @Override
             public void numberSelected(int number) {
-                System.out.println(number);
-                System.out.println(PuzzleBoard.this.selectedPuzzleCell);
                 if (PuzzleBoard.this.selectedPuzzleCell != null) {
                     PuzzleBoard.this.selectedPuzzleCell.setValue("0123456789".charAt(number % 10));
                 }
@@ -48,18 +47,36 @@ public class PuzzleBoard extends javax.swing.JPanel {
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
                 grid[i][j] = new PuzzleCell();
-                final PuzzleCell finalGridIJ = grid[i][j];
-                grid[i][j].setOnPuzzleCellClicked(new PuzzleCell.OnPuzzleCellClicked() {
-                    @Override
-                    public void onPuzzleCellClicked(PuzzleCell cell) {
-                        if (selectedPuzzleCell != null) {
-                            selectedPuzzleCell.changeState(PuzzleCell.STATE_ENABLE);
-                        }
-                        finalGridIJ.changeState(PuzzleCell.STATE_SELECTED);
-                        selectedPuzzleCell = finalGridIJ;
 
-                        PuzzleBoard.this.numberChooser.setLocation(cell.getCurrentLocation());
-                        PuzzleBoard.this.numberChooser.setVisible(true);
+                final PuzzleCell finalGridIJ = grid[i][j];
+                final int finalI = i;
+                final int finalJ = j;
+
+                grid[i][j].setOnPuzzleCellClicked((PuzzleCell cell) -> {
+                    if (selectedPuzzleCell != null) {
+                        selectedPuzzleCell.changeState(PuzzleCell.STATE_ENABLE);
+                    }
+                    finalGridIJ.changeState(PuzzleCell.STATE_SELECTED);
+                    selectedPuzzleCell = finalGridIJ;
+
+                    PuzzleBoard.this.numberChooser.setLocation(cell.getCurrentLocation());
+                    PuzzleBoard.this.numberChooser.setVisible(true);
+                });
+
+                grid[i][j].setOnPuzzleCellValueChanged((PuzzleCell cell, int oldValue, int newValue) -> {
+                    puzzleUserAnswer.set(finalI, finalJ, newValue);
+                    if (PuzzleBoard.this.isRepeatedCellCheck) {
+                        clearMistakes();
+                        puzzleUserAnswer
+                                .checkRow(finalI)
+                                .forEach(repeatedCell -> {
+                                    grid[i][j].changeState(PuzzleCell.STATE_REPEATED);
+                                });
+                        puzzleUserAnswer
+                                .checkColumn(finalJ)
+                                .forEach(repeatedCell -> {
+                                    grid[i][j].changeState(PuzzleCell.STATE_REPEATED);
+                                });
                     }
                 });
                 this.add(grid[i][j]);
@@ -69,6 +86,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
 
     public void setPuzzle(Puzzle puzzle) {
         this.puzzle = puzzle;
+        this.puzzleUserAnswer = new Puzzle(puzzle);
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
                 if (puzzle.get(i, j) != 0) {
@@ -77,6 +95,14 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 }
             }
         }
+    }
+
+    public boolean isRepeatedCellCheck() {
+        return isRepeatedCellCheck;
+    }
+
+    public void setRepeatedCellCheck(boolean isRepeatedCellCheck) {
+        this.isRepeatedCellCheck = isRepeatedCellCheck;
     }
 
     /**
