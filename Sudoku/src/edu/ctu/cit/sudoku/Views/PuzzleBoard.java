@@ -5,14 +5,17 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
+import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.GridLayout;
+import java.util.function.Consumer;
 
 /**
  *
  * @author charlie
  */
 public class PuzzleBoard extends javax.swing.JPanel {
+
     private final NumberChooser numberChooser = new NumberChooser();
 
     private PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
@@ -64,28 +67,35 @@ public class PuzzleBoard extends javax.swing.JPanel {
                     puzzleUserAnswer.set(finalI, finalJ, newValue);
                     checkRepeatedCells();
                 });
-                
+
                 this.add(grid[i][j]);
             }
         }
     }
 
     public void checkRepeatedCells() {
+        final Consumer<Cell> markRepeatedCell = (Cell c) -> {
+            PuzzleCell repeatedCell = grid[c.getX()][c.getY()];
+            repeatedCell.setRepeated(true);
+        };
+
         if (PuzzleBoard.this.isRepeatedCellCheck) {
             clearMistakes();
             for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
                 puzzleUserAnswer
                         .checkRow(i)
-                        .forEach(c -> {
-                            PuzzleCell repeatedCell = grid[c.getX()][c.getY()];
-                            repeatedCell.setRepeated(true);
-                        });
+                        .forEach(markRepeatedCell);
                 puzzleUserAnswer
                         .checkColumn(i)
-                        .forEach(c -> {
-                            PuzzleCell repeatedCell = grid[c.getX()][c.getY()];
-                            repeatedCell.setRepeated(true);
-                        });
+                        .forEach(markRepeatedCell);
+            }
+
+            for (int i = 0; i < 3; i++) {
+                for (int j = 0; j < 3; j++) {
+                    puzzleUserAnswer
+                            .checkGroup(i, j)
+                            .forEach(markRepeatedCell);
+                }
             }
         }
     }
@@ -103,7 +113,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
     public void setPuzzle(Puzzle puzzle) {
         this.puzzle = puzzle;
         this.puzzleUserAnswer = new Puzzle(puzzle);
-        
+
         clearMistakes();
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
