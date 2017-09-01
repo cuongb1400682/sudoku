@@ -6,19 +6,10 @@
 package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Models.Puzzle;
-import edu.ctu.cit.sudoku.Views.PuzzleCell;
-import java.awt.GridBagConstraints;
-import java.awt.GridBagLayout;
-import java.awt.GridLayout;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import javax.swing.GroupLayout;
 
 /**
  *
@@ -180,12 +171,7 @@ public class MainWindow extends javax.swing.JFrame {
     private PuzzleBoard puzzleBoard;
 
     private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
-        try {
-            puzzle.generateNewPuzzle();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        System.out.println(puzzle.toString());
+        newGame();
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed

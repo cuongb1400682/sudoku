@@ -21,15 +21,15 @@ import javax.swing.plaf.basic.BasicArrowButton;
  */
 public class NumberChooser extends javax.swing.JFrame {
 
-    public interface NumberSelected {
-        public void numberSelected(int number);
+    public interface OnNumberSelected {
+        public void onNumberSelected(int number);
     }
 
     /**
      * Creates new form NumberChooser
      */
     private JButton[][] numberButtons = new JButton[3][3];
-    private NumberSelected numberSelected;
+    private OnNumberSelected numberSelected;
 
     public NumberChooser() {
         initComponents();
@@ -65,7 +65,7 @@ public class NumberChooser extends javax.swing.JFrame {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (numberSelected != null) {
-                    numberSelected.numberSelected(Integer.parseInt(numberButtons[i][j].getText()));
+                    numberSelected.onNumberSelected(Integer.parseInt(numberButtons[i][j].getText()));
                 }
                 NumberChooser.this.close();
             }
@@ -88,7 +88,7 @@ public class NumberChooser extends javax.swing.JFrame {
         };
     }
 
-    public void setNumberSelected(NumberSelected numberSelected) {
+    public void setNumberSelected(OnNumberSelected numberSelected) {
         this.numberSelected = numberSelected;
     }
 

@@ -5,20 +5,17 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
-import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.GridLayout;
-import java.util.ArrayList;
 
 /**
  *
  * @author charlie
  */
 public class PuzzleBoard extends javax.swing.JPanel {
-
-    private final PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private final NumberChooser numberChooser = new NumberChooser();
 
+    private PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private PuzzleCell selectedPuzzleCell = null;
     private Puzzle puzzle = null;
     private Puzzle puzzleUserAnswer = null;
@@ -30,9 +27,9 @@ public class PuzzleBoard extends javax.swing.JPanel {
     public PuzzleBoard() {
         initComponents();
         addPuzzleCells();
-        numberChooser.setNumberSelected(new NumberChooser.NumberSelected() {
+        numberChooser.setNumberSelected(new NumberChooser.OnNumberSelected() {
             @Override
-            public void numberSelected(int number) {
+            public void onNumberSelected(int number) {
                 if (PuzzleBoard.this.selectedPuzzleCell != null) {
                     PuzzleBoard.this.selectedPuzzleCell.setValue("0123456789".charAt(number % 10));
                 }
@@ -106,9 +103,11 @@ public class PuzzleBoard extends javax.swing.JPanel {
     public void setPuzzle(Puzzle puzzle) {
         this.puzzle = puzzle;
         this.puzzleUserAnswer = new Puzzle(puzzle);
+        
         clearMistakes();
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
+                grid[i][j].reset();
                 if (puzzle.get(i, j) != 0) {
                     grid[i][j].setText("" + puzzle.get(i, j));
                     grid[i][j].setState(PuzzleCell.STATE_DISABLE);
