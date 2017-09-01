@@ -6,16 +6,29 @@
 package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Models.Puzzle;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.Timer;
 
 /**
  *
  * @author charlie
  */
-public class MainWindow extends javax.swing.JFrame {
+public class MainWindow extends javax.swing.JFrame implements ActionListener {
+
+    private static final int TICK_COUNT_LIMIT = 5;// 99 * 60 + 59;
+
+    class TimeLimitExceededException extends Exception {
+
+        private TimeLimitExceededException(String times_up_Game_over) {
+            super(times_up_Game_over);
+        }
+
+    }
 
     /**
      * Creates new form MainWindow
@@ -169,6 +182,17 @@ public class MainWindow extends javax.swing.JFrame {
 
     private Puzzle puzzle;
     private PuzzleBoard puzzleBoard;
+    private Timer timer = new Timer(1000, (ActionListener) this);
+    private int tickCount;
+
+    private void setTickCount(int tickCount) throws TimeLimitExceededException {
+        if (tickCount > TICK_COUNT_LIMIT) {
+            throw new TimeLimitExceededException("Time's up. Game over.");
+        }
+
+        this.lableTime.setText(String.format("%02d:%02d", tickCount / 60, tickCount % 60));
+        this.tickCount = tickCount;
+    }
 
     private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
         newGame();
@@ -232,5 +256,22 @@ public class MainWindow extends javax.swing.JFrame {
     private void newGame() {
         this.puzzle.generateNewPuzzle();
         this.puzzleBoard.setPuzzle(puzzle);
+        this.timer.restart();
+        try {
+            this.setTickCount(0);
+        } catch (TimeLimitExceededException ex) {
+            ex.printStackTrace();
+        }
     }
+
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        try {
+            this.setTickCount(tickCount + 1);
+        } catch (TimeLimitExceededException ex) {
+            // todo: game has over!!!
+            ex.printStackTrace();
+        }
+    }
+
 }
