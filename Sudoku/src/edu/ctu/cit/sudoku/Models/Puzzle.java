@@ -27,6 +27,14 @@ public final class Puzzle {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
         this.clear();
     }
+    
+    public Puzzle(Puzzle that) {
+        this.board = new int[BOARD_SIZE][BOARD_SIZE];
+        this.clear();
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            System.arraycopy(that.board[i], 0, this.board[i], 0, BOARD_SIZE);
+        }
+    }
 
     private boolean isValidCoordinate(int x, int y) {
         return (x >= 0) && (y >= 0) && (x < BOARD_SIZE) && (y < BOARD_SIZE);

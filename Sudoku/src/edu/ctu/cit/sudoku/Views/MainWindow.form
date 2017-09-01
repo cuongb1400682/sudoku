@@ -72,6 +72,9 @@
               <Properties>
                 <Property name="text" type="java.lang.String" value="Hint for repeated numbers"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="menuHintForRepeatedNumbersActionPerformed"/>
+              </Events>
             </MenuItem>
             <MenuItem class="javax.swing.JPopupMenu$Separator" name="jSeparator4">
             </MenuItem>
