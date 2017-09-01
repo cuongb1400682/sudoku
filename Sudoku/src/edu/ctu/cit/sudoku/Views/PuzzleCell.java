@@ -25,10 +25,12 @@ public class PuzzleCell extends JLabel {
     public static final int STATE_SELECTED = 2;
 
     public interface OnPuzzleCellClicked {
+
         public void onPuzzleCellClicked(PuzzleCell cell);
     }
 
     public interface OnPuzzleCellValueChanged {
+
         public void onPuzzleCellValueChanged(PuzzleCell cell, int oldValue, int newValue);
     }
 
@@ -121,7 +123,7 @@ public class PuzzleCell extends JLabel {
 
     private void changeColorCorrespondsToState(int state) {
         if (isRepeated) {
-            setBackground(Color.red);
+            setForeground(Color.red);
             return;
         }
         switch (state) {
@@ -153,7 +155,11 @@ public class PuzzleCell extends JLabel {
 
     public void setRepeated(boolean isRepeated) {
         this.isRepeated = isRepeated;
-        changeColorCorrespondsToState(state);
+        if (isRepeated) {
+            setForeground(Color.red);
+        } else {
+            setForeground(Color.BLACK);
+        }
     }
 
     public boolean isRepeated() {

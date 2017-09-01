@@ -20,7 +20,7 @@ import javax.swing.Timer;
  */
 public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
-    private static final int TICK_COUNT_LIMIT = 5;// 99 * 60 + 59;
+    private static final int TICK_COUNT_LIMIT = 99 * 60 + 59;
 
     class TimeLimitExceededException extends Exception {
 
