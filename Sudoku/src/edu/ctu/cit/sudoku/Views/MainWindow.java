@@ -36,7 +36,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     public MainWindow() {
         initComponents();
         this.puzzle = new Puzzle();
-        puzzleBoard = new PuzzleBoard();
+        puzzleBoard = new PuzzleBoard(this);
         getContentPane().add(puzzleBoard, java.awt.BorderLayout.CENTER);
     }
 

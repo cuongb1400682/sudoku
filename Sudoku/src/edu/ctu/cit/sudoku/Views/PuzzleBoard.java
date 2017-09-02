@@ -7,7 +7,13 @@ package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
+import java.awt.Component;
+import java.awt.Frame;
 import java.awt.GridLayout;
+import java.awt.event.ComponentEvent;
+import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.util.function.Consumer;
 
 /**
@@ -16,7 +22,7 @@ import java.util.function.Consumer;
  */
 public class PuzzleBoard extends javax.swing.JPanel {
 
-    private final NumberChooser numberChooser = new NumberChooser();
+    private NumberChooser numberChooser;
 
     private PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private PuzzleCell selectedPuzzleCell = null;
@@ -27,15 +33,13 @@ public class PuzzleBoard extends javax.swing.JPanel {
     /**
      * Creates new form PuzzleBoard
      */
-    public PuzzleBoard() {
+    public PuzzleBoard(Component parent) {
+        numberChooser = new NumberChooser((Frame) parent);
         initComponents();
         addPuzzleCells();
-        numberChooser.setNumberSelected(new NumberChooser.OnNumberSelected() {
-            @Override
-            public void onNumberSelected(int number) {
-                if (PuzzleBoard.this.selectedPuzzleCell != null) {
-                    PuzzleBoard.this.selectedPuzzleCell.setValue("0123456789".charAt(number % 10));
-                }
+        numberChooser.setNumberSelected((int number) -> {
+            if (PuzzleBoard.this.selectedPuzzleCell != null) {
+                PuzzleBoard.this.selectedPuzzleCell.setValue("0123456789".charAt(number % 10));
             }
         });
     }
@@ -57,10 +61,15 @@ public class PuzzleBoard extends javax.swing.JPanel {
                         selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
                     }
                     finalGridIJ.setState(PuzzleCell.STATE_SELECTED);
-                    selectedPuzzleCell = finalGridIJ;
 
                     PuzzleBoard.this.numberChooser.setLocation(cell.getCurrentLocation());
-                    PuzzleBoard.this.numberChooser.setVisible(true);
+                    if (PuzzleBoard.this.numberChooser.isVisible() && selectedPuzzleCell == finalGridIJ) {
+                        PuzzleBoard.this.numberChooser.close();
+                    } else {
+                        PuzzleBoard.this.numberChooser.setVisible(true);
+                    }
+
+                    selectedPuzzleCell = finalGridIJ;
                 });
 
                 grid[i][j].setOnPuzzleCellValueChanged((PuzzleCell cell, int oldValue, int newValue) -> {
