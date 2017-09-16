@@ -15,11 +15,11 @@ import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.function.Consumer;
-
 /**
  *
  * @author charlie
  */
+
 public class PuzzleBoard extends javax.swing.JPanel {
 
     private NumberChooser numberChooser;
@@ -29,6 +29,11 @@ public class PuzzleBoard extends javax.swing.JPanel {
     private Puzzle puzzle = null;
     private Puzzle puzzleUserAnswer = null;
     private boolean isRepeatedCellCheck = false;
+
+    private final Consumer<Cell> markRepeatedCell = (Cell c) -> {
+        PuzzleCell repeatedCell = grid[c.getX()][c.getY()];
+        repeatedCell.setRepeated(true);
+    };
 
     /**
      * Creates new form PuzzleBoard
@@ -42,6 +47,53 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 PuzzleBoard.this.selectedPuzzleCell.setValue("0123456789".charAt(number % 10));
             }
         });
+    }
+
+    public boolean isEdited() {
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
+                if (this.puzzle.get(i, j) != this.puzzleUserAnswer.get(i, j)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    public boolean isValidPuzzleBoard() {
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            if (puzzleUserAnswer.checkRow(i).size() > 0) {
+                System.out.println("row invalid");
+                return false;
+            }
+            
+            if (puzzleUserAnswer.checkColumn(i).size() > 0) {
+                System.out.println("column invalid");
+                return false;
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (puzzleUserAnswer.checkGroup(i, j).size() > 0) {
+                    System.out.println("group invalid");
+                    return false;
+                }
+            }
+        }
+
+        int nonZeroCount = 0;
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
+                if (puzzleUserAnswer.get(i, j) > 0) {                    
+                    nonZeroCount++;
+                }
+            }
+        }
+        
+        System.out.println("nonZ = " + nonZeroCount);
+
+        return nonZeroCount == Puzzle.N_BOARD_PRESET_CELLS;
     }
 
     private void addPuzzleCells() {
@@ -83,11 +135,6 @@ public class PuzzleBoard extends javax.swing.JPanel {
     }
 
     public void checkRepeatedCells() {
-        final Consumer<Cell> markRepeatedCell = (Cell c) -> {
-            PuzzleCell repeatedCell = grid[c.getX()][c.getY()];
-            repeatedCell.setRepeated(true);
-        };
-
         if (PuzzleBoard.this.isRepeatedCellCheck) {
             clearMistakes();
             for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
@@ -107,6 +154,16 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 }
             }
         }
+    }
+
+    public Puzzle getCurrentPuzzleConfiguration() {
+        Puzzle currPuz = new Puzzle();
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
+                currPuz.set(i, j, this.grid[i][j].getValue());
+            }
+        }
+        return currPuz;
     }
 
     public void clearMistakes() {
@@ -148,6 +205,14 @@ public class PuzzleBoard extends javax.swing.JPanel {
         } else {
             clearMistakes();
         }
+    }
+
+    public Puzzle getPuzzleUserAnswer() {
+        return puzzleUserAnswer;
+    }
+
+    public Puzzle getPuzzle() {
+        return puzzle;
     }
 
     /**

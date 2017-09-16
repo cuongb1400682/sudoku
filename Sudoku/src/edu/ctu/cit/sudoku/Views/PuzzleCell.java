@@ -10,6 +10,7 @@ import java.awt.Component;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import javax.swing.JLabel;
@@ -66,7 +67,7 @@ public class PuzzleCell extends JLabel {
         setForeground(new java.awt.Color(0, 0, 0));
         setOpaque(true);
 
-        addMouseListener(new MouseListener() {
+        addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (PuzzleCell.this.state != STATE_DISABLE) {
@@ -84,22 +85,6 @@ public class PuzzleCell extends JLabel {
                         PuzzleCell.this.onPuzzleCellClicked.onPuzzleCellClicked(PuzzleCell.this);
                     }
                 }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
             }
         });
 

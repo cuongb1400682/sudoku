@@ -5,6 +5,7 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
+import edu.ctu.cit.sudoku.Controllers.PuzzleBoardController;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -27,7 +28,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         private TimeLimitExceededException(String times_up_Game_over) {
             super(times_up_Game_over);
         }
-
     }
 
     /**
@@ -35,9 +35,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
      */
     public MainWindow() {
         initComponents();
-        this.puzzle = new Puzzle();
-        puzzleBoard = new PuzzleBoard(this);
-        getContentPane().add(puzzleBoard, java.awt.BorderLayout.CENTER);
+        getContentPane().add(this.puzzleBoardController.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
     }
 
     /**
@@ -50,11 +48,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private void initComponents() {
 
         upperPanel = new javax.swing.JPanel();
-        lableTime = new javax.swing.JLabel();
+        labelTime = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
         menuNewGame = new javax.swing.JMenuItem();
-        menuManuallyEnterPuzzle = new javax.swing.JMenuItem();
+        menuManuallyNumbersInput = new javax.swing.JCheckBoxMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuSavePuzzle = new javax.swing.JMenuItem();
         menuLoadPuzzle = new javax.swing.JMenuItem();
@@ -86,10 +85,18 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         upperPanel.setPreferredSize(new java.awt.Dimension(384, 50));
         upperPanel.setLayout(new java.awt.BorderLayout());
 
-        lableTime.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
-        lableTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
-        lableTime.setText("00:00");
-        upperPanel.add(lableTime, java.awt.BorderLayout.CENTER);
+        labelTime.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        labelTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+        labelTime.setText("00:00");
+        upperPanel.add(labelTime, java.awt.BorderLayout.CENTER);
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        upperPanel.add(jButton1, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -105,8 +112,13 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         });
         menuGame.add(menuNewGame);
 
-        menuManuallyEnterPuzzle.setText("Manually enter puzzle");
-        menuGame.add(menuManuallyEnterPuzzle);
+        menuManuallyNumbersInput.setText("Manually numbers input");
+        menuManuallyNumbersInput.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuManuallyNumbersInputActionPerformed(evt);
+            }
+        });
+        menuGame.add(menuManuallyNumbersInput);
         menuGame.add(jSeparator1);
 
         menuSavePuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_S, java.awt.event.InputEvent.CTRL_MASK));
@@ -134,6 +146,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         menuPause.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));
         menuPause.setText("Pause");
+        menuPause.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuPauseActionPerformed(evt);
+            }
+        });
         menuGame.add(menuPause);
 
         menuHintForRepeatedNumbers.setText("Hint for repeated numbers");
@@ -180,8 +197,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private Puzzle puzzle;
-    private PuzzleBoard puzzleBoard;
+    private final PuzzleBoardController puzzleBoardController = new PuzzleBoardController(this);
     private Timer timer = new Timer(1000, (ActionListener) this);
     private int tickCount;
 
@@ -190,7 +206,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             throw new TimeLimitExceededException("Time's up. Game over.");
         }
 
-        this.lableTime.setText(String.format("%02d:%02d", tickCount / 60, tickCount % 60));
+        this.labelTime.setText(String.format("%02d:%02d", tickCount / 60, tickCount % 60));
         this.tickCount = tickCount;
     }
 
@@ -199,23 +215,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
-        try {
-            this.puzzle.fromFile("/home/charlie/Desktop/puzzle.txt");
-            System.out.println(this.puzzle.checkRow(0));
-            System.out.println(this.puzzle.toString());
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_menuLoadPuzzleActionPerformed
 
     private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
-        try {
-            this.puzzle.toFile("/home/charlie/Desktop/new_puzzle.txt");
-        } catch (FileNotFoundException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        } catch (IOException ex) {
-            Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-        }
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -223,10 +225,42 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_formWindowOpened
 
     private void menuHintForRepeatedNumbersActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHintForRepeatedNumbersActionPerformed
-        puzzleBoard.setRepeatedCellCheck(menuHintForRepeatedNumbers.isSelected());
+        this.puzzleBoardController.setRepeatedCellCheck(menuHintForRepeatedNumbers.isSelected());
     }//GEN-LAST:event_menuHintForRepeatedNumbersActionPerformed
 
+    private void menuManuallyNumbersInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuManuallyNumbersInputActionPerformed
+        this.pauseGame();
+        this.puzzleBoardController.setManuallyNumberInput(this.menuManuallyNumbersInput.isSelected());
+        final boolean b = !this.menuManuallyNumbersInput.isSelected();
+        this.menuPause.setEnabled(b);
+        this.menuNewGame.setEnabled(b);
+        this.menuGiveUp.setEnabled(b);
+        this.menuClearPuzzle.setEnabled(b);
+        this.menuLoadPuzzle.setEnabled(b);
+        this.menuRedo.setEnabled(b);
+        this.menuUndo.setEnabled(b);
+    }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
+
+    private void menuPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPauseActionPerformed
+        this.pauseGame();
+    }//GEN-LAST:event_menuPauseActionPerformed
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        this.puzzleBoardController.setPuzzle(new int[][]{
+            {2, 5, 1, 0, 0, 3, 4, 0, 0},
+            {0, 6, 0, 0, 0, 1, 2, 0, 0},
+            {3, 0, 4, 2, 0, 0, 0, 0, 1},
+            {4, 1, 0, 0, 0, 0, 0, 0, 3},
+            {5, 0, 0, 0, 0, 0, 0, 0, 0},
+            {0, 0, 0, 0, 3, 0, 0, 1, 2},
+            {0, 0, 0, 0, 1, 2, 0, 3, 0},
+            {1, 0, 2, 0, 0, 0, 0, 4, 0},
+            {0, 3, 5, 6, 0, 4, 0, 2, 0}
+        });
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
@@ -234,7 +268,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
-    private javax.swing.JLabel lableTime;
+    private javax.swing.JLabel labelTime;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem menuAbout;
     private javax.swing.JMenuItem menuClearPuzzle;
@@ -244,7 +278,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JMenuItem menuHighScore;
     private javax.swing.JCheckBoxMenuItem menuHintForRepeatedNumbers;
     private javax.swing.JMenuItem menuLoadPuzzle;
-    private javax.swing.JMenuItem menuManuallyEnterPuzzle;
+    private javax.swing.JCheckBoxMenuItem menuManuallyNumbersInput;
     private javax.swing.JMenuItem menuNewGame;
     private javax.swing.JCheckBoxMenuItem menuPause;
     private javax.swing.JMenuItem menuRedo;
@@ -254,13 +288,21 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     // End of variables declaration//GEN-END:variables
 
     private void newGame() {
-        this.puzzle.generateNewPuzzle();
-        this.puzzleBoard.setPuzzle(puzzle);
-        this.timer.restart();
+        this.puzzleBoardController.newPuzzleBoard();
+        this.menuManuallyNumbersInput.setSelected(false);
         try {
             this.setTickCount(0);
         } catch (TimeLimitExceededException ex) {
             ex.printStackTrace();
+        }
+        this.timer.restart();
+    }
+
+    private void pauseGame() {
+        if (this.timer.isRunning()) {
+            this.timer.stop();
+        } else {
+            this.timer.start();
         }
     }
 
@@ -269,7 +311,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         try {
             this.setTickCount(tickCount + 1);
         } catch (TimeLimitExceededException ex) {
-            // todo: game has over!!!
+            // todo: game has been over!!!
             ex.printStackTrace();
         }
     }

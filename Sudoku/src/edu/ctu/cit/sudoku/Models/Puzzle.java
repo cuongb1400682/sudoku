@@ -21,6 +21,7 @@ import java.util.Scanner;
 public final class Puzzle {
 
     public static final int BOARD_SIZE = 9;
+    public static final int N_BOARD_PRESET_CELLS = 30;
 
     private int[][] board;
 
@@ -34,6 +35,13 @@ public final class Puzzle {
         this.clear();
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             System.arraycopy(that.board[i], 0, this.board[i], 0, BOARD_SIZE);
+        }
+    }
+
+    public Puzzle(int[][] board) {
+        this.board = new int[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            System.arraycopy(board[i], 0, this.board[i], 0, BOARD_SIZE);
         }
     }
 
@@ -203,7 +211,7 @@ public final class Puzzle {
                 }
             }
         }
-        
+
         return violatedCells;
     }
 
@@ -249,7 +257,7 @@ public final class Puzzle {
 
     public void generateNewPuzzle() {
         do {
-            this.board = this.randomBoard(30);
+            this.board = this.randomBoard(N_BOARD_PRESET_CELLS);
         } while (this.solve() == null);
     }
 
