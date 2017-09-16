@@ -15,6 +15,11 @@ import java.awt.Panel;
  * @author charlie
  */
 public class PuzzleBoardController {
+    public interface Callback {
+        public void callback();
+    }
+    
+    
     private Puzzle puzzle = null;
     private PuzzleBoard puzzleBoard = null;
     private Puzzle stashedPuzzle = null;
@@ -44,13 +49,14 @@ public class PuzzleBoardController {
         this.puzzleBoard.setRepeatedCellCheck(b);
     }
     
-    public void setManuallyNumberInput(boolean isManuallyInput) {
+    public void setManuallyNumberInput(boolean isManuallyInput, Callback callback) {
         if (isManuallyInput) {
             this.stashedPuzzle = this.puzzle;
             this.puzzle = new Puzzle();
         } else if (this.stashedPuzzle != null) {
             if (this.puzzleBoard.isEdited() && this.puzzleBoard.isValidPuzzleBoard()) {
                 this.puzzle = this.puzzleBoard.getPuzzleUserAnswer();
+                callback.callback();
             } else {
                 this.puzzle = this.stashedPuzzle;
             }

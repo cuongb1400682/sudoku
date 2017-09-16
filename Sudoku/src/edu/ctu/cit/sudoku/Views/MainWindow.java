@@ -49,7 +49,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         upperPanel = new javax.swing.JPanel();
         labelTime = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
         menuNewGame = new javax.swing.JMenuItem();
@@ -89,14 +88,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         labelTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTime.setText("00:00");
         upperPanel.add(labelTime, java.awt.BorderLayout.CENTER);
-
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        upperPanel.add(jButton1, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -229,38 +220,33 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuHintForRepeatedNumbersActionPerformed
 
     private void menuManuallyNumbersInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuManuallyNumbersInputActionPerformed
+        final boolean isNotManuallyNumbersInput = !this.menuManuallyNumbersInput.isSelected();
         this.pauseGame();
-        this.puzzleBoardController.setManuallyNumberInput(this.menuManuallyNumbersInput.isSelected());
-        final boolean b = !this.menuManuallyNumbersInput.isSelected();
-        this.menuPause.setEnabled(b);
-        this.menuNewGame.setEnabled(b);
-        this.menuGiveUp.setEnabled(b);
-        this.menuClearPuzzle.setEnabled(b);
-        this.menuLoadPuzzle.setEnabled(b);
-        this.menuRedo.setEnabled(b);
-        this.menuUndo.setEnabled(b);
+        this.puzzleBoardController.setManuallyNumberInput(
+                this.menuManuallyNumbersInput.isSelected(),
+                () -> {
+                    try {
+                        setTickCount(0);
+                    } catch (TimeLimitExceededException ex) {
+                        ex.printStackTrace();
+                    }
+                    timer.start();
+                }
+        );
+        this.menuPause.setEnabled(isNotManuallyNumbersInput);
+        this.menuNewGame.setEnabled(isNotManuallyNumbersInput);
+        this.menuGiveUp.setEnabled(isNotManuallyNumbersInput);
+        this.menuClearPuzzle.setEnabled(isNotManuallyNumbersInput);
+        this.menuLoadPuzzle.setEnabled(isNotManuallyNumbersInput);
+        this.menuRedo.setEnabled(isNotManuallyNumbersInput);
+        this.menuUndo.setEnabled(isNotManuallyNumbersInput);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 
     private void menuPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPauseActionPerformed
         this.pauseGame();
     }//GEN-LAST:event_menuPauseActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        this.puzzleBoardController.setPuzzle(new int[][]{
-            {2, 5, 1, 0, 0, 3, 4, 0, 0},
-            {0, 6, 0, 0, 0, 1, 2, 0, 0},
-            {3, 0, 4, 2, 0, 0, 0, 0, 1},
-            {4, 1, 0, 0, 0, 0, 0, 0, 3},
-            {5, 0, 0, 0, 0, 0, 0, 0, 0},
-            {0, 0, 0, 0, 3, 0, 0, 1, 2},
-            {0, 0, 0, 0, 1, 2, 0, 3, 0},
-            {1, 0, 2, 0, 0, 0, 0, 4, 0},
-            {0, 3, 5, 6, 0, 4, 0, 2, 0}
-        });
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
