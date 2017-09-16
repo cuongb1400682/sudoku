@@ -49,6 +49,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         upperPanel = new javax.swing.JPanel();
         labelTime = new javax.swing.JLabel();
+        labelStatus = new javax.swing.JLabel();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
         menuNewGame = new javax.swing.JMenuItem();
@@ -90,6 +91,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         upperPanel.add(labelTime, java.awt.BorderLayout.CENTER);
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
+
+        labelStatus.setText("Ready");
+        labelStatus.setBorder(javax.swing.BorderFactory.createBevelBorder(javax.swing.border.BevelBorder.LOWERED));
+        labelStatus.setFocusable(false);
+        getContentPane().add(labelStatus, java.awt.BorderLayout.PAGE_END);
 
         menuGame.setText("Game");
 
@@ -254,6 +260,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JPopupMenu.Separator jSeparator5;
     private javax.swing.JPopupMenu.Separator jSeparator6;
     private javax.swing.JPopupMenu.Separator jSeparator7;
+    private javax.swing.JLabel labelStatus;
     private javax.swing.JLabel labelTime;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem menuAbout;
