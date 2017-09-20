@@ -55,7 +55,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
         menuNewGame = new javax.swing.JMenuItem();
-        menuManuallyNumbersInput = new javax.swing.JCheckBoxMenuItem();
+        menuManuallyNumbersInput = new javax.swing.JMenuItem();
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuSavePuzzle = new javax.swing.JMenuItem();
         menuLoadPuzzle = new javax.swing.JMenuItem();
@@ -228,33 +228,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.puzzleBoardController.setRepeatedCellCheck(menuHintForRepeatedNumbers.isSelected());
     }//GEN-LAST:event_menuHintForRepeatedNumbersActionPerformed
 
-    private void menuManuallyNumbersInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuManuallyNumbersInputActionPerformed
-        final boolean isNotManuallyNumbersInput = !this.menuManuallyNumbersInput.isSelected();
-        this.pauseGame();
-        this.statusController.showMessage("Please input 30 numbers", StatusController.STATUS_WARNING);
-        this.puzzleBoardController.setManuallyNumberInput(
-                this.menuManuallyNumbersInput.isSelected(),
-                () -> {
-                    try {
-                        setTickCount(0);
-                    } catch (TimeLimitExceededException ex) {
-                        ex.printStackTrace();
-                    }
-                    timer.start();
-                }
-        );
-        this.menuPause.setEnabled(isNotManuallyNumbersInput);
-        this.menuNewGame.setEnabled(isNotManuallyNumbersInput);
-        this.menuGiveUp.setEnabled(isNotManuallyNumbersInput);
-        this.menuClearPuzzle.setEnabled(isNotManuallyNumbersInput);
-        this.menuLoadPuzzle.setEnabled(isNotManuallyNumbersInput);
-        this.menuRedo.setEnabled(isNotManuallyNumbersInput);
-        this.menuUndo.setEnabled(isNotManuallyNumbersInput);
-    }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
-
     private void menuPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPauseActionPerformed
         this.pauseGame();
     }//GEN-LAST:event_menuPauseActionPerformed
+
+    private void menuManuallyNumbersInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuManuallyNumbersInputActionPerformed
+        ManuallyNewGameForm form = new ManuallyNewGameForm();
+        form.pack();
+        form.setVisible(true);
+    }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
@@ -275,7 +257,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JMenuItem menuHighScore;
     private javax.swing.JCheckBoxMenuItem menuHintForRepeatedNumbers;
     private javax.swing.JMenuItem menuLoadPuzzle;
-    private javax.swing.JCheckBoxMenuItem menuManuallyNumbersInput;
+    private javax.swing.JMenuItem menuManuallyNumbersInput;
     private javax.swing.JMenuItem menuNewGame;
     private javax.swing.JCheckBoxMenuItem menuPause;
     private javax.swing.JMenuItem menuRedo;
