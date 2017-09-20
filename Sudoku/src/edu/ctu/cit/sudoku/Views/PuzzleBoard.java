@@ -59,29 +59,8 @@ public class PuzzleBoard extends javax.swing.JPanel {
         }
         return false;
     }
-
-    public boolean isValidPuzzleBoard() {
-        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
-            if (puzzleUserAnswer.checkRow(i).size() > 0) {
-                System.out.println("row invalid");
-                return false;
-            }
-            
-            if (puzzleUserAnswer.checkColumn(i).size() > 0) {
-                System.out.println("column invalid");
-                return false;
-            }
-        }
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (puzzleUserAnswer.checkGroup(i, j).size() > 0) {
-                    System.out.println("group invalid");
-                    return false;
-                }
-            }
-        }
-
+    
+    public int countNonZero() {
         int nonZeroCount = 0;
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
@@ -90,10 +69,30 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 }
             }
         }
-        
-        System.out.println("nonZ = " + nonZeroCount);
+        return nonZeroCount;
+    }
 
-        return nonZeroCount == Puzzle.N_BOARD_PRESET_CELLS;
+    public boolean isValidPuzzleBoard() {
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            if (puzzleUserAnswer.checkRow(i).size() > 0) {
+                return false;
+            }
+            
+            if (puzzleUserAnswer.checkColumn(i).size() > 0) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (puzzleUserAnswer.checkGroup(i, j).size() > 0) {
+                    return false;
+                }
+            }
+        }
+
+        
+        return this.countNonZero() == Puzzle.N_BOARD_PRESET_CELLS;
     }
 
     private void addPuzzleCells() {

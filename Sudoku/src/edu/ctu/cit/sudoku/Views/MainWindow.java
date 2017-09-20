@@ -6,6 +6,7 @@
 package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Controllers.PuzzleBoardController;
+import edu.ctu.cit.sudoku.Controllers.StatusController;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +36,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
      */
     public MainWindow() {
         initComponents();
+        statusController = new StatusController(this.labelStatus);
         getContentPane().add(this.puzzleBoardController.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
     }
 
@@ -195,6 +197,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }// </editor-fold>//GEN-END:initComponents
 
     private final PuzzleBoardController puzzleBoardController = new PuzzleBoardController(this);
+    private StatusController statusController = null;
     private Timer timer = new Timer(1000, (ActionListener) this);
     private int tickCount;
 
@@ -228,6 +231,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private void menuManuallyNumbersInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuManuallyNumbersInputActionPerformed
         final boolean isNotManuallyNumbersInput = !this.menuManuallyNumbersInput.isSelected();
         this.pauseGame();
+        this.statusController.showMessage("Please input 30 numbers", StatusController.STATUS_WARNING);
         this.puzzleBoardController.setManuallyNumberInput(
                 this.menuManuallyNumbersInput.isSelected(),
                 () -> {
@@ -289,13 +293,16 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             ex.printStackTrace();
         }
         this.timer.restart();
+        this.statusController.showMessage("Ready");
     }
 
     private void pauseGame() {
         if (this.timer.isRunning()) {
             this.timer.stop();
+            this.statusController.showMessage("Pause", statusController.STATUS_WARNING);
         } else {
             this.timer.start();
+            this.statusController.showMessage("Ready");
         }
     }
 
