@@ -35,8 +35,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private static final int TICK_COUNT_LIMIT = 99 * 60 + 59;
 
-    class TimeLimitExceededException extends Exception {
-
+    public static class TimeLimitExceededException extends Exception {
         private TimeLimitExceededException(String times_up_Game_over) {
             super(times_up_Game_over);
         }
@@ -250,7 +249,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
         fileLoadChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileLoadChooser.setFileFilter(this.textFileFilter);
-        int result = fileLoadChooser.showOpenDialog(this);        
+        int result = fileLoadChooser.showOpenDialog(this);
     }//GEN-LAST:event_menuLoadPuzzleActionPerformed
 
     private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
@@ -371,6 +370,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
         } else if (e.getSource() == this.fileLoadChooser) {
             File file = this.fileLoadChooser.getSelectedFile();
+            try {
+                if (file != null) {
+                    puzzleBoardController.fromFile(file);
+                }
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            } catch (Puzzle.InvalidPuzzleException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
         }
     }
 

@@ -9,6 +9,8 @@ import edu.ctu.cit.sudoku.Models.Puzzle;
 import edu.ctu.cit.sudoku.Views.PuzzleBoard;
 import java.awt.Component;
 import java.awt.Panel;
+import java.io.File;
+import java.io.FileNotFoundException;
 
 /**
  *
@@ -52,5 +54,13 @@ public class PuzzleBoardController {
     
     public void showPuzzleBoard() {
         this.puzzleBoard.setVisible(true);
+    }
+    
+    public void fromFile(File file) throws FileNotFoundException, Puzzle.InvalidPuzzleException {
+        Puzzle puzzle = Puzzle.fromFile(file.getAbsolutePath());
+        if (!puzzle.isValidPuzzleBoard()) {
+            throw new Puzzle.InvalidPuzzleException("Selected file contains invalid puzzle!");
+        }
+        this.puzzleBoard.setPuzzle(puzzle);
     }
 }

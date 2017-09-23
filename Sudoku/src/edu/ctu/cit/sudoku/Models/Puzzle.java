@@ -19,10 +19,15 @@ import java.util.Scanner;
  * @author charlie
  */
 public final class Puzzle {
-
     public static final int BOARD_SIZE = 9;
     public static final int N_BOARD_PRESET_CELLS = 30;
-
+    
+    public static class InvalidPuzzleException extends Exception {    
+        public InvalidPuzzleException(String message) {
+            super(message);
+        }
+    }
+    
     private int[][] board;
 
     public Puzzle() {
@@ -38,11 +43,11 @@ public final class Puzzle {
         }
     }
 
-    public Puzzle(int[][] board) {
+    public Puzzle(int[][] board)  {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             System.arraycopy(board[i], 0, this.board[i], 0, BOARD_SIZE);
-        }
+        }        
     }
 
     private boolean isValidCoordinate(int x, int y) {
@@ -111,20 +116,25 @@ public final class Puzzle {
         return can.isEmpty() ? null : resultBoard;
     }
 
-    public void fromFile(String inputFile) throws FileNotFoundException {
+    public static Puzzle fromFile(String inputFile) throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(inputFile));
         int rowIndex = 0;
-        this.board = new int[BOARD_SIZE][BOARD_SIZE];
+        int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
+        
         while (scanner.hasNext()) {
             String line = scanner.nextLine();
             String[] tokens = line.split(" ");
             int columnIndex = 0;
+            
             for (String token : tokens) {
-                this.board[rowIndex][columnIndex] = Integer.parseInt(token);
+                board[rowIndex][columnIndex] = Integer.parseInt(token);
                 columnIndex++;
             }
+            
             rowIndex++;
         }
+        
+        return new Puzzle(board);
     }
 
     public void toFile(String outputFile) throws FileNotFoundException, IOException {
