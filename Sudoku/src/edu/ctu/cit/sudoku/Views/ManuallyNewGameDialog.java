@@ -36,6 +36,7 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
         buttonCancel = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setModal(true);
         setPreferredSize(new java.awt.Dimension(300, 300));
 
         panelMain.setLayout(new java.awt.GridBagLayout());

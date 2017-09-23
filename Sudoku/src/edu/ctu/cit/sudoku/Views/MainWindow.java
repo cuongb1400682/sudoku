@@ -235,11 +235,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuPauseActionPerformed
 
     private void menuManuallyNumbersInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuManuallyNumbersInputActionPerformed
-        ManuallyNewGameDialog form = new ManuallyNewGameDialog(this, true);
-        form.setVisible(true);
-//        final JDialog frame = new JDialog(form, "", true);
-//        frame.pack();
-//        frame.setVisible(true);
+        this.pauseGame();
+        ManuallyNewGameDialog dialog = new ManuallyNewGameDialog(this, true);
+        dialog.setLocationRelativeTo(this);
+        dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
