@@ -13,13 +13,19 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.nio.file.FileSystems;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
+import javax.swing.filechooser.FileFilter;
 
 /**
  *
@@ -43,6 +49,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         initComponents();
         statusController = new StatusController(this.labelStatus);
         getContentPane().add(this.puzzleBoardController.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
+        fileLoadChooser.addActionListener(this);
     }
 
     /**
@@ -207,6 +214,25 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private StatusController statusController = null;
     private Timer timer = new Timer(1000, (ActionListener) this);
     private int tickCount;
+    private final JFileChooser fileLoadChooser = new JFileChooser();
+    private final FileFilter textFileFilter = new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+            Path path = FileSystems.getDefault().getPath(f.getParent(), f.getName());
+            String mimeType = "";
+            try {
+                mimeType = Files.probeContentType(path);
+            } catch (IOException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return mimeType.toLowerCase().startsWith("text") || mimeType.toLowerCase().contains("directory");
+        }
+
+        @Override
+        public String getDescription() {
+            return "Text files";
+        }
+    };
 
     private void setTickCount(int tickCount) throws TimeLimitExceededException {
         if (tickCount > TICK_COUNT_LIMIT) {
@@ -222,9 +248,13 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
+        fileLoadChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileLoadChooser.setFileFilter(this.textFileFilter);
+        int result = fileLoadChooser.showOpenDialog(this);        
     }//GEN-LAST:event_menuLoadPuzzleActionPerformed
 
     private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
+
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -309,6 +339,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
         this.timer.restart();
         this.statusController.showMessage("Ready");
+        this.resumeGame();
     }
 
     private void pauseGame() {
@@ -317,6 +348,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.labelTime.setForeground(Color.red);
         this.labelTime.setText("Paused");
         this.puzzleBoardController.hidePuzzleBoard();
+        this.menuPause.setSelected(true);
     }
 
     private void resumeGame() {
@@ -325,15 +357,20 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.statusController.showMessage("Ready");
         this.puzzleBoardController.showPuzzleBoard();
         this.labelTime.setForeground(Color.black);
+        this.menuPause.setSelected(false);
     }
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        try {
-            this.setTickCount(tickCount + 1);
-        } catch (TimeLimitExceededException ex) {
-            // todo: game has been over!!!
-            ex.printStackTrace();
+        if (e.getSource() == this.timer) {
+            try {
+                this.setTickCount(tickCount + 1);
+            } catch (TimeLimitExceededException ex) {
+                // todo: game has been over!!!
+                ex.printStackTrace();
+            }
+        } else if (e.getSource() == this.fileLoadChooser) {
+            File file = this.fileLoadChooser.getSelectedFile();
         }
     }
 
