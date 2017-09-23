@@ -8,6 +8,7 @@ package edu.ctu.cit.sudoku.Views;
 import edu.ctu.cit.sudoku.Controllers.PuzzleBoardController;
 import edu.ctu.cit.sudoku.Controllers.StatusController;
 import edu.ctu.cit.sudoku.Models.Puzzle;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.FileNotFoundException;
@@ -78,6 +79,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         menuExit = new javax.swing.JMenuItem();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
+        setTitle("Sudoku");
+        setForeground(java.awt.Color.gray);
         setPreferredSize(new java.awt.Dimension(384, 384));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
@@ -90,6 +93,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         upperPanel.setLayout(new java.awt.BorderLayout());
 
         labelTime.setFont(new java.awt.Font("Dialog", 1, 18)); // NOI18N
+        labelTime.setForeground(new java.awt.Color(0, 0, 0));
         labelTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTime.setText("00:00");
         upperPanel.add(labelTime, java.awt.BorderLayout.CENTER);
@@ -240,8 +244,18 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         dialog.setLocationRelativeTo(this);
         dialog.setOnUserPressOk(puzzle -> {
             if (puzzle.isValidPuzzleBoard()) {
-                this.puzzleBoardController.setPuzzle(puzzle);
+                MainWindow.this.newGame();
+                MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
+            } else {
+                JOptionPane.showMessageDialog(MainWindow.this, 
+                        "Puzzle cannot contain cell with repeated numbers in the same line, row or group.\n"
+                        + "Also, it must contain exactly " + Puzzle.N_BOARD_PRESET_CELLS + " numbers"
+                );
+                MainWindow.this.pauseGame();
             }
+        });
+        dialog.setOnUserPressCancel(() -> {
+            MainWindow.this.pauseGame();
         });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
@@ -290,9 +304,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         if (this.timer.isRunning()) {
             this.timer.stop();
             this.statusController.showMessage("Pause", StatusController.STATUS_WARNING);
+            this.labelTime.setForeground(Color.red);
         } else {
             this.timer.start();
             this.statusController.showMessage("Ready");
+            this.labelTime.setForeground(Color.black);
         }
     }
 

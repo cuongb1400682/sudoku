@@ -17,6 +17,10 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
     public interface OnUserPressOk {
         public void onUserPressOk(Puzzle puzzle);
     }
+    
+    public interface OnUserPressCancel {
+        public void onUserPressCancel();
+    }
 
     /** Creates new form ManuallyNewGameDialog */
     public ManuallyNewGameDialog(java.awt.Frame parent, boolean modal) {
@@ -40,7 +44,7 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
         buttonOk = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
 
-        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setModal(true);
         setPreferredSize(new java.awt.Dimension(300, 300));
 
@@ -75,11 +79,18 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
     }//GEN-LAST:event_buttonOkActionPerformed
 
     private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
+        if (onUserPressCancel != null) {
+            onUserPressCancel.onUserPressCancel();
+        }
         this.dispose();
     }//GEN-LAST:event_buttonCancelActionPerformed
 
     public void setOnUserPressOk(OnUserPressOk onUserPressOk) {
         this.onUserPressOk = onUserPressOk;
+    }
+
+    public void setOnUserPressCancel(OnUserPressCancel onUserPressCancel) {
+        this.onUserPressCancel = onUserPressCancel;
     }
     
     private final PuzzleBoardController controller = new PuzzleBoardController(this);    
@@ -90,4 +101,5 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
     // End of variables declaration//GEN-END:variables
 
     private OnUserPressOk onUserPressOk;
+    private OnUserPressCancel onUserPressCancel;
 }
