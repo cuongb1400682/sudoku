@@ -15,6 +15,8 @@ import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.util.function.Consumer;
+import javax.swing.JDialog;
+
 /**
  *
  * @author charlie
@@ -39,7 +41,11 @@ public class PuzzleBoard extends javax.swing.JPanel {
      * Creates new form PuzzleBoard
      */
     public PuzzleBoard(Component parent) {
-        numberChooser = new NumberChooser((Frame) parent);
+        if (parent instanceof Frame) {
+            numberChooser = new NumberChooser((Frame) parent);
+        } else {
+            numberChooser = new NumberChooser((JDialog) parent);
+        }
         initComponents();
         addPuzzleCells();
         numberChooser.setNumberSelected((int number) -> {
@@ -59,12 +65,12 @@ public class PuzzleBoard extends javax.swing.JPanel {
         }
         return false;
     }
-    
+
     public int countNonZero() {
         int nonZeroCount = 0;
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
-                if (puzzleUserAnswer.get(i, j) > 0) {                    
+                if (puzzleUserAnswer.get(i, j) > 0) {
                     nonZeroCount++;
                 }
             }
@@ -77,7 +83,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
             if (puzzleUserAnswer.checkRow(i).size() > 0) {
                 return false;
             }
-            
+
             if (puzzleUserAnswer.checkColumn(i).size() > 0) {
                 return false;
             }
@@ -91,7 +97,6 @@ public class PuzzleBoard extends javax.swing.JPanel {
             }
         }
 
-        
         return this.countNonZero() == Puzzle.N_BOARD_PRESET_CELLS;
     }
 

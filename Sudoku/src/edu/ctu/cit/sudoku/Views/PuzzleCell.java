@@ -7,12 +7,14 @@ package edu.ctu.cit.sudoku.Views;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 
 /**
@@ -77,6 +79,9 @@ public class PuzzleCell extends JLabel {
                     Component currentComponent = PuzzleCell.this;
                     while (currentComponent != null) {
                         currentLocation.translate(currentComponent.getX(), currentComponent.getY());
+                        if ((currentComponent instanceof JDialog) || (currentComponent instanceof Frame)) {
+                            break;
+                        }
                         currentComponent = currentComponent.getParent();
                     }
                     currentLocation.translate(0, PuzzleCell.this.getHeight());

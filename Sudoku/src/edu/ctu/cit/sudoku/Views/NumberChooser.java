@@ -5,6 +5,7 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
+import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ComponentEvent;
@@ -23,7 +24,6 @@ import javax.swing.JPanel;
 public class NumberChooser extends JDialog {
 
     public interface OnNumberSelected {
-
         public void onNumberSelected(int number);
     }
 
@@ -54,6 +54,13 @@ public class NumberChooser extends JDialog {
     private OnNumberSelected onNumberSelected = null;
 
     public NumberChooser(Frame owner) {
+        super(owner, false);
+        owner.addComponentListener(componentListener);
+        initComponents();
+        addButtons();
+    }
+    
+    public NumberChooser(JDialog owner) {
         super(owner, false);
         owner.addComponentListener(componentListener);
         initComponents();

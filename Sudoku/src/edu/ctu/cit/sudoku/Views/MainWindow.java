@@ -14,6 +14,8 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JDialog;
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
 /**
@@ -233,9 +235,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuPauseActionPerformed
 
     private void menuManuallyNumbersInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuManuallyNumbersInputActionPerformed
-        ManuallyNewGameForm form = new ManuallyNewGameForm();
-        form.pack();
+        ManuallyNewGameDialog form = new ManuallyNewGameDialog(this, true);
         form.setVisible(true);
+//        final JDialog frame = new JDialog(form, "", true);
+//        frame.pack();
+//        frame.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -281,7 +285,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private void pauseGame() {
         if (this.timer.isRunning()) {
             this.timer.stop();
-            this.statusController.showMessage("Pause", statusController.STATUS_WARNING);
+            this.statusController.showMessage("Pause", StatusController.STATUS_WARNING);
         } else {
             this.timer.start();
             this.statusController.showMessage("Ready");
