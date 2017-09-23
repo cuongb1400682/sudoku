@@ -5,11 +5,14 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
+import com.sun.org.apache.xpath.internal.FoundIndex;
 import java.awt.Component;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
+import java.awt.event.FocusEvent;
+import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -24,6 +27,7 @@ import javax.swing.JPanel;
 public class NumberChooser extends JDialog {
 
     public interface OnNumberSelected {
+
         public void onNumberSelected(int number);
     }
 
@@ -50,19 +54,34 @@ public class NumberChooser extends JDialog {
         }
     };
 
+    private final FocusListener focusListener = new FocusListener() {
+        @Override
+        public void focusGained(FocusEvent e) {
+            NumberChooser.this.close();
+
+        }
+
+        @Override
+        public void focusLost(FocusEvent e) {
+            NumberChooser.this.close();
+        }
+    };
+
     private JPanel panel;
     private OnNumberSelected onNumberSelected = null;
 
     public NumberChooser(Frame owner) {
         super(owner, false);
         owner.addComponentListener(componentListener);
+        owner.addFocusListener(focusListener);
         initComponents();
         addButtons();
     }
-    
+
     public NumberChooser(JDialog owner) {
         super(owner, false);
         owner.addComponentListener(componentListener);
+        owner.addFocusListener(focusListener);
         initComponents();
         addButtons();
     }
@@ -70,9 +89,10 @@ public class NumberChooser extends JDialog {
     @Override
     public void dispose() {
         this.getOwner().removeComponentListener(componentListener);
+        this.getOwner().removeFocusListener(focusListener);
         super.dispose(); //To change body of generated methods, choose Tools | Templates.        
     }
-    
+
     private void initComponents() {
         panel = new javax.swing.JPanel();
 
