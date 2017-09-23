@@ -15,14 +15,8 @@ import java.awt.Panel;
  * @author charlie
  */
 public class PuzzleBoardController {
-    public interface Callback {
-        public void callback();
-    }
-    
-    
     private Puzzle puzzle = null;
     private PuzzleBoard puzzleBoard = null;
-    private Puzzle stashedPuzzle = null;
     
     public PuzzleBoardController(Component parent) {
         this.puzzle = new Puzzle();
@@ -33,7 +27,6 @@ public class PuzzleBoardController {
     public void newPuzzleBoard() {
         this.puzzle.generateNewPuzzle();
         this.puzzleBoard.setPuzzle(puzzle);
-        this.stashedPuzzle = null;
     }
 
     public PuzzleBoard getPuzzleBoard() {
@@ -47,21 +40,5 @@ public class PuzzleBoardController {
     
     public void setRepeatedCellCheck(boolean b) {
         this.puzzleBoard.setRepeatedCellCheck(b);
-    }
-    
-    public void setManuallyNumberInput(boolean isManuallyInput, Callback callback) {
-        if (isManuallyInput) {
-            this.stashedPuzzle = this.puzzle;
-            this.puzzle = new Puzzle();
-        } else if (this.stashedPuzzle != null) {
-            if (this.puzzleBoard.isEdited() && this.puzzleBoard.isValidPuzzleBoard()) {
-                this.puzzle = this.puzzleBoard.getPuzzleUserAnswer();
-                callback.callback();
-            } else {
-                this.puzzle = this.stashedPuzzle;
-            }
-            this.stashedPuzzle = null;
-        }
-        this.puzzleBoard.setPuzzle(puzzle);
-    }
+    }    
 }
