@@ -13,6 +13,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.Scanner;
+import java.util.StringTokenizer;
 
 /**
  *
@@ -123,11 +124,11 @@ public final class Puzzle {
         
         while (scanner.hasNext()) {
             String line = scanner.nextLine();
-            String[] tokens = line.split(" ");
+            StringTokenizer tokenizer = new StringTokenizer(line);
             int columnIndex = 0;
             
-            for (String token : tokens) {
-                board[rowIndex][columnIndex] = Integer.parseInt(token);
+            while (tokenizer.hasMoreTokens()) {
+                board[rowIndex][columnIndex] = Integer.parseInt(tokenizer.nextToken());
                 columnIndex++;
             }
             
@@ -137,9 +138,9 @@ public final class Puzzle {
         return new Puzzle(board);
     }
 
-    public void toFile(String outputFile) throws FileNotFoundException, IOException {
+    public static void toFile(Puzzle puzzle, String outputFile) throws FileNotFoundException, IOException {
         try (PrintWriter writer = new PrintWriter(new FileWriter(outputFile))) {
-            writer.print(this.toString());
+            writer.print(puzzle.toString());
         }
     }
 

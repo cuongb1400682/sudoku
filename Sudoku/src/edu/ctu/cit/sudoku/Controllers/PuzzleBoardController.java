@@ -11,6 +11,7 @@ import java.awt.Component;
 import java.awt.Panel;
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 
 /**
  *
@@ -62,5 +63,9 @@ public class PuzzleBoardController {
             throw new Puzzle.InvalidPuzzleException("Selected file contains invalid puzzle!");
         }
         this.puzzleBoard.setPuzzle(puzzle);
+    }
+
+    public void toFile(File file) throws IOException {
+        Puzzle.toFile(puzzle, file.getAbsolutePath());
     }
 }

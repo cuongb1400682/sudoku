@@ -36,6 +36,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private static final int TICK_COUNT_LIMIT = 99 * 60 + 59;
 
     public static class TimeLimitExceededException extends Exception {
+
         private TimeLimitExceededException(String times_up_Game_over) {
             super(times_up_Game_over);
         }
@@ -48,7 +49,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         initComponents();
         statusController = new StatusController(this.labelStatus);
         getContentPane().add(this.puzzleBoardController.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
-        fileLoadChooser.addActionListener(this);
     }
 
     /**
@@ -213,7 +213,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private StatusController statusController = null;
     private Timer timer = new Timer(1000, (ActionListener) this);
     private int tickCount;
-    private final JFileChooser fileLoadChooser = new JFileChooser();
+    private final JFileChooser fileChooser = new JFileChooser();
     private final FileFilter textFileFilter = new FileFilter() {
         @Override
         public boolean accept(File f) {
@@ -247,12 +247,42 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
-        fileLoadChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileLoadChooser.setFileFilter(this.textFileFilter);
-        int result = fileLoadChooser.showOpenDialog(this);
+        this.pauseGame();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(this.textFileFilter);
+        int retVal = fileChooser.showOpenDialog(this);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            File file = this.fileChooser.getSelectedFile();
+            try {
+                if (file != null) {
+                    puzzleBoardController.fromFile(file);
+                    this.resetTimer();
+                }
+            } catch (FileNotFoundException | Puzzle.InvalidPuzzleException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+            this.resumeGame();
+        }
     }//GEN-LAST:event_menuLoadPuzzleActionPerformed
 
     private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
+        this.pauseGame();
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+        fileChooser.setFileFilter(this.textFileFilter);
+        int retVal = fileChooser.showSaveDialog(this);
+        if (retVal == JFileChooser.APPROVE_OPTION) {
+            File file = this.fileChooser.getSelectedFile();
+            try {
+                if (file != null) {
+                    puzzleBoardController.toFile(file);
+                }
+            } catch (FileNotFoundException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            } catch (IOException ex) {
+                JOptionPane.showMessageDialog(this, ex.getMessage());
+            }
+            this.resumeGame();
+        }
 
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
@@ -278,7 +308,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         dialog.setLocationRelativeTo(this);
         dialog.setOnUserPressOk(puzzle -> {
             if (puzzle.isValidPuzzleBoard()) {
-                MainWindow.this.newGame();
+                MainWindow.this.resetTimer();
                 MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
             } else {
                 JOptionPane.showMessageDialog(MainWindow.this,
@@ -330,6 +360,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void newGame() {
         this.puzzleBoardController.newPuzzleBoard();
+        this.resetTimer();
+    }
+
+    private void resetTimer() {
         this.menuManuallyNumbersInput.setSelected(false);
         try {
             this.setTickCount(0);
@@ -367,17 +401,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             } catch (TimeLimitExceededException ex) {
                 // todo: game has been over!!!
                 ex.printStackTrace();
-            }
-        } else if (e.getSource() == this.fileLoadChooser) {
-            File file = this.fileLoadChooser.getSelectedFile();
-            try {
-                if (file != null) {
-                    puzzleBoardController.fromFile(file);
-                }
-            } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
-            } catch (Puzzle.InvalidPuzzleException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
             }
         }
     }
