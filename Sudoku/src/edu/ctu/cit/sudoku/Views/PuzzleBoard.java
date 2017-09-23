@@ -66,39 +66,6 @@ public class PuzzleBoard extends javax.swing.JPanel {
         return false;
     }
 
-    public int countNonZero() {
-        int nonZeroCount = 0;
-        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
-            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
-                if (puzzleUserAnswer.get(i, j) > 0) {
-                    nonZeroCount++;
-                }
-            }
-        }
-        return nonZeroCount;
-    }
-
-    public boolean isValidPuzzleBoard() {
-        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
-            if (puzzleUserAnswer.checkRow(i).size() > 0) {
-                return false;
-            }
-
-            if (puzzleUserAnswer.checkColumn(i).size() > 0) {
-                return false;
-            }
-        }
-
-        for (int i = 0; i < 3; i++) {
-            for (int j = 0; j < 3; j++) {
-                if (puzzleUserAnswer.checkGroup(i, j).size() > 0) {
-                    return false;
-                }
-            }
-        }
-
-        return this.countNonZero() == Puzzle.N_BOARD_PRESET_CELLS;
-    }
 
     private void addPuzzleCells() {
         GridLayout layout = new GridLayout(Puzzle.BOARD_SIZE, Puzzle.BOARD_SIZE);

@@ -33,8 +33,8 @@ public class PuzzleBoardController {
         return puzzleBoard;
     }
     
-    public void setPuzzle(int[][] board) {
-        this.puzzle = new Puzzle(board);
+    public void setPuzzle(Puzzle puzzle) {
+        this.puzzle = puzzle;
         this.puzzleBoard.setPuzzle(this.puzzle);
     }
     

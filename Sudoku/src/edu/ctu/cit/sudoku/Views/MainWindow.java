@@ -239,7 +239,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         ManuallyNewGameDialog dialog = new ManuallyNewGameDialog(this, true);
         dialog.setLocationRelativeTo(this);
         dialog.setOnUserPressOk(puzzle -> {
-            System.out.println(puzzle.toString());
+            if (puzzle.isValidPuzzleBoard()) {
+                this.puzzleBoardController.setPuzzle(puzzle);
+            }
         });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed

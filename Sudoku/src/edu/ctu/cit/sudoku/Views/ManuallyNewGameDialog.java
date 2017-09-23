@@ -23,6 +23,7 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
         super(parent, modal);
         initComponents();
         getContentPane().add(this.controller.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
+        this.controller.setRepeatedCellCheck(true);
 
     }
 
