@@ -65,9 +65,6 @@
             </MenuItem>
             <MenuItem class="javax.swing.JCheckBoxMenuItem" name="menuPause">
               <Properties>
-                <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
-                  <KeyStroke key="SPACE"/>
-                </Property>
                 <Property name="text" type="java.lang.String" value="Pause"/>
               </Properties>
               <Events>

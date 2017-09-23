@@ -151,7 +151,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         menuGame.add(menuClearPuzzle);
         menuGame.add(jSeparator5);
 
-        menuPause.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));
         menuPause.setText("Pause");
         menuPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -237,7 +236,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuHintForRepeatedNumbersActionPerformed
 
     private void menuPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPauseActionPerformed
-        this.pauseGame();
+        if (this.timer.isRunning()) {
+            this.pauseGame();
+        } else {
+            this.resumeGame();
+        }
     }//GEN-LAST:event_menuPauseActionPerformed
 
     private void menuManuallyNumbersInputActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuManuallyNumbersInputActionPerformed
@@ -253,17 +256,17 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                         "Puzzle cannot contain cell with repeated numbers in the same line, row or group.\n"
                         + "Also, it must contain exactly " + Puzzle.N_BOARD_PRESET_CELLS + " numbers"
                 );
-                MainWindow.this.pauseGame();
             }
+            MainWindow.this.resumeGame();
         });
         dialog.setOnUserPressCancel(() -> {
-            MainWindow.this.pauseGame();
+            MainWindow.this.resumeGame();
         });
         dialog.addWindowListener(new WindowAdapter() {
             @Override
             public void windowOpened(WindowEvent e) {
                 MainWindow.this.puzzleBoardController.closeNumberChooser();
-            }            
+            }
         });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
@@ -309,15 +312,19 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private void pauseGame() {
-        if (this.timer.isRunning()) {
-            this.timer.stop();
-            this.statusController.showMessage("Pause", StatusController.STATUS_WARNING);
-            this.labelTime.setForeground(Color.red);
-        } else {
-            this.timer.start();
-            this.statusController.showMessage("Ready");
-            this.labelTime.setForeground(Color.black);
-        }
+        this.timer.stop();
+        this.statusController.showMessage("You couldn't see the puzzle now", StatusController.STATUS_WARNING);
+        this.labelTime.setForeground(Color.red);
+        this.labelTime.setText("Paused");
+        this.puzzleBoardController.hidePuzzleBoard();
+    }
+
+    private void resumeGame() {
+        this.timer.start();
+        this.labelTime.setText(String.format("%02d:%02d", tickCount / 60, tickCount % 60));
+        this.statusController.showMessage("Ready");
+        this.puzzleBoardController.showPuzzleBoard();
+        this.labelTime.setForeground(Color.black);
     }
 
     @Override

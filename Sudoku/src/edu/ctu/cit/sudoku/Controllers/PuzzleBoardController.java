@@ -45,4 +45,12 @@ public class PuzzleBoardController {
     public void closeNumberChooser() {
         this.puzzleBoard.closeNumberChooser();
     }
+    
+    public void hidePuzzleBoard() {
+        this.puzzleBoard.setVisible(false);
+    }
+    
+    public void showPuzzleBoard() {
+        this.puzzleBoard.setVisible(true);
+    }
 }
