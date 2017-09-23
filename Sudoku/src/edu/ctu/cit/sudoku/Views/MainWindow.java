@@ -238,6 +238,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.pauseGame();
         ManuallyNewGameDialog dialog = new ManuallyNewGameDialog(this, true);
         dialog.setLocationRelativeTo(this);
+        dialog.setOnUserPressOk(puzzle -> {
+            System.out.println(puzzle.toString());
+        });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 

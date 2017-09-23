@@ -7,12 +7,16 @@
 package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Controllers.PuzzleBoardController;
+import edu.ctu.cit.sudoku.Models.Puzzle;
 
 /**
  *
  * @author charlie
  */
 public class ManuallyNewGameDialog extends javax.swing.JDialog {
+    public interface OnUserPressOk {
+        public void onUserPressOk(Puzzle puzzle);
+    }
 
     /** Creates new form ManuallyNewGameDialog */
     public ManuallyNewGameDialog(java.awt.Frame parent, boolean modal) {
@@ -63,13 +67,20 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void buttonOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonOkActionPerformed
-
+        if (onUserPressOk != null) {
+            onUserPressOk.onUserPressOk(controller.getPuzzleBoard().getPuzzleUserAnswer());
+        }
+        this.dispose();
     }//GEN-LAST:event_buttonOkActionPerformed
 
     private void buttonCancelActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_buttonCancelActionPerformed
         this.dispose();
     }//GEN-LAST:event_buttonCancelActionPerformed
 
+    public void setOnUserPressOk(OnUserPressOk onUserPressOk) {
+        this.onUserPressOk = onUserPressOk;
+    }
+    
     private final PuzzleBoardController controller = new PuzzleBoardController(this);    
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton buttonCancel;
@@ -77,4 +88,5 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
     private javax.swing.JPanel panelMain;
     // End of variables declaration//GEN-END:variables
 
+    private OnUserPressOk onUserPressOk;
 }
