@@ -49,6 +49,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         initComponents();
         statusController = new StatusController(this.labelStatus);
         getContentPane().add(this.puzzleBoardController.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
+        this.menuHintForRepeatedNumbers.setSelected(true);
+        this.puzzleBoardController.setRepeatedCellCheck(true);
     }
 
     /**
@@ -312,8 +314,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
             } else {
                 JOptionPane.showMessageDialog(MainWindow.this,
-                        "Puzzle cannot contain cell with repeated numbers in the same line, row or group.\n"
-                        + "Also, it must contain exactly " + Puzzle.N_BOARD_PRESET_CELLS + " numbers"
+                        "Puzzle cannot contain cell with repeated numbers in the same line, row or group."
+                        //+ "\nAlso, it must contain exactly " + Puzzle.N_BOARD_PRESET_CELLS + " numbers"
                 );
             }
             MainWindow.this.resumeGame();

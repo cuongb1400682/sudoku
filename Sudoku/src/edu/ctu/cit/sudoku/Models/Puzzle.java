@@ -257,7 +257,8 @@ public final class Puzzle {
             }
         }
 
-        return this.countNonZero() == Puzzle.N_BOARD_PRESET_CELLS;
+        //return this.countNonZero() == Puzzle.N_BOARD_PRESET_CELLS;
+        return true;
     }
 
 
