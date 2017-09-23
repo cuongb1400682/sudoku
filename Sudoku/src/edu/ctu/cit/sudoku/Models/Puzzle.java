@@ -19,7 +19,9 @@ import java.util.Scanner;
  * @author charlie
  */
 public final class Puzzle {
+
     public static final int BOARD_SIZE = 9;
+    public static final int N_BOARD_PRESET_CELLS = 30;
 
     private int[][] board;
 
@@ -27,12 +29,19 @@ public final class Puzzle {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
         this.clear();
     }
-    
+
     public Puzzle(Puzzle that) {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
         this.clear();
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             System.arraycopy(that.board[i], 0, this.board[i], 0, BOARD_SIZE);
+        }
+    }
+
+    public Puzzle(int[][] board) {
+        this.board = new int[BOARD_SIZE][BOARD_SIZE];
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            System.arraycopy(board[i], 0, this.board[i], 0, BOARD_SIZE);
         }
     }
 
@@ -143,7 +152,7 @@ public final class Puzzle {
                         inResult[rowIndex][columnNumber] = true;
                     }
                 }
-                colMark[value]= new Cell(rowIndex, columnNumber);
+                colMark[value] = new Cell(rowIndex, columnNumber);
             }
         }
 
@@ -169,12 +178,77 @@ public final class Puzzle {
                         inResult[rowNumber][colIndex] = true;
                     }
                 }
-                rowMark[value]= new Cell(rowNumber, colIndex);
+                rowMark[value] = new Cell(rowNumber, colIndex);
             }
         }
 
         return violatedCells;
     }
+
+    public ArrayList<Cell> checkGroup(int rowIndex, int colIndex) {
+        Cell[] groupMark = new Cell[20];
+        boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
+        ArrayList<Cell> violatedCells = new ArrayList<>();
+
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            for (int j = 0; j < BOARD_SIZE; j++) {
+                if (i / 3 == rowIndex && j / 3 == colIndex) {
+                    int value = this.board[i][j];
+                    if (value > 0) {
+                        Cell previousCell = groupMark[value];
+                        if (previousCell != null) {
+                            if (!inResult[previousCell.getX()][previousCell.getY()]) {
+                                violatedCells.add(previousCell);
+                                inResult[previousCell.getX()][previousCell.getY()] = true;
+                            }
+                            if (!inResult[i][j]) {
+                                violatedCells.add(new Cell(i, j));
+                                inResult[i][j] = true;
+                            }
+                        }
+                        groupMark[value] = new Cell(i, j);
+                    }
+                }
+            }
+        }
+
+        return violatedCells;
+    }
+    
+        public int countNonZero() {
+        int nonZeroCount = 0;
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
+                if (this.get(i, j) > 0) {
+                    nonZeroCount++;
+                }
+            }
+        }
+        return nonZeroCount;
+    }
+
+    public boolean isValidPuzzleBoard() {
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            if (this.checkRow(i).size() > 0) {
+                return false;
+            }
+
+            if (this.checkColumn(i).size() > 0) {
+                return false;
+            }
+        }
+
+        for (int i = 0; i < 3; i++) {
+            for (int j = 0; j < 3; j++) {
+                if (this.checkGroup(i, j).size() > 0) {
+                    return false;
+                }
+            }
+        }
+
+        return this.countNonZero() == Puzzle.N_BOARD_PRESET_CELLS;
+    }
+
 
     private boolean exhaustedSearch(
             int currIndex,
@@ -216,9 +290,9 @@ public final class Puzzle {
         return false;
     }
 
-    public void generateNewPuzzle() {        
+    public void generateNewPuzzle() {
         do {
-            this.board = this.randomBoard(30);
+            this.board = this.randomBoard(N_BOARD_PRESET_CELLS);
         } while (this.solve() == null);
     }
 

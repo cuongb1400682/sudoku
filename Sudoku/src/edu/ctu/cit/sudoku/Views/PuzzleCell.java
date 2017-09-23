@@ -7,11 +7,14 @@ package edu.ctu.cit.sudoku.Views;
 
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Frame;
 import java.awt.Point;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 
 /**
@@ -47,6 +50,7 @@ public class PuzzleCell extends JLabel {
     }
 
     public PuzzleCell(int value) throws Exception {
+        super();
         if (value < 1 && value > 9) {
             throw new Exception("value must be in [1, 9]");
         }
@@ -65,7 +69,7 @@ public class PuzzleCell extends JLabel {
         setForeground(new java.awt.Color(0, 0, 0));
         setOpaque(true);
 
-        addMouseListener(new MouseListener() {
+        addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
                 if (PuzzleCell.this.state != STATE_DISABLE) {
@@ -75,6 +79,9 @@ public class PuzzleCell extends JLabel {
                     Component currentComponent = PuzzleCell.this;
                     while (currentComponent != null) {
                         currentLocation.translate(currentComponent.getX(), currentComponent.getY());
+                        if ((currentComponent instanceof JDialog) || (currentComponent instanceof Frame)) {
+                            break;
+                        }
                         currentComponent = currentComponent.getParent();
                     }
                     currentLocation.translate(0, PuzzleCell.this.getHeight());
@@ -83,22 +90,6 @@ public class PuzzleCell extends JLabel {
                         PuzzleCell.this.onPuzzleCellClicked.onPuzzleCellClicked(PuzzleCell.this);
                     }
                 }
-            }
-
-            @Override
-            public void mousePressed(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseReleased(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseEntered(MouseEvent e) {
-            }
-
-            @Override
-            public void mouseExited(MouseEvent e) {
             }
         });
 
@@ -122,7 +113,7 @@ public class PuzzleCell extends JLabel {
 
     private void changeColorCorrespondsToState(int state) {
         if (isRepeated) {
-            setBackground(Color.red);
+            setForeground(Color.red);
             return;
         }
         switch (state) {
@@ -154,7 +145,11 @@ public class PuzzleCell extends JLabel {
 
     public void setRepeated(boolean isRepeated) {
         this.isRepeated = isRepeated;
-        changeColorCorrespondsToState(state);
+        if (isRepeated) {
+            setForeground(Color.red);
+        } else {
+            setForeground(Color.BLACK);
+        }
     }
 
     public boolean isRepeated() {
@@ -194,5 +189,13 @@ public class PuzzleCell extends JLabel {
 
     public void setOnPuzzleCellValueChanged(OnPuzzleCellValueChanged onPuzzleCellValueChanged) {
         this.onPuzzleCellValueChanged = onPuzzleCellValueChanged;
+    }
+
+    public void reset() {
+        state = STATE_ENABLE;
+        isRepeated = false;
+        currentLocation = null;
+        setState(STATE_ENABLE);
+        setText("");
     }
 }
