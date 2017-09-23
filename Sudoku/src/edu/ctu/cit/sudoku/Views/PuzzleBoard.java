@@ -126,6 +126,12 @@ public class PuzzleBoard extends javax.swing.JPanel {
             }
         }
     }
+    
+    public void closeNumberChooser() {
+        if (this.numberChooser != null) {
+            this.numberChooser.close();
+        }
+    }
 
     public Puzzle getCurrentPuzzleConfiguration() {
         Puzzle currPuz = new Puzzle();

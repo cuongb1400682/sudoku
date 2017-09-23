@@ -11,6 +11,8 @@ import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.logging.Level;
@@ -247,7 +249,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 MainWindow.this.newGame();
                 MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
             } else {
-                JOptionPane.showMessageDialog(MainWindow.this, 
+                JOptionPane.showMessageDialog(MainWindow.this,
                         "Puzzle cannot contain cell with repeated numbers in the same line, row or group.\n"
                         + "Also, it must contain exactly " + Puzzle.N_BOARD_PRESET_CELLS + " numbers"
                 );
@@ -256,6 +258,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         });
         dialog.setOnUserPressCancel(() -> {
             MainWindow.this.pauseGame();
+        });
+        dialog.addWindowListener(new WindowAdapter() {
+            @Override
+            public void windowOpened(WindowEvent e) {
+                MainWindow.this.puzzleBoardController.closeNumberChooser();
+            }            
         });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed

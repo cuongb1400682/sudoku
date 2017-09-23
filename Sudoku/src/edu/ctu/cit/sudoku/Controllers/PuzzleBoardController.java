@@ -41,4 +41,8 @@ public class PuzzleBoardController {
     public void setRepeatedCellCheck(boolean b) {
         this.puzzleBoard.setRepeatedCellCheck(b);
     }    
+    
+    public void closeNumberChooser() {
+        this.puzzleBoard.closeNumberChooser();
+    }
 }
