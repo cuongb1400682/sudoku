@@ -72,7 +72,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         jSeparator1 = new javax.swing.JPopupMenu.Separator();
         menuSavePuzzle = new javax.swing.JMenuItem();
         menuLoadPuzzle = new javax.swing.JMenuItem();
-        menuClearPuzzle = new javax.swing.JMenuItem();
         jSeparator5 = new javax.swing.JPopupMenu.Separator();
         menuPause = new javax.swing.JCheckBoxMenuItem();
         menuHintForRepeatedNumbers = new javax.swing.JCheckBoxMenuItem();
@@ -91,7 +90,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
         setTitle("Sudoku");
         setForeground(java.awt.Color.gray);
-        setPreferredSize(new java.awt.Dimension(384, 384));
+        setPreferredSize(new java.awt.Dimension(384, 400));
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
@@ -153,12 +152,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
         });
         menuGame.add(menuLoadPuzzle);
-
-        menuClearPuzzle.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_DELETE, 0));
-        menuClearPuzzle.setText("Clear puzzle");
-        menuGame.add(menuClearPuzzle);
         menuGame.add(jSeparator5);
 
+        menuPause.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_SPACE, 0));
         menuPause.setText("Pause");
         menuPause.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -344,7 +340,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JLabel labelTime;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem menuAbout;
-    private javax.swing.JMenuItem menuClearPuzzle;
     private javax.swing.JMenuItem menuExit;
     private javax.swing.JMenu menuGame;
     private javax.swing.JMenuItem menuGiveUp;
