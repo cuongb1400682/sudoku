@@ -20,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Stack;
 import java.util.function.Consumer;
 import javax.swing.JDialog;
+import javax.swing.JMenuItem;
 
 /**
  *
@@ -28,9 +29,10 @@ import javax.swing.JDialog;
 public class PuzzleBoard extends javax.swing.JPanel {
 
     class Remote {
-
         private Stack<Command> undoCommands = null;
         private Stack<Command> redoCommands = null;
+        private JMenuItem menuUndo = null;
+        private JMenuItem menuRedo = null;
 
         public Remote() {
             this.undoCommands = new Stack<>();
@@ -42,6 +44,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
             this.undoCommands.add(command);
             redoCommands.clear();
             command.execute();
+            updateUndoRedoMenus();
         }
 
         public PuzzleCell undo() {
@@ -49,9 +52,12 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 SetCellNumberCommand command = (SetCellNumberCommand) this.undoCommands.pop();
                 command.undo();
                 this.redoCommands.add(command);
+                updateUndoRedoMenus();
                 return command.getCell();
+            } else {
+                updateUndoRedoMenus();
+                return null;
             }
-            return null;
         }
 
         public PuzzleCell redo() {
@@ -59,9 +65,31 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 SetCellNumberCommand command = (SetCellNumberCommand) this.redoCommands.pop();
                 command.execute();
                 this.undoCommands.add(command);
-                return command.getCell();
+                updateUndoRedoMenus();
+                return command.getCell();                
+            } else {
+                updateUndoRedoMenus();
+                return null;
             }
-            return null;
+        }
+
+        public void setMenuUndo(JMenuItem menuUndo) {
+            this.menuUndo = menuUndo;
+            updateUndoRedoMenus();
+        }
+
+        public void setMenuRedo(JMenuItem menuRedo) {
+            this.menuRedo = menuRedo;
+            updateUndoRedoMenus();
+        }
+
+        private void updateUndoRedoMenus() {
+            if (this.menuUndo != null) {
+                this.menuUndo.setEnabled(!this.undoCommands.isEmpty());
+            }
+            if (this.menuRedo != null) {
+                this.menuRedo.setEnabled(!this.redoCommands.isEmpty());
+            }
         }
     }
 
@@ -182,6 +210,14 @@ public class PuzzleBoard extends javax.swing.JPanel {
             this.selectedPuzzleCell = cell;
             this.selectedPuzzleCell.setState(PuzzleCell.STATE_SELECTED);
         }
+    }
+
+    public void setMenuUndo(JMenuItem menuUndo) {
+        this.remote.setMenuUndo(menuUndo);
+    }
+
+    public void setMenuRedo(JMenuItem menuRedo) {
+        this.remote.setMenuRedo(menuRedo);
     }
 
     public void checkRepeatedCells() {

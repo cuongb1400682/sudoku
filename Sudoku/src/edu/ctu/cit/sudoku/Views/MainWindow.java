@@ -315,9 +315,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         ManuallyNewGameDialog dialog = new ManuallyNewGameDialog(this, true);
         dialog.setLocationRelativeTo(this);
         dialog.setOnUserPressOk(puzzle -> {
+            System.out.println("isvalid = " + puzzle.isValidPuzzleBoard());
             if (puzzle.isValidPuzzleBoard()) {
-                MainWindow.this.resetTimer();
                 MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
+                MainWindow.this.resetTimer();
             } else {
                 JOptionPane.showMessageDialog(MainWindow.this,
                         "Puzzle cannot contain cell with repeated numbers in the same line, row or group."
@@ -388,6 +389,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.timer.restart();
         this.statusController.showMessage("Ready");
         this.resumeGame();
+        this.puzzleBoardController.setMenuUndo(this.menuUndo);
+        this.puzzleBoardController.setMenuRedo(this.menuRedo);        
     }
 
     private void pauseGame() {
