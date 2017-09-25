@@ -68,4 +68,8 @@ public class PuzzleBoardController {
     public void toFile(File file) throws IOException {
         Puzzle.toFile(puzzle, file.getAbsolutePath());
     }    
+    
+    public void undo() {
+        this.puzzleBoard.undo();
+    }
 }

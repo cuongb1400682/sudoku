@@ -41,13 +41,17 @@ public class PuzzleBoard extends javax.swing.JPanel {
         }
         
         public void undo() {
-            this.commands.pop().undo();
+            if (!commands.isEmpty()) {
+                this.commands.pop().undo();
+            }
         }
     }
 
     private NumberChooser numberChooser;
     private PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private PuzzleCell selectedPuzzleCell = null;
+    private int selectedPuzzleCellX;
+    private int selectedPuzzleCellY;
     private Puzzle puzzle = null;
     private Puzzle puzzleUserAnswer = null;
     private boolean isRepeatedCellCheck = false;
@@ -69,10 +73,10 @@ public class PuzzleBoard extends javax.swing.JPanel {
         }
         this.remote = new Remote();
         initComponents();
-        addPuzzleCells();
+        initPuzzleCells();
         numberChooser.setNumberSelected((int number) -> {
             if (PuzzleBoard.this.selectedPuzzleCell != null) {
-                PuzzleBoard.this.selectedPuzzleCell.setValue("0123456789".charAt(number % 10));
+                PuzzleBoard.this.remote.change(selectedPuzzleCellX, selectedPuzzleCellY, number);
             }
         });
     }
@@ -88,7 +92,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
         return false;
     }
 
-    private void addPuzzleCells() {
+    private void initPuzzleCells() {
         GridLayout layout = new GridLayout(Puzzle.BOARD_SIZE, Puzzle.BOARD_SIZE);
         this.setLayout(layout);
 
@@ -114,10 +118,11 @@ public class PuzzleBoard extends javax.swing.JPanel {
                     }
 
                     selectedPuzzleCell = finalGridIJ;
+                    selectedPuzzleCellX = finalI;
+                    selectedPuzzleCellY = finalJ;
                 });
 
-                grid[i][j].setOnPuzzleCellValueChanged((PuzzleCell cell, int oldValue, int newValue) -> {
-                    PuzzleBoard.this.remote.change(finalI, finalJ, newValue);
+                grid[i][j].setOnPuzzleCellValueChanged((PuzzleCell cell, int oldValue, int newValue) -> {                    
                     checkRepeatedCells();
                 });
 

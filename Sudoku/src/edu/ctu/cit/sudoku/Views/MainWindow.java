@@ -174,6 +174,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         menuUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         menuUndo.setText("Undo");
+        menuUndo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuUndoActionPerformed(evt);
+            }
+        });
         menuGame.add(menuUndo);
 
         menuRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
@@ -327,6 +332,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
+
+    private void menuUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuUndoActionPerformed
+        this.puzzleBoardController.undo();
+    }//GEN-LAST:event_menuUndoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
