@@ -5,6 +5,8 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
+import edu.ctu.cit.sudoku.Commands.Command;
+import edu.ctu.cit.sudoku.Commands.SetCellNumberCommand;
 import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.Component;
@@ -14,23 +16,92 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.Stack;
 import java.util.function.Consumer;
 import javax.swing.JDialog;
+import javax.swing.JMenuItem;
 
 /**
  *
  * @author charlie
  */
-
 public class PuzzleBoard extends javax.swing.JPanel {
 
-    private NumberChooser numberChooser;
+    class Remote {
+        private Stack<Command> undoCommands = null;
+        private Stack<Command> redoCommands = null;
+        private JMenuItem menuUndo = null;
+        private JMenuItem menuRedo = null;
 
+        public Remote() {
+            this.undoCommands = new Stack<>();
+            this.redoCommands = new Stack<>();
+        }
+
+        public void change(int x, int y, int newValue) {
+            Command command = new SetCellNumberCommand(puzzleUserAnswer, grid[x][y], x, y, newValue);
+            this.undoCommands.add(command);
+            redoCommands.clear();
+            command.execute();
+            updateUndoRedoMenus();
+        }
+
+        public PuzzleCell undo() {
+            if (!undoCommands.isEmpty()) {
+                SetCellNumberCommand command = (SetCellNumberCommand) this.undoCommands.pop();
+                command.undo();
+                this.redoCommands.add(command);
+                updateUndoRedoMenus();
+                return command.getCell();
+            } else {
+                updateUndoRedoMenus();
+                return null;
+            }
+        }
+
+        public PuzzleCell redo() {
+            if (!redoCommands.isEmpty()) {
+                SetCellNumberCommand command = (SetCellNumberCommand) this.redoCommands.pop();
+                command.execute();
+                this.undoCommands.add(command);
+                updateUndoRedoMenus();
+                return command.getCell();                
+            } else {
+                updateUndoRedoMenus();
+                return null;
+            }
+        }
+
+        public void setMenuUndo(JMenuItem menuUndo) {
+            this.menuUndo = menuUndo;
+            updateUndoRedoMenus();
+        }
+
+        public void setMenuRedo(JMenuItem menuRedo) {
+            this.menuRedo = menuRedo;
+            updateUndoRedoMenus();
+        }
+
+        private void updateUndoRedoMenus() {
+            if (this.menuUndo != null) {
+                this.menuUndo.setEnabled(!this.undoCommands.isEmpty());
+            }
+            if (this.menuRedo != null) {
+                this.menuRedo.setEnabled(!this.redoCommands.isEmpty());
+            }
+        }
+    }
+
+    private NumberChooser numberChooser;
     private PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private PuzzleCell selectedPuzzleCell = null;
+    private int selectedPuzzleCellX;
+    private int selectedPuzzleCellY;
     private Puzzle puzzle = null;
     private Puzzle puzzleUserAnswer = null;
     private boolean isRepeatedCellCheck = false;
+    private Remote remote = null;
 
     private final Consumer<Cell> markRepeatedCell = (Cell c) -> {
         PuzzleCell repeatedCell = grid[c.getX()][c.getY()];
@@ -41,18 +112,28 @@ public class PuzzleBoard extends javax.swing.JPanel {
      * Creates new form PuzzleBoard
      */
     public PuzzleBoard(Component parent) {
+        initVariables();
         if (parent instanceof Frame) {
             numberChooser = new NumberChooser((Frame) parent);
         } else {
             numberChooser = new NumberChooser((JDialog) parent);
         }
         initComponents();
-        addPuzzleCells();
+        initPuzzleCells();
         numberChooser.setNumberSelected((int number) -> {
             if (PuzzleBoard.this.selectedPuzzleCell != null) {
-                PuzzleBoard.this.selectedPuzzleCell.setValue("0123456789".charAt(number % 10));
+                PuzzleBoard.this.remote.change(selectedPuzzleCellX, selectedPuzzleCellY, number);
             }
         });
+    }
+
+    private void initVariables() {
+        selectedPuzzleCell = null;
+        selectedPuzzleCellX = -1;
+        selectedPuzzleCellY = -1;
+        remote = new Remote();
+        puzzleUserAnswer = null;
+        puzzle = null;
     }
 
     public boolean isEdited() {
@@ -66,8 +147,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
         return false;
     }
 
-
-    private void addPuzzleCells() {
+    private void initPuzzleCells() {
         GridLayout layout = new GridLayout(Puzzle.BOARD_SIZE, Puzzle.BOARD_SIZE);
         this.setLayout(layout);
 
@@ -75,7 +155,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
                 grid[i][j] = new PuzzleCell();
 
-                final PuzzleCell finalGridIJ = grid[i][j];
+                final PuzzleCell finalSelectedCell = grid[i][j];
                 final int finalI = i;
                 final int finalJ = j;
 
@@ -83,26 +163,61 @@ public class PuzzleBoard extends javax.swing.JPanel {
                     if (selectedPuzzleCell != null) {
                         selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
                     }
-                    finalGridIJ.setState(PuzzleCell.STATE_SELECTED);
+                    finalSelectedCell.setState(PuzzleCell.STATE_SELECTED);
 
                     PuzzleBoard.this.numberChooser.setLocation(cell.getCurrentLocation());
-                    if (PuzzleBoard.this.numberChooser.isVisible() && selectedPuzzleCell == finalGridIJ) {
+                    if (PuzzleBoard.this.numberChooser.isVisible() && selectedPuzzleCell == finalSelectedCell) {
                         PuzzleBoard.this.numberChooser.close();
                     } else {
                         PuzzleBoard.this.numberChooser.setVisible(true);
                     }
 
-                    selectedPuzzleCell = finalGridIJ;
+                    selectedPuzzleCell = finalSelectedCell;
+                    selectedPuzzleCellX = finalI;
+                    selectedPuzzleCellY = finalJ;
                 });
 
                 grid[i][j].setOnPuzzleCellValueChanged((PuzzleCell cell, int oldValue, int newValue) -> {
-                    puzzleUserAnswer.set(finalI, finalJ, newValue);
                     checkRepeatedCells();
                 });
 
                 this.add(grid[i][j]);
             }
         }
+    }
+
+    public void undo() {
+        if (this.selectedPuzzleCell != null) {
+            this.selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
+        }
+
+        PuzzleCell cell = this.remote.undo();
+
+        if (cell != null) {
+            this.selectedPuzzleCell = cell;
+            this.selectedPuzzleCell.setState(PuzzleCell.STATE_SELECTED);
+        }
+    }
+
+    public void redo() {
+        if (this.selectedPuzzleCell != null) {
+            this.selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
+        }
+
+        PuzzleCell cell = this.remote.redo();
+
+        if (cell != null) {
+            this.selectedPuzzleCell = cell;
+            this.selectedPuzzleCell.setState(PuzzleCell.STATE_SELECTED);
+        }
+    }
+
+    public void setMenuUndo(JMenuItem menuUndo) {
+        this.remote.setMenuUndo(menuUndo);
+    }
+
+    public void setMenuRedo(JMenuItem menuRedo) {
+        this.remote.setMenuRedo(menuRedo);
     }
 
     public void checkRepeatedCells() {
@@ -126,7 +241,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
             }
         }
     }
-    
+
     public void closeNumberChooser() {
         if (this.numberChooser != null) {
             this.numberChooser.close();
@@ -154,9 +269,9 @@ public class PuzzleBoard extends javax.swing.JPanel {
     }
 
     public void setPuzzle(Puzzle puzzle) {
+        initVariables();
         this.puzzle = puzzle;
         this.puzzleUserAnswer = new Puzzle(puzzle);
-
         clearMistakes();
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {

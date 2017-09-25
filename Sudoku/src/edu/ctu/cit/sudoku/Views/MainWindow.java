@@ -174,10 +174,20 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         menuUndo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.CTRL_MASK));
         menuUndo.setText("Undo");
+        menuUndo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuUndoActionPerformed(evt);
+            }
+        });
         menuGame.add(menuUndo);
 
         menuRedo.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Z, java.awt.event.InputEvent.SHIFT_MASK | java.awt.event.InputEvent.CTRL_MASK));
         menuRedo.setText("Redo");
+        menuRedo.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuRedoActionPerformed(evt);
+            }
+        });
         menuGame.add(menuRedo);
         menuGame.add(jSeparator3);
 
@@ -259,8 +269,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             } catch (FileNotFoundException | Puzzle.InvalidPuzzleException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-            this.resumeGame();
         }
+        this.resumeGame();
     }//GEN-LAST:event_menuLoadPuzzleActionPerformed
 
     private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
@@ -279,8 +289,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             } catch (IOException ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage());
             }
-            this.resumeGame();
         }
+        this.resumeGame();
 
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
@@ -305,13 +315,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         ManuallyNewGameDialog dialog = new ManuallyNewGameDialog(this, true);
         dialog.setLocationRelativeTo(this);
         dialog.setOnUserPressOk(puzzle -> {
+            System.out.println("isvalid = " + puzzle.isValidPuzzleBoard());
             if (puzzle.isValidPuzzleBoard()) {
-                MainWindow.this.resetTimer();
                 MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
+                MainWindow.this.resetTimer();
             } else {
                 JOptionPane.showMessageDialog(MainWindow.this,
                         "Puzzle cannot contain cell with repeated numbers in the same line, row or group."
-                        //+ "\nAlso, it must contain exactly " + Puzzle.N_BOARD_PRESET_CELLS + " numbers"
+                //+ "\nAlso, it must contain exactly " + Puzzle.N_BOARD_PRESET_CELLS + " numbers"
                 );
             }
             MainWindow.this.resumeGame();
@@ -327,6 +338,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
+
+    private void menuUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuUndoActionPerformed
+        this.puzzleBoardController.undo();
+    }//GEN-LAST:event_menuUndoActionPerformed
+
+    private void menuRedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRedoActionPerformed
+        this.puzzleBoardController.redo();
+    }//GEN-LAST:event_menuRedoActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
@@ -370,6 +389,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.timer.restart();
         this.statusController.showMessage("Ready");
         this.resumeGame();
+        this.puzzleBoardController.setMenuUndo(this.menuUndo);
+        this.puzzleBoardController.setMenuRedo(this.menuRedo);        
     }
 
     private void pauseGame() {
