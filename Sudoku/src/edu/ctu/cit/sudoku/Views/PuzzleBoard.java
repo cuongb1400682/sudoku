@@ -104,6 +104,14 @@ public class PuzzleBoard extends javax.swing.JPanel {
             }
         }
     }
+    
+    public void setValue(int x, int y, int value) {
+        this.puzzleUserAnswer.set(x, y, value);
+    }
+    
+    public int getValue(int x, int y) {
+        return this.puzzleUserAnswer.get(x, y);
+    }
 
     public void checkRepeatedCells() {
         if (PuzzleBoard.this.isRepeatedCellCheck) {
