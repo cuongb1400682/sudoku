@@ -28,6 +28,7 @@ import javax.swing.JDialog;
 public class PuzzleBoard extends javax.swing.JPanel {
 
     class Remote {
+
         private Stack<Command> commands = null;
 
         public Remote() {
@@ -39,7 +40,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
             this.commands.add(command);
             command.execute();
         }
-        
+
         public void undo() {
             if (!commands.isEmpty()) {
                 this.commands.pop().undo();
@@ -66,12 +67,12 @@ public class PuzzleBoard extends javax.swing.JPanel {
      * Creates new form PuzzleBoard
      */
     public PuzzleBoard(Component parent) {
+        initVariables();
         if (parent instanceof Frame) {
             numberChooser = new NumberChooser((Frame) parent);
         } else {
             numberChooser = new NumberChooser((JDialog) parent);
         }
-        this.remote = new Remote();
         initComponents();
         initPuzzleCells();
         numberChooser.setNumberSelected((int number) -> {
@@ -79,6 +80,15 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 PuzzleBoard.this.remote.change(selectedPuzzleCellX, selectedPuzzleCellY, number);
             }
         });
+    }
+
+    private void initVariables() {
+        selectedPuzzleCell = null;
+        selectedPuzzleCellX = -1;
+        selectedPuzzleCellY = -1;
+        remote = new Remote();
+        puzzleUserAnswer = null;
+        puzzle = null;
     }
 
     public boolean isEdited() {
@@ -100,7 +110,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
                 grid[i][j] = new PuzzleCell();
 
-                final PuzzleCell finalGridIJ = grid[i][j];
+                final PuzzleCell finalSelectedCell = grid[i][j];
                 final int finalI = i;
                 final int finalJ = j;
 
@@ -108,21 +118,21 @@ public class PuzzleBoard extends javax.swing.JPanel {
                     if (selectedPuzzleCell != null) {
                         selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
                     }
-                    finalGridIJ.setState(PuzzleCell.STATE_SELECTED);
+                    finalSelectedCell.setState(PuzzleCell.STATE_SELECTED);
 
                     PuzzleBoard.this.numberChooser.setLocation(cell.getCurrentLocation());
-                    if (PuzzleBoard.this.numberChooser.isVisible() && selectedPuzzleCell == finalGridIJ) {
+                    if (PuzzleBoard.this.numberChooser.isVisible() && selectedPuzzleCell == finalSelectedCell) {
                         PuzzleBoard.this.numberChooser.close();
                     } else {
                         PuzzleBoard.this.numberChooser.setVisible(true);
                     }
 
-                    selectedPuzzleCell = finalGridIJ;
+                    selectedPuzzleCell = finalSelectedCell;
                     selectedPuzzleCellX = finalI;
                     selectedPuzzleCellY = finalJ;
                 });
 
-                grid[i][j].setOnPuzzleCellValueChanged((PuzzleCell cell, int oldValue, int newValue) -> {                    
+                grid[i][j].setOnPuzzleCellValueChanged((PuzzleCell cell, int oldValue, int newValue) -> {
                     checkRepeatedCells();
                 });
 
@@ -130,7 +140,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
             }
         }
     }
-    
+
     public void undo() {
         this.remote.undo();
     }
@@ -184,9 +194,9 @@ public class PuzzleBoard extends javax.swing.JPanel {
     }
 
     public void setPuzzle(Puzzle puzzle) {
+        initVariables();
         this.puzzle = puzzle;
         this.puzzleUserAnswer = new Puzzle(puzzle);
-
         clearMistakes();
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
