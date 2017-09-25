@@ -114,8 +114,10 @@ public class PuzzleCell extends JLabel {
     private void changeColorCorrespondsToState(int state) {
         if (isRepeated) {
             setForeground(Color.red);
-            return;
+        } else {
+            setForeground(Color.BLACK);
         }
+        
         switch (state) {
             case STATE_ENABLE:
                 setBackground(new java.awt.Color(255, 255, 204));
@@ -145,11 +147,7 @@ public class PuzzleCell extends JLabel {
 
     public void setRepeated(boolean isRepeated) {
         this.isRepeated = isRepeated;
-        if (isRepeated) {
-            setForeground(Color.red);
-        } else {
-            setForeground(Color.BLACK);
-        }
+        changeColorCorrespondsToState(state);
     }
 
     public boolean isRepeated() {
@@ -169,8 +167,8 @@ public class PuzzleCell extends JLabel {
             if (Character.isDigit(keyChar)) {
                 int oldValue = this.getValue();
                 int newValue = (int) (keyChar - '0');
-                if (newValue >= 0 && newValue <= 9) {
-                    PuzzleCell.this.setText("" + (newValue == 0 ? "" : newValue));
+                if (newValue >= 1 && newValue <= 9) {
+                    PuzzleCell.this.setText("" + newValue);
                     if (this.onPuzzleCellValueChanged != null) {
                         this.onPuzzleCellValueChanged.onPuzzleCellValueChanged(this, oldValue, newValue);
                     }
