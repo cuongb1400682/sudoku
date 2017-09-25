@@ -41,10 +41,14 @@ public class PuzzleBoard extends javax.swing.JPanel {
             command.execute();
         }
 
-        public void undo() {
+        public PuzzleCell undo() {
+            System.out.println("empty = " + commands.isEmpty());
             if (!commands.isEmpty()) {
-                this.commands.pop().undo();
+                SetCellNumberCommand command = (SetCellNumberCommand) this.commands.pop();
+                command.undo();
+                return command.getCell();
             }
+            return null;
         }
     }
 
@@ -142,7 +146,16 @@ public class PuzzleBoard extends javax.swing.JPanel {
     }
 
     public void undo() {
-        this.remote.undo();
+        if (this.selectedPuzzleCell != null) {
+            this.selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
+        }
+        
+        PuzzleCell cell = this.remote.undo();
+        
+        if (cell != null) {
+            this.selectedPuzzleCell = cell;
+            this.selectedPuzzleCell.setState(PuzzleCell.STATE_SELECTED);
+        }
     }
 
     public void checkRepeatedCells() {

@@ -42,4 +42,7 @@ public class SetCellNumberCommand implements Command {
         this.cell.setValue("0123456789".charAt(this.oldValue));
     }
     
+    public PuzzleCell getCell() {
+        return this.cell;
+    }    
 }

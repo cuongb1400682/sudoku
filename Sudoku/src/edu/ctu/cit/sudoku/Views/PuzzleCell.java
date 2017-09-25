@@ -167,8 +167,8 @@ public class PuzzleCell extends JLabel {
             if (Character.isDigit(keyChar)) {
                 int oldValue = this.getValue();
                 int newValue = (int) (keyChar - '0');
-                if (newValue >= 1 && newValue <= 9) {
-                    PuzzleCell.this.setText("" + newValue);
+                if (newValue >= 0 && newValue <= 9) {
+                    PuzzleCell.this.setText("" + (newValue == 0 ? "": newValue));
                     if (this.onPuzzleCellValueChanged != null) {
                         this.onPuzzleCellValueChanged.onPuzzleCellValueChanged(this, oldValue, newValue);
                     }
