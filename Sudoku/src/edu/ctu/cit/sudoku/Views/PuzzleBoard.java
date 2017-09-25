@@ -29,23 +29,36 @@ public class PuzzleBoard extends javax.swing.JPanel {
 
     class Remote {
 
-        private Stack<Command> commands = null;
+        private Stack<Command> undoCommands = null;
+        private Stack<Command> redoCommands = null;
 
         public Remote() {
-            this.commands = new Stack<>();
+            this.undoCommands = new Stack<>();
+            this.redoCommands = new Stack<>();
         }
 
         public void change(int x, int y, int newValue) {
             Command command = new SetCellNumberCommand(puzzleUserAnswer, grid[x][y], x, y, newValue);
-            this.commands.add(command);
+            this.undoCommands.add(command);
+            redoCommands.clear();
             command.execute();
         }
 
         public PuzzleCell undo() {
-            System.out.println("empty = " + commands.isEmpty());
-            if (!commands.isEmpty()) {
-                SetCellNumberCommand command = (SetCellNumberCommand) this.commands.pop();
+            if (!undoCommands.isEmpty()) {
+                SetCellNumberCommand command = (SetCellNumberCommand) this.undoCommands.pop();
                 command.undo();
+                this.redoCommands.add(command);
+                return command.getCell();
+            }
+            return null;
+        }
+
+        public PuzzleCell redo() {
+            if (!redoCommands.isEmpty()) {
+                SetCellNumberCommand command = (SetCellNumberCommand) this.redoCommands.pop();
+                command.execute();
+                this.undoCommands.add(command);
                 return command.getCell();
             }
             return null;
@@ -149,9 +162,22 @@ public class PuzzleBoard extends javax.swing.JPanel {
         if (this.selectedPuzzleCell != null) {
             this.selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
         }
-        
+
         PuzzleCell cell = this.remote.undo();
-        
+
+        if (cell != null) {
+            this.selectedPuzzleCell = cell;
+            this.selectedPuzzleCell.setState(PuzzleCell.STATE_SELECTED);
+        }
+    }
+
+    public void redo() {
+        if (this.selectedPuzzleCell != null) {
+            this.selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
+        }
+
+        PuzzleCell cell = this.remote.redo();
+
         if (cell != null) {
             this.selectedPuzzleCell = cell;
             this.selectedPuzzleCell.setState(PuzzleCell.STATE_SELECTED);

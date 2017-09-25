@@ -72,4 +72,8 @@ public class PuzzleBoardController {
     public void undo() {
         this.puzzleBoard.undo();
     }
+    
+    public void redo() {
+        this.puzzleBoard.redo();
+    }
 }
