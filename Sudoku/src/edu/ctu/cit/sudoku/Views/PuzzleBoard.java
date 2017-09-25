@@ -5,6 +5,8 @@
  */
 package edu.ctu.cit.sudoku.Views;
 
+import edu.ctu.cit.sudoku.Commands.Command;
+import edu.ctu.cit.sudoku.Commands.SetCellNumberCommand;
 import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.Component;
@@ -14,6 +16,8 @@ import java.awt.event.ComponentEvent;
 import java.awt.event.ComponentListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
+import java.util.ArrayList;
+import java.util.Stack;
 import java.util.function.Consumer;
 import javax.swing.JDialog;
 
@@ -21,16 +25,33 @@ import javax.swing.JDialog;
  *
  * @author charlie
  */
-
 public class PuzzleBoard extends javax.swing.JPanel {
 
-    private NumberChooser numberChooser;
+    class Remote {
+        private Stack<Command> commands = null;
 
+        public Remote() {
+            this.commands = new Stack<>();
+        }
+
+        public void change(int x, int y, int newValue) {
+            Command command = new SetCellNumberCommand(puzzleUserAnswer, grid[x][y], x, y, newValue);
+            this.commands.add(command);
+            command.execute();
+        }
+        
+        public void undo() {
+            this.commands.pop().undo();
+        }
+    }
+
+    private NumberChooser numberChooser;
     private PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private PuzzleCell selectedPuzzleCell = null;
     private Puzzle puzzle = null;
     private Puzzle puzzleUserAnswer = null;
     private boolean isRepeatedCellCheck = false;
+    private Remote remote = null;
 
     private final Consumer<Cell> markRepeatedCell = (Cell c) -> {
         PuzzleCell repeatedCell = grid[c.getX()][c.getY()];
@@ -46,6 +67,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
         } else {
             numberChooser = new NumberChooser((JDialog) parent);
         }
+        this.remote = new Remote();
         initComponents();
         addPuzzleCells();
         numberChooser.setNumberSelected((int number) -> {
@@ -65,7 +87,6 @@ public class PuzzleBoard extends javax.swing.JPanel {
         }
         return false;
     }
-
 
     private void addPuzzleCells() {
         GridLayout layout = new GridLayout(Puzzle.BOARD_SIZE, Puzzle.BOARD_SIZE);
@@ -96,7 +117,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 });
 
                 grid[i][j].setOnPuzzleCellValueChanged((PuzzleCell cell, int oldValue, int newValue) -> {
-                    puzzleUserAnswer.set(finalI, finalJ, newValue);
+                    PuzzleBoard.this.remote.change(finalI, finalJ, newValue);
                     checkRepeatedCells();
                 });
 
@@ -105,12 +126,8 @@ public class PuzzleBoard extends javax.swing.JPanel {
         }
     }
     
-    public void setValue(int x, int y, int value) {
-        this.puzzleUserAnswer.set(x, y, value);
-    }
-    
-    public int getValue(int x, int y) {
-        return this.puzzleUserAnswer.get(x, y);
+    public void undo() {
+        this.remote.undo();
     }
 
     public void checkRepeatedCells() {
@@ -134,7 +151,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
             }
         }
     }
-    
+
     public void closeNumberChooser() {
         if (this.numberChooser != null) {
             this.numberChooser.close();
