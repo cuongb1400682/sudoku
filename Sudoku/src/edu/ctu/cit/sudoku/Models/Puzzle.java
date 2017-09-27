@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
  */
 public final class Puzzle {
     public static final int BOARD_SIZE = 9;
-    public static final int N_BOARD_PRESET_CELLS = 30;
+    public static final int N_PRESET_CELLS = 30;
     
     public static class InvalidPuzzleException extends Exception {    
         public InvalidPuzzleException(String message) {
@@ -257,7 +257,7 @@ public final class Puzzle {
             }
         }
 
-        //return this.countNonZero() == Puzzle.N_BOARD_PRESET_CELLS;
+        //return this.countNonZero() == Puzzle.N_PRESET_CELLS;
         return true;
     }
 
@@ -304,7 +304,7 @@ public final class Puzzle {
 
     public void generateNewPuzzle() {
         do {
-            this.board = this.randomBoard(N_BOARD_PRESET_CELLS);
+            this.board = this.randomBoard(N_PRESET_CELLS);
         } while (this.solve() == null);
     }
 
