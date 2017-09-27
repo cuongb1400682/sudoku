@@ -67,7 +67,9 @@ public class NumberChooser extends JDialog {
         }
     };
 
-    private JPanel panel;
+    private javax.swing.JButton buttonClear;
+    private javax.swing.JPanel panelLower;
+    private javax.swing.JPanel panelUpper;
     private OnNumberSelected onNumberSelected = null;
 
     public NumberChooser(Frame owner) {
@@ -75,7 +77,7 @@ public class NumberChooser extends JDialog {
         owner.addComponentListener(componentListener);
         owner.addFocusListener(focusListener);
         initComponents();
-        addButtons();
+        initButtons();
     }
 
     public NumberChooser(JDialog owner) {
@@ -83,7 +85,7 @@ public class NumberChooser extends JDialog {
         owner.addComponentListener(componentListener);
         owner.addFocusListener(focusListener);
         initComponents();
-        addButtons();
+        initButtons();
     }
 
     @Override
@@ -94,34 +96,45 @@ public class NumberChooser extends JDialog {
     }
 
     private void initComponents() {
-        panel = new javax.swing.JPanel();
+        panelUpper = new javax.swing.JPanel();
+        panelLower = new javax.swing.JPanel();
+        buttonClear = new javax.swing.JButton();
 
-        setAutoRequestFocus(false);
-        setUndecorated(true);
-        setPreferredSize(new java.awt.Dimension(128, 128));
-        setResizable(false);
+        setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
+        setPreferredSize(new java.awt.Dimension(160, 192));
         setType(java.awt.Window.Type.POPUP);
 
-        javax.swing.GroupLayout panelLayout = new javax.swing.GroupLayout(panel);
-        panel.setLayout(panelLayout);
-        panelLayout.setHorizontalGroup(
-                panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 151, Short.MAX_VALUE)
+        panelUpper.setBackground(new java.awt.Color(0, 51, 51));
+        panelUpper.setPreferredSize(new java.awt.Dimension(128, 128));
+
+        javax.swing.GroupLayout panelUpperLayout = new javax.swing.GroupLayout(panelUpper);
+        panelUpper.setLayout(panelUpperLayout);
+        panelUpperLayout.setHorizontalGroup(
+                panelUpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 128, Short.MAX_VALUE)
         );
-        panelLayout.setVerticalGroup(
-                panelLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 140, Short.MAX_VALUE)
+        panelUpperLayout.setVerticalGroup(
+                panelUpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                        .addGap(0, 128, Short.MAX_VALUE)
         );
 
-        getContentPane().add(panel, java.awt.BorderLayout.CENTER);
+        getContentPane().add(panelUpper, java.awt.BorderLayout.NORTH);
+
+        panelLower.setPreferredSize(new java.awt.Dimension(160, 34));
+        panelLower.setLayout(new java.awt.BorderLayout());
+
+        buttonClear.setText("Clear");
+        panelLower.add(buttonClear, java.awt.BorderLayout.CENTER);
+
+        getContentPane().add(panelLower, java.awt.BorderLayout.SOUTH);
 
         pack();
-    }
+    }// </editor-fold>                        
 
-    private void addButtons() {
+    private void initButtons() {
         int label = 1;
         GridLayout layout = new GridLayout(3, 3);
-        panel.setLayout(layout);
+        panelUpper.setLayout(layout);
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
                 numberButtons[i][j] = new JButton();
@@ -136,9 +149,19 @@ public class NumberChooser extends JDialog {
                         close();
                     }
                 });
-                panel.add(numberButtons[i][j]);
+                panelUpper.add(numberButtons[i][j]);
             }
         }
+
+        buttonClear.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mousePressed(MouseEvent e) {
+                if (onNumberSelected != null) {
+                    onNumberSelected.onNumberSelected(0);
+                }
+                close();
+            }
+        });
     }
 
     public void setNumberSelected(OnNumberSelected onNumberSelected) {
