@@ -7,6 +7,7 @@ package edu.ctu.cit.sudoku.Views;
 
 import com.sun.org.apache.xpath.internal.FoundIndex;
 import java.awt.Component;
+import java.awt.Font;
 import java.awt.Frame;
 import java.awt.GridLayout;
 import java.awt.event.ComponentEvent;
@@ -101,26 +102,26 @@ public class NumberChooser extends JDialog {
         buttonClear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(160, 192));
+        setPreferredSize(new java.awt.Dimension(140, 140+64));
         setType(java.awt.Window.Type.POPUP);
 
         panelUpper.setBackground(new java.awt.Color(0, 51, 51));
-        panelUpper.setPreferredSize(new java.awt.Dimension(128, 128));
+        panelUpper.setPreferredSize(new java.awt.Dimension(140, 140));
 
         javax.swing.GroupLayout panelUpperLayout = new javax.swing.GroupLayout(panelUpper);
         panelUpper.setLayout(panelUpperLayout);
         panelUpperLayout.setHorizontalGroup(
                 panelUpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 128, Short.MAX_VALUE)
+                        .addGap(0, 140, Short.MAX_VALUE)
         );
         panelUpperLayout.setVerticalGroup(
                 panelUpperLayout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                        .addGap(0, 128, Short.MAX_VALUE)
+                        .addGap(0, 140, Short.MAX_VALUE)
         );
 
         getContentPane().add(panelUpper, java.awt.BorderLayout.NORTH);
 
-        panelLower.setPreferredSize(new java.awt.Dimension(160, 34));
+        panelLower.setPreferredSize(new java.awt.Dimension(140, 34));
         panelLower.setLayout(new java.awt.BorderLayout());
 
         buttonClear.setText("Clear");
@@ -129,7 +130,7 @@ public class NumberChooser extends JDialog {
         getContentPane().add(panelLower, java.awt.BorderLayout.SOUTH);
 
         pack();
-    }// </editor-fold>                        
+    }                      
 
     private void initButtons() {
         int label = 1;
@@ -149,6 +150,7 @@ public class NumberChooser extends JDialog {
                         close();
                     }
                 });
+                numberButtons[i][j].setFont(new Font("Dialog", Font.BOLD, 12));
                 panelUpper.add(numberButtons[i][j]);
             }
         }
