@@ -34,6 +34,9 @@ import javax.swing.filechooser.FileFilter;
 public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private static final int TICK_COUNT_LIMIT = 99 * 60 + 59;
+    private static final int GAME_RESULT_TIME_UP = 0;
+    private static final int GAME_RESULT_USER_SOLVE_PUZZLE = 1;
+    private static final int GAME_RESULT_USER_GIVE_UP = 2;
 
     public static class TimeLimitExceededException extends Exception {
 
@@ -64,6 +67,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         upperPanel = new javax.swing.JPanel();
         labelTime = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         labelStatus = new javax.swing.JLabel();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
@@ -106,6 +110,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         labelTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTime.setText("00:00");
         upperPanel.add(labelTime, java.awt.BorderLayout.CENTER);
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        upperPanel.add(jButton1, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -217,30 +229,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private final PuzzleBoardController puzzleBoardController = new PuzzleBoardController(this);
-    private StatusController statusController = null;
-    private Timer timer = new Timer(1000, (ActionListener) this);
-    private int tickCount;
-    private final JFileChooser fileChooser = new JFileChooser();
-    private final FileFilter textFileFilter = new FileFilter() {
-        @Override
-        public boolean accept(File f) {
-            Path path = FileSystems.getDefault().getPath(f.getParent(), f.getName());
-            String mimeType = "";
-            try {
-                mimeType = Files.probeContentType(path);
-            } catch (IOException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            return mimeType.toLowerCase().startsWith("text") || mimeType.toLowerCase().contains("directory");
-        }
-
-        @Override
-        public String getDescription() {
-            return "Text files";
-        }
-    };
-
     private void setTickCount(int tickCount) throws TimeLimitExceededException {
         if (tickCount > TICK_COUNT_LIMIT) {
             throw new TimeLimitExceededException("Time's up. Game over.");
@@ -347,7 +335,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.puzzleBoardController.redo();
     }//GEN-LAST:event_menuRedoActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        handleUserSolvePuzzle();
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
@@ -374,6 +367,31 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JPanel upperPanel;
     // End of variables declaration//GEN-END:variables
 
+    private final PuzzleBoardController puzzleBoardController = new PuzzleBoardController(this);
+    private StatusController statusController = null;
+    private Timer timer = new Timer(1000, (ActionListener) this);
+    private int tickCount;
+    private final JFileChooser fileChooser = new JFileChooser();
+    private final FileFilter textFileFilter = new FileFilter() {
+        @Override
+        public boolean accept(File f) {
+            Path path = FileSystems.getDefault().getPath(f.getParent(), f.getName());
+            String mimeType = "";
+            try {
+                mimeType = Files.probeContentType(path);
+            } catch (IOException ex) {
+                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+            }
+            return mimeType.toLowerCase().startsWith("text") || mimeType.toLowerCase().contains("directory");
+        }
+
+        @Override
+        public String getDescription() {
+            return "Text files";
+        }
+    };
+    private String oldUserName = "";
+
     private void newGame() {
         this.puzzleBoardController.newPuzzleBoard();
         this.resetTimer();
@@ -390,7 +408,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.statusController.showMessage("Ready");
         this.resumeGame();
         this.puzzleBoardController.setMenuUndo(this.menuUndo);
-        this.puzzleBoardController.setMenuRedo(this.menuRedo);        
+        this.puzzleBoardController.setMenuRedo(this.menuRedo);
     }
 
     private void pauseGame() {
@@ -411,14 +429,49 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.menuPause.setSelected(false);
     }
 
+    private void handleUserSolvePuzzle() {
+        final String userName = (String) JOptionPane.showInputDialog(
+                this,
+                "Congrats! You win the game!\nPlease enter your name:",
+                "You Won",
+                JOptionPane.INFORMATION_MESSAGE,
+                null,
+                null,
+                this.oldUserName
+        );
+        if (userName != null && !userName.trim().isEmpty()) {
+            this.oldUserName = userName;
+        }
+    }
+
+    private void handleUserNotSolvePuzzle() {
+
+    }
+
+    private void handleGameOver(int gameResult) {
+        switch (gameResult) {
+            case GAME_RESULT_TIME_UP:
+                if (this.puzzleBoardController.isSolved()) {
+                    handleUserSolvePuzzle();
+                } else {
+                    handleUserNotSolvePuzzle();
+                }
+                break;
+            case GAME_RESULT_USER_SOLVE_PUZZLE:
+                handleUserSolvePuzzle();
+                break;
+            case GAME_RESULT_USER_GIVE_UP:
+                break;
+        }
+    }
+
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.timer) {
             try {
                 this.setTickCount(tickCount + 1);
             } catch (TimeLimitExceededException ex) {
-                // todo: game has been over!!!
-                ex.printStackTrace();
+                handleGameOver(GAME_RESULT_TIME_UP);
             }
         }
     }

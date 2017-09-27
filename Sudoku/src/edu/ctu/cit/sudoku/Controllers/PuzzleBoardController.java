@@ -86,5 +86,10 @@ public class PuzzleBoardController {
     public void setMenuRedo(JMenuItem menuRedo) {
         this.puzzleBoard.setMenuRedo(menuRedo);
     }
+
+    public boolean isSolved() {
+        return this.puzzle.isValidPuzzleBoard() && 
+                (this.puzzle.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE);
+    }
    
 }
