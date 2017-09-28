@@ -7,6 +7,7 @@ package edu.ctu.cit.sudoku.Views;
 
 import edu.ctu.cit.sudoku.Controllers.PuzzleBoardController;
 import edu.ctu.cit.sudoku.Controllers.StatusController;
+import edu.ctu.cit.sudoku.Databases.HighScoreDbHelper;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
@@ -19,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
@@ -54,6 +56,13 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         getContentPane().add(this.puzzleBoardController.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
         this.menuHintForRepeatedNumbers.setSelected(true);
         this.puzzleBoardController.setRepeatedCellCheck(true);
+        try {
+            this.dbHelper = new HighScoreDbHelper();
+            this.dbHelper.open();
+            this.dbHelper.createTable();
+        } catch (SQLException ex) {
+            ex.printStackTrace();
+        }
     }
 
     /**
@@ -98,6 +107,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         addWindowListener(new java.awt.event.WindowAdapter() {
             public void windowOpened(java.awt.event.WindowEvent evt) {
                 formWindowOpened(evt);
+            }
+            public void windowClosing(java.awt.event.WindowEvent evt) {
+                formWindowClosing(evt);
             }
         });
 
@@ -339,6 +351,16 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         handleUserSolvePuzzle();
     }//GEN-LAST:event_jButton1ActionPerformed
 
+    private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
+        if (this.dbHelper != null) {
+            try {
+                this.dbHelper.close();
+            } catch (SQLException ex) {
+                ex.printStackTrace();
+            }
+        }
+    }//GEN-LAST:event_formWindowClosing
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
@@ -391,6 +413,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
     };
     private String oldUserName = "";
+    private HighScoreDbHelper dbHelper = null;
 
     private void newGame() {
         this.puzzleBoardController.newPuzzleBoard();
