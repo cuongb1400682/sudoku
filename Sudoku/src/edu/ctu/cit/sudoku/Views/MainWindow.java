@@ -464,6 +464,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         );
         if (userName != null && !userName.trim().isEmpty()) {
             this.oldUserName = userName;
+            try {
+                this.dbHelper.insert(userName, this.tickCount);
+            } catch (SQLException ex) {
+                JOptionPane.showMessageDialog(this, "Cannot save user's archievement to database", "Error", JOptionPane.ERROR_MESSAGE);
+                ex.printStackTrace();
+            }
         }
     }
 
