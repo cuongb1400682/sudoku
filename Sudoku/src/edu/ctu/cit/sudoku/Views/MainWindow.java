@@ -445,36 +445,54 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void resumeGame() {
         this.timer.start();
-        this.labelTime.setText(String.format("%02d:%02d", tickCount / 60, tickCount % 60));
         this.statusController.showMessage("Ready");
-        this.puzzleBoardController.showPuzzleBoard();
         this.labelTime.setForeground(Color.black);
+        this.labelTime.setText(String.format("%02d:%02d", tickCount / 60, tickCount % 60));
+        this.puzzleBoardController.showPuzzleBoard();
         this.menuPause.setSelected(false);
     }
 
     private void handleUserSolvePuzzle() {
         final String userName = (String) JOptionPane.showInputDialog(
                 this,
-                "Congrats! You win the game!\nPlease enter your name:",
+                "Congrats! You win the game!\nPlease enter your name (leave blank to cancel):",
                 "You Won",
                 JOptionPane.INFORMATION_MESSAGE,
                 null,
                 null,
                 this.oldUserName
         );
+
         if (userName != null && !userName.trim().isEmpty()) {
             this.oldUserName = userName;
             try {
                 this.dbHelper.insert(userName, this.tickCount);
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Your score has been saved to databse"
+                );
+                // todo: show high score window
             } catch (SQLException ex) {
-                JOptionPane.showMessageDialog(this, "Cannot save user's archievement to database", "Error", JOptionPane.ERROR_MESSAGE);
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Cannot save user's achievement to database",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
                 ex.printStackTrace();
             }
         }
     }
 
     private void handleUserNotSolvePuzzle() {
-
+        JOptionPane.showMessageDialog(
+                this,
+                "Sorry! You didn't do well to solve the puzzle.\n"
+                + "Click ok to close this box and start again.",
+                "You lost",
+                JOptionPane.INFORMATION_MESSAGE
+        );
+        newGame();
     }
 
     private void handleGameOver(int gameResult) {
@@ -490,6 +508,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 handleUserSolvePuzzle();
                 break;
             case GAME_RESULT_USER_GIVE_UP:
+                // todo: handle when user gives up
                 break;
         }
     }
