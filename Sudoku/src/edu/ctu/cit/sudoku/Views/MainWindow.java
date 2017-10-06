@@ -21,6 +21,7 @@ import java.nio.file.FileSystems;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.SQLException;
+import java.util.Arrays;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JDialog;
@@ -218,6 +219,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         menuGiveUp.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_BACK_SPACE, java.awt.event.InputEvent.CTRL_MASK));
         menuGiveUp.setText("Give up");
+        menuGiveUp.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuGiveUpActionPerformed(evt);
+            }
+        });
         menuGame.add(menuGiveUp);
         menuGame.add(jSeparator2);
 
@@ -360,6 +366,16 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
         }
     }//GEN-LAST:event_formWindowClosing
+
+    private void menuGiveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGiveUpActionPerformed
+        // todo: this is for debugging
+        System.out.println(puzzleBoardController.getPuzzleBoard().getPuzzle());
+        System.out.println();
+        int[][] a = puzzleBoardController.getPuzzleBoard().getPuzzle().solve();
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            System.out.println(Arrays.toString(a[i]));
+        }
+    }//GEN-LAST:event_menuGiveUpActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
