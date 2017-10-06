@@ -56,6 +56,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         getContentPane().add(this.puzzleBoardController.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
         this.menuHintForRepeatedNumbers.setSelected(true);
         this.puzzleBoardController.setRepeatedCellCheck(true);
+        this.puzzleBoardController.setUseWonTheGameHandler(this.onUserWonTheGame);
         try {
             this.dbHelper = new HighScoreDbHelper();
             this.dbHelper.open();
@@ -291,7 +292,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
         }
         this.resumeGame();
-
     }//GEN-LAST:event_menuSavePuzzleActionPerformed
 
     private void formWindowOpened(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowOpened
@@ -414,6 +414,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     };
     private String oldUserName = "";
     private HighScoreDbHelper dbHelper = null;
+    private PuzzleBoard.OnUserWonTheGame onUserWonTheGame = () -> {
+        this.handleGameOver(MainWindow.GAME_RESULT_USER_SOLVE_PUZZLE);
+    };
 
     private void newGame() {
         this.puzzleBoardController.newPuzzleBoard();

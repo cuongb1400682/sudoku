@@ -92,4 +92,7 @@ public class PuzzleBoardController {
                 (this.puzzle.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE);
     }
    
+    public void setUseWonTheGameHandler(PuzzleBoard.OnUserWonTheGame onUserWonTheGame) {
+        this.puzzleBoard.setOnUserWonTheGame(onUserWonTheGame);
+    }
 }
