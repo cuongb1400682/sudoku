@@ -316,6 +316,10 @@ public final class Puzzle {
         short[] colMark = new short[BOARD_SIZE];
         short[] rowMark = new short[BOARD_SIZE];
         short[][] groupMark = new short[BOARD_SIZE][BOARD_SIZE];
+        
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            System.arraycopy(this.board[i], 0, board[i], 0, BOARD_SIZE);
+        }
 
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
