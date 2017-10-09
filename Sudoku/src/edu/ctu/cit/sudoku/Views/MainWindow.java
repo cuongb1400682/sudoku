@@ -229,6 +229,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         menuHighScore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
         menuHighScore.setText("High score");
+        menuHighScore.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuHighScoreActionPerformed(evt);
+            }
+        });
         menuGame.add(menuHighScore);
         menuGame.add(jSeparator7);
 
@@ -376,6 +381,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             System.out.println(Arrays.toString(a[i]));
         }
     }//GEN-LAST:event_menuGiveUpActionPerformed
+
+    private void menuHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHighScoreActionPerformed
+        HighScore highScore = new HighScore(this, true, this.dbHelper);
+        highScore.setVisible(true);
+    }//GEN-LAST:event_menuHighScoreActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jButton1;
