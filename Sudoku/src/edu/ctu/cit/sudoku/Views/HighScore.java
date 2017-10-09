@@ -8,6 +8,7 @@ package edu.ctu.cit.sudoku.Views;
 import edu.ctu.cit.sudoku.Databases.HighScoreDbHelper;
 import edu.ctu.cit.sudoku.Databases.HighScoreSchema;
 import java.awt.BorderLayout;
+import java.awt.event.WindowAdapter;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -25,10 +26,11 @@ public class HighScore extends javax.swing.JDialog {
     /**
      * Creates new form HighScore
      */
-    public HighScore(java.awt.Frame parent, boolean modal, HighScoreDbHelper dbHelper) {
+    public HighScore(java.awt.Frame parent, boolean modal, HighScoreDbHelper dbHelper, WindowAdapter wa) {
         super(parent, modal);
         initComponents();
         this.dbHelper = dbHelper;
+        this.addWindowListener(wa);
         updateInfo();
     }
     

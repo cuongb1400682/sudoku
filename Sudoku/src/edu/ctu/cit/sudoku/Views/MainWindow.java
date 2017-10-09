@@ -14,6 +14,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -383,8 +384,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuGiveUpActionPerformed
 
     private void menuHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHighScoreActionPerformed
-        HighScore highScore = new HighScore(this, true, this.dbHelper);
-        highScore.setVisible(true);
+        this.pauseGame();
+        this.showHighScore(new WindowAdapter() {
+            @Override
+            public void windowClosed(WindowEvent e) {
+                super.windowClosed(e);
+                MainWindow.this.resumeGame();
+            }
+        });
     }//GEN-LAST:event_menuHighScoreActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -461,6 +468,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.resumeGame();
         this.puzzleBoardController.setMenuUndo(this.menuUndo);
         this.puzzleBoardController.setMenuRedo(this.menuRedo);
+    }
+
+    private void showHighScore(WindowAdapter wa) {
+        HighScore highScore = new HighScore(this, true, this.dbHelper, wa);
+        highScore.setVisible(true);
     }
 
     private void pauseGame() {
