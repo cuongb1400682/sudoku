@@ -79,7 +79,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         upperPanel = new javax.swing.JPanel();
         labelTime = new javax.swing.JLabel();
-        jButton1 = new javax.swing.JButton();
         labelStatus = new javax.swing.JLabel();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
@@ -125,14 +124,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         labelTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTime.setText("00:00");
         upperPanel.add(labelTime, java.awt.BorderLayout.CENTER);
-
-        jButton1.setText("jButton1");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
-            }
-        });
-        upperPanel.add(jButton1, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -359,10 +350,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.puzzleBoardController.redo();
     }//GEN-LAST:event_menuRedoActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
-        handleUserSolvePuzzle();
-    }//GEN-LAST:event_jButton1ActionPerformed
-
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
         if (this.dbHelper != null) {
             try {
@@ -395,7 +382,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuHighScoreActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;
@@ -450,9 +436,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private PuzzleBoard.OnUserWonTheGame onUserWonTheGame = () -> {
         this.handleGameOver(MainWindow.GAME_RESULT_USER_SOLVE_PUZZLE);
     };
+    private boolean isGameOver = false;
 
     private void newGame() {
         this.puzzleBoardController.newPuzzleBoard();
+        this.isGameOver = false;
         this.resetTimer();
     }
 
@@ -471,26 +459,35 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private void showHighScore(WindowAdapter wa) {
+        this.pauseGame();
         HighScore highScore = new HighScore(this, true, this.dbHelper, wa);
         highScore.setVisible(true);
     }
 
     private void pauseGame() {
         this.timer.stop();
-        this.statusController.showMessage("You couldn't see the puzzle now", StatusController.STATUS_WARNING);
-        this.labelTime.setForeground(Color.red);
-        this.labelTime.setText("Paused");
-        this.puzzleBoardController.hidePuzzleBoard();
-        this.menuPause.setSelected(true);
+        if (!this.isGameOver) {
+            this.statusController.showMessage("You couldn't see the puzzle now", StatusController.STATUS_WARNING);
+            this.labelTime.setForeground(Color.red);
+            this.labelTime.setText("Paused");
+            this.puzzleBoardController.hidePuzzleBoard();
+            this.menuPause.setSelected(true);
+        } else {
+            this.statusController.showMessage("The game has been over", StatusController.STATUS_ERROR);
+        }
     }
 
     private void resumeGame() {
-        this.timer.start();
-        this.statusController.showMessage("Ready");
-        this.labelTime.setForeground(Color.black);
-        this.labelTime.setText(String.format("%02d:%02d", tickCount / 60, tickCount % 60));
-        this.puzzleBoardController.showPuzzleBoard();
-        this.menuPause.setSelected(false);
+        if (!this.isGameOver) {
+            this.timer.start();
+            this.statusController.showMessage("Ready");
+            this.labelTime.setForeground(Color.black);
+            this.labelTime.setText(String.format("%02d:%02d", tickCount / 60, tickCount % 60));
+            this.puzzleBoardController.showPuzzleBoard();
+            this.menuPause.setSelected(false);
+        } else {
+            this.statusController.showMessage("The game has been over", StatusController.STATUS_ERROR);
+        }
     }
 
     private void handleUserSolvePuzzle() {
@@ -508,11 +505,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             this.oldUserName = userName;
             try {
                 this.dbHelper.insert(userName, this.tickCount);
-                JOptionPane.showMessageDialog(
-                        this,
-                        "Your score has been saved to databse"
-                );
-                // todo: show high score window
+                this.showHighScore(null);
             } catch (SQLException ex) {
                 JOptionPane.showMessageDialog(
                         this,
@@ -521,6 +514,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                         JOptionPane.ERROR_MESSAGE
                 );
                 ex.printStackTrace();
+            } finally {
+                newGame();
             }
         }
     }
@@ -537,6 +532,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private void handleGameOver(int gameResult) {
+        this.isGameOver = true;
+        this.pauseGame();
         switch (gameResult) {
             case GAME_RESULT_TIME_UP:
                 if (this.puzzleBoardController.isSolved()) {
@@ -557,6 +554,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == this.timer) {
+            if (this.isGameOver) {
+                this.pauseGame();
+            }
             try {
                 this.setTickCount(tickCount + 1);
             } catch (TimeLimitExceededException ex) {
