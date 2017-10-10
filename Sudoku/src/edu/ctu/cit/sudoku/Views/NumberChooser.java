@@ -57,65 +57,21 @@ public class NumberChooser extends JDialog {
         }
     };
 
-    private final FocusListener focusListener = new FocusListener() {
-        @Override
-        public void focusGained(FocusEvent e) {
-            NumberChooser.this.close();
-
-        }
-
-        @Override
-        public void focusLost(FocusEvent e) {
-            NumberChooser.this.close();
-        }
-    };
-
     private final WindowAdapter windowAdapter = new WindowAdapter() {
         @Override
-        public void windowLostFocus(WindowEvent e) {
-            NumberChooser.this.close();
-        }
-
-        @Override
         public void windowDeactivated(WindowEvent e) {
-            NumberChooser.this.close();
-        }
-
-        @Override
-        public void windowDeiconified(WindowEvent e) {
-            NumberChooser.this.close();
-        }
-
-        @Override
-        public void windowGainedFocus(WindowEvent e) {
-            NumberChooser.this.close();
+            if (e.getOppositeWindow() != NumberChooser.this) {
+                NumberChooser.this.close();
+            }
         }
 
         @Override
         public void windowActivated(WindowEvent e) {
-            NumberChooser.this.close();
+            if (e.getWindow() != NumberChooser.this) {
+                NumberChooser.this.close();
+            }
         }
-
-        @Override
-        public void windowIconified(WindowEvent e) {
-            NumberChooser.this.close();
-        }
-
-        @Override
-        public void windowClosed(WindowEvent e) {
-            NumberChooser.this.close();
-        }
-
-        @Override
-        public void windowClosing(WindowEvent e) {
-            NumberChooser.this.close();
-        }
-
-        @Override
-        public void windowOpened(WindowEvent e) {
-            NumberChooser.this.close();
-        }
-        
+       
     };
 
     private javax.swing.JButton buttonClear;
@@ -125,27 +81,29 @@ public class NumberChooser extends JDialog {
 
     public NumberChooser(Frame owner) {
         super(owner, false);
-        owner.addComponentListener(componentListener);
-        owner.addFocusListener(focusListener);
+        initEventListeners();
         initComponents();
         initButtons();
     }
 
     public NumberChooser(JDialog owner) {
         super(owner, false);
-        owner.addComponentListener(componentListener);
-        owner.addFocusListener(focusListener);
-        owner.addWindowListener(windowAdapter);
+        initEventListeners();
         initComponents();
         initButtons();
+    }
+    
+    private void initEventListeners() {
+        this.getOwner().addComponentListener(componentListener);
+        this.getOwner().addWindowListener(windowAdapter);
+        this.addWindowListener(windowAdapter);
     }
 
     @Override
     public void dispose() {
         this.getOwner().removeComponentListener(componentListener);
-        this.getOwner().removeFocusListener(focusListener);
         this.getOwner().removeWindowListener(windowAdapter);
-        super.dispose(); //To change body of generated methods, choose Tools | Templates.        
+        super.dispose();     
     }
 
     private void initComponents() {

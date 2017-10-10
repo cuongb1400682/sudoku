@@ -333,12 +333,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         dialog.setOnUserPressCancel(() -> {
             MainWindow.this.resumeGame();
         });
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                MainWindow.this.puzzleBoardController.closeNumberChooser();
-            }
-        });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 
@@ -378,11 +372,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 super.windowClosed(e);
                 MainWindow.this.resumeGame();
             }
-
-            @Override
-            public void windowOpened(WindowEvent e) {
-                MainWindow.this.puzzleBoardController.closeNumberChooser();
-            }            
         });
     }//GEN-LAST:event_menuHighScoreActionPerformed
 
@@ -471,6 +460,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void pauseGame() {
         this.timer.stop();
+        this.puzzleBoardController.closeNumberChooser();
         if (!this.isGameOver) {
             this.statusController.showMessage("You couldn't see the puzzle now", StatusController.STATUS_WARNING);
             this.labelTime.setForeground(Color.red);
@@ -483,6 +473,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private void resumeGame() {
+        this.puzzleBoardController.closeNumberChooser();
         if (!this.isGameOver) {
             this.timer.start();
             this.statusController.showMessage("Ready");
