@@ -271,9 +271,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                     this.resetTimer();
                     JOptionPane.showMessageDialog(this, String.format("Loaded from %s", file.getAbsoluteFile()));
                 }
-            } catch (FileNotFoundException | Puzzle.InvalidPuzzleException ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            }
+            } 
         }
         this.resumeGame();
     }//GEN-LAST:event_menuLoadPuzzleActionPerformed
@@ -291,9 +291,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                     JOptionPane.showMessageDialog(this, String.format("Saved to %s", file.getAbsoluteFile()));
                     this.timer.stop();
                 }
-            } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
-            } catch (IOException ex) {
+            } catch (Exception ex) {
                 JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }

@@ -128,7 +128,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
         numberChooser.setNumberSelected((int number) -> {
             if (PuzzleBoard.this.selectedPuzzleCell != null) {
                 PuzzleBoard.this.remote.change(selectedPuzzleCellX, selectedPuzzleCellY, number);
-                if (PuzzleBoard.this.puzzle.isValidPuzzleBoard() && 
+                if (PuzzleBoard.this.puzzleUserAnswer.isValidPuzzleBoard() && 
                         this.puzzleUserAnswer.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE) {
                     if (PuzzleBoard.this.onUserWonTheGame != null) {
                         PuzzleBoard.this.onUserWonTheGame.onUserWonTheGame();
