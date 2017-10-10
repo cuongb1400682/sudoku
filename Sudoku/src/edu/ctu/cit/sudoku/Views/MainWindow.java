@@ -269,9 +269,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 if (file != null) {
                     puzzleBoardController.fromFile(file);
                     this.resetTimer();
+                    JOptionPane.showMessageDialog(this, String.format("Loaded from %s", file.getAbsoluteFile()));
                 }
             } catch (FileNotFoundException | Puzzle.InvalidPuzzleException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         this.resumeGame();
@@ -287,11 +288,13 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             try {
                 if (file != null) {
                     puzzleBoardController.toFile(file);
+                    JOptionPane.showMessageDialog(this, String.format("Saved to %s", file.getAbsoluteFile()));
+                    this.timer.stop();
                 }
             } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+                JOptionPane.showMessageDialog(this, ex.getMessage(), "Error", JOptionPane.ERROR_MESSAGE);
             }
         }
         this.resumeGame();
@@ -434,12 +437,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void newGame() {
         this.puzzleBoardController.newPuzzleBoard();
-        this.isGameOver = false;
         this.resetTimer();
     }
 
     private void resetTimer() {
         this.menuManuallyNumbersInput.setSelected(false);
+        this.isGameOver = false;
         try {
             this.setTickCount(0);
         } catch (TimeLimitExceededException ex) {
