@@ -20,15 +20,17 @@ import java.util.StringTokenizer;
  * @author charlie
  */
 public final class Puzzle {
+
     public static final int BOARD_SIZE = 9;
-    public static final int N_BOARD_PRESET_CELLS = 30;
-    
-    public static class InvalidPuzzleException extends Exception {    
+    public static final int N_PRESET_CELLS = 30;
+
+    public static class InvalidPuzzleException extends Exception {
+
         public InvalidPuzzleException(String message) {
             super(message);
         }
     }
-    
+
     private int[][] board;
 
     public Puzzle() {
@@ -44,11 +46,11 @@ public final class Puzzle {
         }
     }
 
-    public Puzzle(int[][] board)  {
+    public Puzzle(int[][] board) {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
         for (int i = 0; i < BOARD_SIZE; i++) {
             System.arraycopy(board[i], 0, this.board[i], 0, BOARD_SIZE);
-        }        
+        }
     }
 
     private boolean isValidCoordinate(int x, int y) {
@@ -121,20 +123,20 @@ public final class Puzzle {
         Scanner scanner = new Scanner(new File(inputFile));
         int rowIndex = 0;
         int[][] board = new int[BOARD_SIZE][BOARD_SIZE];
-        
+
         while (scanner.hasNext()) {
             String line = scanner.nextLine();
             StringTokenizer tokenizer = new StringTokenizer(line);
             int columnIndex = 0;
-            
+
             while (tokenizer.hasMoreTokens()) {
                 board[rowIndex][columnIndex] = Integer.parseInt(tokenizer.nextToken());
                 columnIndex++;
             }
-            
+
             rowIndex++;
         }
-        
+
         return new Puzzle(board);
     }
 
@@ -225,8 +227,8 @@ public final class Puzzle {
 
         return violatedCells;
     }
-    
-        public int countNonZero() {
+
+    public int countNonZero() {
         int nonZeroCount = 0;
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
@@ -257,10 +259,9 @@ public final class Puzzle {
             }
         }
 
-        //return this.countNonZero() == Puzzle.N_BOARD_PRESET_CELLS;
+        //return this.countNonZero() == Puzzle.N_PRESET_CELLS;
         return true;
     }
-
 
     private boolean exhaustedSearch(
             int currIndex,
@@ -304,7 +305,7 @@ public final class Puzzle {
 
     public void generateNewPuzzle() {
         do {
-            this.board = this.randomBoard(N_BOARD_PRESET_CELLS);
+            this.board = this.randomBoard(N_PRESET_CELLS);
         } while (this.solve() == null);
     }
 
@@ -315,6 +316,10 @@ public final class Puzzle {
         short[] colMark = new short[BOARD_SIZE];
         short[] rowMark = new short[BOARD_SIZE];
         short[][] groupMark = new short[BOARD_SIZE][BOARD_SIZE];
+        
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            System.arraycopy(this.board[i], 0, board[i], 0, BOARD_SIZE);
+        }
 
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {

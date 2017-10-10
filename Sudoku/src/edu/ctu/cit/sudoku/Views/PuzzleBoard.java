@@ -92,8 +92,13 @@ public class PuzzleBoard extends javax.swing.JPanel {
             }
         }
     }
+    
+    public interface OnUserWonTheGame {
+        public void onUserWonTheGame();
+    }
 
     private NumberChooser numberChooser;
+    private OnUserWonTheGame onUserWonTheGame;
     private PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private PuzzleCell selectedPuzzleCell = null;
     private int selectedPuzzleCellX;
@@ -123,6 +128,12 @@ public class PuzzleBoard extends javax.swing.JPanel {
         numberChooser.setNumberSelected((int number) -> {
             if (PuzzleBoard.this.selectedPuzzleCell != null) {
                 PuzzleBoard.this.remote.change(selectedPuzzleCellX, selectedPuzzleCellY, number);
+                if (PuzzleBoard.this.puzzle.isValidPuzzleBoard() && 
+                        this.puzzleUserAnswer.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE) {
+                    if (PuzzleBoard.this.onUserWonTheGame != null) {
+                        PuzzleBoard.this.onUserWonTheGame.onUserWonTheGame();
+                    }
+                }
             }
         });
     }
@@ -290,6 +301,10 @@ public class PuzzleBoard extends javax.swing.JPanel {
         return isRepeatedCellCheck;
     }
 
+    public void setOnUserWonTheGame(OnUserWonTheGame onUserWonTheGame) {
+        this.onUserWonTheGame = onUserWonTheGame;
+    }
+    
     public void setRepeatedCellCheck(boolean isRepeatedCellCheck) {
         this.isRepeatedCellCheck = isRepeatedCellCheck;
         if (isRepeatedCellCheck) {
