@@ -17,6 +17,8 @@ import java.awt.event.FocusListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JPanel;
@@ -68,6 +70,54 @@ public class NumberChooser extends JDialog {
         }
     };
 
+    private final WindowAdapter windowAdapter = new WindowAdapter() {
+        @Override
+        public void windowLostFocus(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+
+        @Override
+        public void windowDeactivated(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+
+        @Override
+        public void windowDeiconified(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+
+        @Override
+        public void windowGainedFocus(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+
+        @Override
+        public void windowActivated(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+
+        @Override
+        public void windowIconified(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+
+        @Override
+        public void windowClosed(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+
+        @Override
+        public void windowClosing(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+
+        @Override
+        public void windowOpened(WindowEvent e) {
+            NumberChooser.this.close();
+        }
+        
+    };
+
     private javax.swing.JButton buttonClear;
     private javax.swing.JPanel panelLower;
     private javax.swing.JPanel panelUpper;
@@ -85,6 +135,7 @@ public class NumberChooser extends JDialog {
         super(owner, false);
         owner.addComponentListener(componentListener);
         owner.addFocusListener(focusListener);
+        owner.addWindowListener(windowAdapter);
         initComponents();
         initButtons();
     }
@@ -93,6 +144,7 @@ public class NumberChooser extends JDialog {
     public void dispose() {
         this.getOwner().removeComponentListener(componentListener);
         this.getOwner().removeFocusListener(focusListener);
+        this.getOwner().removeWindowListener(windowAdapter);
         super.dispose(); //To change body of generated methods, choose Tools | Templates.        
     }
 
@@ -102,7 +154,7 @@ public class NumberChooser extends JDialog {
         buttonClear = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.HIDE_ON_CLOSE);
-        setPreferredSize(new java.awt.Dimension(140, 140+64));
+        setPreferredSize(new java.awt.Dimension(140, 140 + 64));
         setType(java.awt.Window.Type.POPUP);
 
         panelUpper.setBackground(new java.awt.Color(0, 51, 51));
@@ -130,7 +182,7 @@ public class NumberChooser extends JDialog {
         getContentPane().add(panelLower, java.awt.BorderLayout.SOUTH);
 
         pack();
-    }                      
+    }
 
     private void initButtons() {
         int label = 1;

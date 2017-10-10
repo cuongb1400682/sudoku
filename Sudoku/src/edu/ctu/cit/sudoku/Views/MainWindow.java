@@ -378,6 +378,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 super.windowClosed(e);
                 MainWindow.this.resumeGame();
             }
+
+            @Override
+            public void windowOpened(WindowEvent e) {
+                MainWindow.this.puzzleBoardController.closeNumberChooser();
+            }            
         });
     }//GEN-LAST:event_menuHighScoreActionPerformed
 
