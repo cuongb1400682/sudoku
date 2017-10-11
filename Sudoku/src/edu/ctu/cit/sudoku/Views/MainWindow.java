@@ -98,6 +98,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         menuRedo = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         menuGiveUp = new javax.swing.JMenuItem();
+        menuClearPuzzle = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         menuHighScore = new javax.swing.JMenuItem();
         jSeparator7 = new javax.swing.JPopupMenu.Separator();
@@ -220,6 +221,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
         });
         menuGame.add(menuGiveUp);
+
+        menuClearPuzzle.setText("Clear puzzle");
+        menuClearPuzzle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuClearPuzzleActionPerformed(evt);
+            }
+        });
+        menuGame.add(menuClearPuzzle);
         menuGame.add(jSeparator2);
 
         menuHighScore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
@@ -437,6 +446,10 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
     }//GEN-LAST:event_menuExitActionPerformed
 
+    private void menuClearPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClearPuzzleActionPerformed
+        
+    }//GEN-LAST:event_menuClearPuzzleActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
@@ -449,6 +462,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JLabel labelTime;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem menuAbout;
+    private javax.swing.JMenuItem menuClearPuzzle;
     private javax.swing.JMenuItem menuExit;
     private javax.swing.JMenu menuGame;
     private javax.swing.JMenuItem menuGiveUp;
