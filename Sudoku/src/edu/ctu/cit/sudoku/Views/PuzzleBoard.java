@@ -99,9 +99,21 @@ public class PuzzleBoard extends javax.swing.JPanel {
         public void onUserWonTheGame();
     }
 
+    private final PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
+//    private static final int[][] CELL_BORDER_CONFIG = {
+//        {3, 1, 9},
+//        {2, 0, 8},
+//        {6, 4, 12}
+//    };
+
+    private static final int[][][] CELL_BORDER_CONFIG = {
+        {{2,2,1,1}, {2,0,1,1}, {2,0,1,1}},
+        {{0,2,1,1}, {0,0,1,1}, {0,0,1,1}},
+        {{0,2,1,1}, {0,0,1,1}, {0,0,1,1}}
+    };
+
     private NumberChooser numberChooser;
     private OnUserWonTheGame onUserWonTheGame;
-    private PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
     private PuzzleCell selectedPuzzleCell = null;
     private int selectedPuzzleCellX;
     private int selectedPuzzleCellY;
@@ -184,6 +196,8 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 final int finalI = i;
                 final int finalJ = j;
 
+                System.out.printf("i = %d, j = %d\n", i, j);
+                grid[i][j].setBorderConfig(PuzzleBoard.CELL_BORDER_CONFIG[i % 3][j % 3]);
                 grid[i][j].setOnPuzzleCellClicked((PuzzleCell cell) -> {
                     if (selectedPuzzleCell != null) {
                         selectedPuzzleCell.setState(PuzzleCell.STATE_ENABLE);
@@ -208,6 +222,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
 
                 this.add(grid[i][j]);
             }
+            System.out.println();
         }
     }
 

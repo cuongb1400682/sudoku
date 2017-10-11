@@ -41,7 +41,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private static final int GAME_RESULT_TIME_UP = 0;
     private static final int GAME_RESULT_USER_SOLVE_PUZZLE = 1;
     private static final int GAME_RESULT_USER_GIVE_UP = 2;
-
+    
     public static class TimeLimitExceededException extends Exception {
 
         private TimeLimitExceededException(String times_up_Game_over) {
@@ -410,7 +410,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuHighScoreActionPerformed
 
     private void menuAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAboutActionPerformed
-        JOptionPane.showMessageDialog(this, "Sudoku version 1.0\nCopyright (c) 2017");
+        JOptionPane.showMessageDialog(this, "Sudoku version 1.0\nCopyright (c) 2017", "", JOptionPane.INFORMATION_MESSAGE);
     }//GEN-LAST:event_menuAboutActionPerformed
 
     private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExitActionPerformed

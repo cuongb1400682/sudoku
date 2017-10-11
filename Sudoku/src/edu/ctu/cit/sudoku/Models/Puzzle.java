@@ -21,7 +21,7 @@ import java.util.StringTokenizer;
  */
 public final class Puzzle {
 
-    public static final int BOARD_SIZE = 3;
+    public static final int BOARD_SIZE = 9;
     public static final int N_PRESET_CELLS = 5;
 
     public static class InvalidPuzzleException extends Exception {

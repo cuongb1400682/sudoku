@@ -14,6 +14,8 @@ import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.util.Arrays;
+import javax.swing.BorderFactory;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 
@@ -168,6 +170,21 @@ public class PuzzleCell extends JLabel {
         } else {
             return Integer.parseInt(getText());
         }
+    }
+
+    public void setBorderConfig(int[] config) {
+//        int[] bits = new int[4];
+//        for (int i = 0; config > 0; i++) {
+//            if ((config & 1) > 0) {
+//                bits[i] = 1;
+//            } else {
+//                bits[i] = 0;
+//            }
+//            config >>= 1;
+//        }
+//        System.out.println(Arrays.toString(bits));
+        //this.setBorder(BorderFactory.createMatteBorder(bits[0], bits[1], bits[2], bits[3], Color.BLACK));
+        this.setBorder(BorderFactory.createMatteBorder(config[0], config[1], config[2], config[3], Color.BLACK));
     }
 
     public void setValue(char keyChar) {
