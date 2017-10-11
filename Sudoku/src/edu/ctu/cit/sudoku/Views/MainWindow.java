@@ -231,11 +231,21 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         menuAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuAbout.setText("About");
+        menuAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuAboutActionPerformed(evt);
+            }
+        });
         menuGame.add(menuAbout);
         menuGame.add(jSeparator6);
 
         menuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         menuExit.setText("Exit");
+        menuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuExitActionPerformed(evt);
+            }
+        });
         menuGame.add(menuExit);
 
         mainMenu.add(menuGame);
@@ -398,6 +408,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
         });
     }//GEN-LAST:event_menuHighScoreActionPerformed
+
+    private void menuAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAboutActionPerformed
+        JOptionPane.showMessageDialog(this, "Sudoku version 1.0\nCopyright (c) 2017");
+    }//GEN-LAST:event_menuAboutActionPerformed
+
+    private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExitActionPerformed
+        
+    }//GEN-LAST:event_menuExitActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
