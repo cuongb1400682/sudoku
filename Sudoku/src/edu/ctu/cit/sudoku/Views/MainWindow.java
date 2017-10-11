@@ -447,7 +447,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuExitActionPerformed
 
     private void menuClearPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClearPuzzleActionPerformed
-        
+        puzzleBoardController.clearPuzzle();
     }//GEN-LAST:event_menuClearPuzzleActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
