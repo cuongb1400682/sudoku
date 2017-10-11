@@ -29,6 +29,7 @@ import javax.swing.JMenuItem;
 public class PuzzleBoard extends javax.swing.JPanel {
 
     class Remote {
+
         private Stack<Command> undoCommands = null;
         private Stack<Command> redoCommands = null;
         private JMenuItem menuUndo = null;
@@ -66,7 +67,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 command.execute();
                 this.undoCommands.add(command);
                 updateUndoRedoMenus();
-                return command.getCell();                
+                return command.getCell();
             } else {
                 updateUndoRedoMenus();
                 return null;
@@ -92,8 +93,9 @@ public class PuzzleBoard extends javax.swing.JPanel {
             }
         }
     }
-    
+
     public interface OnUserWonTheGame {
+
         public void onUserWonTheGame();
     }
 
@@ -128,8 +130,8 @@ public class PuzzleBoard extends javax.swing.JPanel {
         numberChooser.setNumberSelected((int number) -> {
             if (PuzzleBoard.this.selectedPuzzleCell != null) {
                 PuzzleBoard.this.remote.change(selectedPuzzleCellX, selectedPuzzleCellY, number);
-                if (PuzzleBoard.this.puzzle.isValidPuzzleBoard() && 
-                        this.puzzleUserAnswer.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE) {
+                if (PuzzleBoard.this.puzzleUserAnswer.isValidPuzzleBoard()
+                        && this.puzzleUserAnswer.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE) {
                     if (PuzzleBoard.this.onUserWonTheGame != null) {
                         PuzzleBoard.this.onUserWonTheGame.onUserWonTheGame();
                     }
@@ -145,6 +147,18 @@ public class PuzzleBoard extends javax.swing.JPanel {
         remote = new Remote();
         puzzleUserAnswer = null;
         puzzle = null;
+    }
+
+    public void showResult() {
+        Puzzle resultPuzzle = new Puzzle(this.puzzle.solve());
+        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
+            for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
+                this.grid[i][j].setValue("0123456789".charAt(resultPuzzle.get(i, j)));
+                if (this.puzzle.get(i, j) == 0) {
+                    this.grid[i][j].setState(PuzzleCell.STATE_SOLVED);
+                }
+            }
+        }
     }
 
     public boolean isEdited() {
@@ -304,7 +318,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
     public void setOnUserWonTheGame(OnUserWonTheGame onUserWonTheGame) {
         this.onUserWonTheGame = onUserWonTheGame;
     }
-    
+
     public void setRepeatedCellCheck(boolean isRepeatedCellCheck) {
         this.isRepeatedCellCheck = isRepeatedCellCheck;
         if (isRepeatedCellCheck) {

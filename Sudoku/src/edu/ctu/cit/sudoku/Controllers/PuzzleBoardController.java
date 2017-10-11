@@ -95,4 +95,9 @@ public class PuzzleBoardController {
     public void setUseWonTheGameHandler(PuzzleBoard.OnUserWonTheGame onUserWonTheGame) {
         this.puzzleBoard.setOnUserWonTheGame(onUserWonTheGame);
     }
+    
+    public void solveTheGame() {
+        this.puzzleBoard.showResult();
+    }
 }
+    

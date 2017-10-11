@@ -269,9 +269,16 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 if (file != null) {
                     puzzleBoardController.fromFile(file);
                     this.resetTimer();
+                    this.timer.stop();
+                    JOptionPane.showMessageDialog(this, String.format("Loaded from %s", file.getAbsoluteFile()));
                 }
-            } catch (FileNotFoundException | Puzzle.InvalidPuzzleException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        String.format("'%s' is not valid puzzle file", file == null ? "" : file.getAbsoluteFile()),
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
         this.resumeGame();
@@ -287,11 +294,16 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             try {
                 if (file != null) {
                     puzzleBoardController.toFile(file);
+                    JOptionPane.showMessageDialog(this, String.format("Saved to '%s'", file.getAbsoluteFile()));
+                    this.timer.stop();
                 }
-            } catch (FileNotFoundException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
-            } catch (IOException ex) {
-                JOptionPane.showMessageDialog(this, ex.getMessage());
+            } catch (Exception ex) {
+                JOptionPane.showMessageDialog(
+                        this,
+                        "Cannot save to this puzzle to '" + (file == null ? "" : file.getAbsolutePath()) + "'",
+                        "Error",
+                        JOptionPane.ERROR_MESSAGE
+                );
             }
         }
         this.resumeGame();
@@ -333,12 +345,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         dialog.setOnUserPressCancel(() -> {
             MainWindow.this.resumeGame();
         });
-        dialog.addWindowListener(new WindowAdapter() {
-            @Override
-            public void windowOpened(WindowEvent e) {
-                MainWindow.this.puzzleBoardController.closeNumberChooser();
-            }
-        });
         dialog.setVisible(true);
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 
@@ -361,13 +367,25 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_formWindowClosing
 
     private void menuGiveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGiveUpActionPerformed
-        // todo: this is for debugging
-        System.out.println(puzzleBoardController.getPuzzleBoard().getPuzzle());
-        System.out.println();
-        int[][] a = puzzleBoardController.getPuzzleBoard().getPuzzle().solve();
-        for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
-            System.out.println(Arrays.toString(a[i]));
-        }
+        this.pauseGame();
+        final int dialogResult = JOptionPane.showConfirmDialog(
+                this, 
+                "Do you really want to show all the solution?", 
+                "Give up?",
+                JOptionPane.YES_NO_OPTION, 
+                JOptionPane.QUESTION_MESSAGE
+        );        
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            this.isGameOver = true;
+            this.statusController.showMessage("Click Game > New game to start new puzzle", StatusController.STATUS_ERROR);
+            this.labelTime.setForeground(Color.red);
+            this.labelTime.setText("Gave up!");
+            this.timer.stop();
+            this.puzzleBoardController.solveTheGame();
+            this.puzzleBoardController.showPuzzleBoard();
+        } else if (dialogResult == JOptionPane.NO_OPTION) {            
+            this.resumeGame();
+        }        
     }//GEN-LAST:event_menuGiveUpActionPerformed
 
     private void menuHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHighScoreActionPerformed
@@ -378,11 +396,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 super.windowClosed(e);
                 MainWindow.this.resumeGame();
             }
-
-            @Override
-            public void windowOpened(WindowEvent e) {
-                MainWindow.this.puzzleBoardController.closeNumberChooser();
-            }            
         });
     }//GEN-LAST:event_menuHighScoreActionPerformed
 
@@ -438,19 +451,19 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     };
     private String oldUserName = "";
     private HighScoreDbHelper dbHelper = null;
-    private PuzzleBoard.OnUserWonTheGame onUserWonTheGame = () -> {
+    private final PuzzleBoard.OnUserWonTheGame onUserWonTheGame = () -> {
         this.handleGameOver(MainWindow.GAME_RESULT_USER_SOLVE_PUZZLE);
     };
     private boolean isGameOver = false;
 
     private void newGame() {
         this.puzzleBoardController.newPuzzleBoard();
-        this.isGameOver = false;
         this.resetTimer();
     }
 
     private void resetTimer() {
         this.menuManuallyNumbersInput.setSelected(false);
+        this.isGameOver = false;
         try {
             this.setTickCount(0);
         } catch (TimeLimitExceededException ex) {
@@ -471,6 +484,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void pauseGame() {
         this.timer.stop();
+        this.puzzleBoardController.closeNumberChooser();
         if (!this.isGameOver) {
             this.statusController.showMessage("You couldn't see the puzzle now", StatusController.STATUS_WARNING);
             this.labelTime.setForeground(Color.red);
@@ -483,6 +497,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private void resumeGame() {
+        this.puzzleBoardController.closeNumberChooser();
         if (!this.isGameOver) {
             this.timer.start();
             this.statusController.showMessage("Ready");
@@ -522,6 +537,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             } finally {
                 newGame();
             }
+        } else {
+            newGame();
         }
     }
 
