@@ -26,6 +26,7 @@ public class PuzzleCell extends JLabel {
     public static final int STATE_ENABLE = 0;
     public static final int STATE_DISABLE = 1;
     public static final int STATE_SELECTED = 2;
+    public static final int STATE_SOLVED = 3;
 
     public interface OnPuzzleCellClicked {
 
@@ -72,7 +73,7 @@ public class PuzzleCell extends JLabel {
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                if (PuzzleCell.this.state != STATE_DISABLE) {
+                if (PuzzleCell.this.isEnableCell()) {
                     PuzzleCell.this.requestFocus();
 
                     currentLocation = new Point();
@@ -100,7 +101,7 @@ public class PuzzleCell extends JLabel {
 
             @Override
             public void keyPressed(KeyEvent e) {
-                if (PuzzleCell.this.state != STATE_DISABLE) {
+                if (PuzzleCell.this.isEnableCell()) {
                     PuzzleCell.this.setValue(e.getKeyChar());
                 }
             }
@@ -117,13 +118,16 @@ public class PuzzleCell extends JLabel {
         } else {
             setForeground(Color.BLACK);
         }
-        
+
         switch (state) {
             case STATE_ENABLE:
                 setBackground(new java.awt.Color(255, 255, 204));
                 break;
             case STATE_DISABLE:
                 setBackground(new java.awt.Color(255, 204, 0));
+                break;
+            case STATE_SOLVED:
+                setBackground(new java.awt.Color(38, 204, 124));
                 break;
             case STATE_SELECTED:
                 setBackground(new java.awt.Color(153, 255, 204));
@@ -134,7 +138,7 @@ public class PuzzleCell extends JLabel {
     }
 
     public void setState(int state) {
-        if (this.state == STATE_DISABLE) {
+        if (!PuzzleCell.this.isEnableCell()) {
             return;
         }
         changeColorCorrespondsToState(state);
@@ -154,6 +158,10 @@ public class PuzzleCell extends JLabel {
         return this.isRepeated;
     }
 
+    public boolean isEnableCell() {
+        return (this.state != PuzzleCell.STATE_DISABLE) && (this.state != PuzzleCell.STATE_SOLVED);
+    }
+
     public int getValue() {
         if (getText().trim().isEmpty()) {
             return 0;
@@ -163,12 +171,12 @@ public class PuzzleCell extends JLabel {
     }
 
     public void setValue(char keyChar) {
-        if (PuzzleCell.this.state != STATE_DISABLE) {
+        if (PuzzleCell.this.isEnableCell()) {
             if (Character.isDigit(keyChar)) {
                 int oldValue = this.getValue();
                 int newValue = (int) (keyChar - '0');
                 if (newValue >= 0 && newValue <= 9) {
-                    PuzzleCell.this.setText("" + (newValue == 0 ? "": newValue));
+                    PuzzleCell.this.setText("" + (newValue == 0 ? "" : newValue));
                     if (this.onPuzzleCellValueChanged != null) {
                         this.onPuzzleCellValueChanged.onPuzzleCellValueChanged(this, oldValue, newValue);
                     }
