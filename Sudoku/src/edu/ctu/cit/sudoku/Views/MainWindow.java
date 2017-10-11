@@ -379,12 +379,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private void menuGiveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGiveUpActionPerformed
         this.pauseGame();
         final int dialogResult = JOptionPane.showConfirmDialog(
-                this, 
-                "Do you really want to show all the solution?", 
+                this,
+                "Do you really want to show all the solution?",
                 "Give up?",
-                JOptionPane.YES_NO_OPTION, 
+                JOptionPane.YES_NO_OPTION,
                 JOptionPane.QUESTION_MESSAGE
-        );        
+        );
         if (dialogResult == JOptionPane.YES_OPTION) {
             this.isGameOver = true;
             this.statusController.showMessage("Click Game > New game to start new puzzle", StatusController.STATUS_ERROR);
@@ -393,9 +393,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             this.timer.stop();
             this.puzzleBoardController.solveTheGame();
             this.puzzleBoardController.showPuzzleBoard();
-        } else if (dialogResult == JOptionPane.NO_OPTION) {            
+        } else if (dialogResult == JOptionPane.NO_OPTION) {
             this.resumeGame();
-        }        
+        }
     }//GEN-LAST:event_menuGiveUpActionPerformed
 
     private void menuHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHighScoreActionPerformed
@@ -414,7 +414,19 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuAboutActionPerformed
 
     private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExitActionPerformed
-        
+        this.pauseGame();
+        final int dialogResult = JOptionPane.showConfirmDialog(
+                this,
+                "Do you want to quit sudoku?",
+                "Quit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        } else {
+            this.resumeGame();
+        }
     }//GEN-LAST:event_menuExitActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
