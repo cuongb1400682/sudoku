@@ -100,12 +100,6 @@ public class PuzzleBoard extends javax.swing.JPanel {
     }
 
     private final PuzzleCell[][] grid = new PuzzleCell[Puzzle.BOARD_SIZE][Puzzle.BOARD_SIZE];
-//    private static final int[][] CELL_BORDER_CONFIG = {
-//        {3, 1, 9},
-//        {2, 0, 8},
-//        {6, 4, 12}
-//    };
-
     private static final int[][][] CELL_BORDER_CONFIG = {
         {{2,2,1,1}, {2,0,1,1}, {2,0,1,1}},
         {{0,2,1,1}, {0,0,1,1}, {0,0,1,1}},
@@ -163,6 +157,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
 
     public void showResult() {
         Puzzle resultPuzzle = new Puzzle(this.puzzle.solve());
+        this.puzzleUserAnswer = this.puzzle;
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
                 this.grid[i][j].setValue("0123456789".charAt(resultPuzzle.get(i, j)));
