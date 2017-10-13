@@ -44,6 +44,7 @@ public class ManuallyNewGameDialog extends javax.swing.JDialog {
         buttonOk = new javax.swing.JButton();
         buttonCancel = new javax.swing.JButton();
 
+        setDefaultCloseOperation(javax.swing.WindowConstants.DO_NOTHING_ON_CLOSE);
         setAutoRequestFocus(false);
         setModal(true);
         setPreferredSize(new java.awt.Dimension(300, 300));

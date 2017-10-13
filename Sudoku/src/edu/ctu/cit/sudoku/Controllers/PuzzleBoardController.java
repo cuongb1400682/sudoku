@@ -19,7 +19,6 @@ import javax.swing.JMenuItem;
  * @author charlie
  */
 public class PuzzleBoardController {
-
     private Puzzle puzzle = null;
     private PuzzleBoard puzzleBoard = null;
 
@@ -65,6 +64,7 @@ public class PuzzleBoardController {
             throw new Puzzle.InvalidPuzzleException("Selected file contains invalid puzzle!");
         }
         this.puzzleBoard.setPuzzle(puzzle);
+        this.puzzle = puzzle;
     }
 
     public void toFile(File file) throws IOException {
@@ -98,6 +98,10 @@ public class PuzzleBoardController {
     
     public void solveTheGame() {
         this.puzzleBoard.showResult();
+    }
+
+    public void clearPuzzle() {
+        this.puzzleBoard.setPuzzle(this.puzzle);
     }
 }
     

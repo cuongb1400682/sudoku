@@ -10,6 +10,8 @@ import edu.ctu.cit.sudoku.Controllers.StatusController;
 import edu.ctu.cit.sudoku.Databases.HighScoreDbHelper;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.WindowAdapter;
@@ -66,6 +68,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
+        this.makeMainWindowCenterScreen();
     }
 
     /**
@@ -95,6 +98,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         menuRedo = new javax.swing.JMenuItem();
         jSeparator3 = new javax.swing.JPopupMenu.Separator();
         menuGiveUp = new javax.swing.JMenuItem();
+        menuClearPuzzle = new javax.swing.JMenuItem();
         jSeparator2 = new javax.swing.JPopupMenu.Separator();
         menuHighScore = new javax.swing.JMenuItem();
         jSeparator7 = new javax.swing.JPopupMenu.Separator();
@@ -217,6 +221,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             }
         });
         menuGame.add(menuGiveUp);
+
+        menuClearPuzzle.setText("Clear puzzle");
+        menuClearPuzzle.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuClearPuzzleActionPerformed(evt);
+            }
+        });
+        menuGame.add(menuClearPuzzle);
         menuGame.add(jSeparator2);
 
         menuHighScore.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_H, java.awt.event.InputEvent.CTRL_MASK));
@@ -231,11 +243,21 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         menuAbout.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F1, 0));
         menuAbout.setText("About");
+        menuAbout.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuAboutActionPerformed(evt);
+            }
+        });
         menuGame.add(menuAbout);
         menuGame.add(jSeparator6);
 
         menuExit.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_Q, java.awt.event.InputEvent.CTRL_MASK));
         menuExit.setText("Exit");
+        menuExit.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                menuExitActionPerformed(evt);
+            }
+        });
         menuGame.add(menuExit);
 
         mainMenu.add(menuGame);
@@ -244,6 +266,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
+
+    private void makeMainWindowCenterScreen() {
+        Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
+        this.setLocation(dim.width / 2 - this.getSize().width / 2, dim.height / 2 - this.getSize().height / 2);
+    }
 
     private void setTickCount(int tickCount) throws TimeLimitExceededException {
         if (tickCount > TICK_COUNT_LIMIT) {
@@ -318,10 +345,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuHintForRepeatedNumbersActionPerformed
 
     private void menuPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPauseActionPerformed
-        if (this.timer.isRunning()) {
-            this.pauseGame();
-        } else {
-            this.resumeGame();
+        if (!this.isGameOver) {
+            if (this.timer.isRunning()) {
+                this.pauseGame();
+            } else {
+                this.resumeGame();
+            }
         }
     }//GEN-LAST:event_menuPauseActionPerformed
 
@@ -349,11 +378,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 
     private void menuUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuUndoActionPerformed
-        this.puzzleBoardController.undo();
+        if (!this.isGameOver) {
+            this.puzzleBoardController.undo();
+        }
     }//GEN-LAST:event_menuUndoActionPerformed
 
     private void menuRedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRedoActionPerformed
-        this.puzzleBoardController.redo();
+        if (!this.isGameOver) {
+            this.puzzleBoardController.redo();
+        }
     }//GEN-LAST:event_menuRedoActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -367,25 +400,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_formWindowClosing
 
     private void menuGiveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGiveUpActionPerformed
-        this.pauseGame();
-        final int dialogResult = JOptionPane.showConfirmDialog(
-                this, 
-                "Do you really want to show all the solution?", 
-                "Give up?",
-                JOptionPane.YES_NO_OPTION, 
-                JOptionPane.QUESTION_MESSAGE
-        );        
-        if (dialogResult == JOptionPane.YES_OPTION) {
-            this.isGameOver = true;
-            this.statusController.showMessage("Click Game > New game to start new puzzle", StatusController.STATUS_ERROR);
-            this.labelTime.setForeground(Color.red);
-            this.labelTime.setText("Gave up!");
-            this.timer.stop();
-            this.puzzleBoardController.solveTheGame();
-            this.puzzleBoardController.showPuzzleBoard();
-        } else if (dialogResult == JOptionPane.NO_OPTION) {            
-            this.resumeGame();
-        }        
+        this.handleGameOver(MainWindow.GAME_RESULT_USER_GIVE_UP);
     }//GEN-LAST:event_menuGiveUpActionPerformed
 
     private void menuHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHighScoreActionPerformed
@@ -399,6 +414,32 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         });
     }//GEN-LAST:event_menuHighScoreActionPerformed
 
+    private void menuAboutActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuAboutActionPerformed
+        JOptionPane.showMessageDialog(this, "Sudoku version 1.0\nCopyright (c) 2017", "", JOptionPane.INFORMATION_MESSAGE);
+    }//GEN-LAST:event_menuAboutActionPerformed
+
+    private void menuExitActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuExitActionPerformed
+        this.pauseGame();
+        final int dialogResult = JOptionPane.showConfirmDialog(
+                this,
+                "Do you want to quit sudoku?",
+                "Quit",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            System.exit(0);
+        } else {
+            this.resumeGame();
+        }
+    }//GEN-LAST:event_menuExitActionPerformed
+
+    private void menuClearPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClearPuzzleActionPerformed
+        if (!this.isGameOver) {
+            puzzleBoardController.clearPuzzle();
+        }
+    }//GEN-LAST:event_menuClearPuzzleActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
@@ -411,6 +452,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private javax.swing.JLabel labelTime;
     private javax.swing.JMenuBar mainMenu;
     private javax.swing.JMenuItem menuAbout;
+    private javax.swing.JMenuItem menuClearPuzzle;
     private javax.swing.JMenuItem menuExit;
     private javax.swing.JMenu menuGame;
     private javax.swing.JMenuItem menuGiveUp;
@@ -553,11 +595,32 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         newGame();
     }
 
+    private void handleUserGaveUp() {
+        final int dialogResult = JOptionPane.showConfirmDialog(
+                this,
+                "Do you really want to show all the solution?",
+                "Give up?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            this.isGameOver = true;
+            this.statusController.showMessage("Game > New game to start new puzzle", StatusController.STATUS_ERROR);
+            this.labelTime.setForeground(Color.red);
+            this.labelTime.setText("Gave up!");
+            this.timer.stop();
+            this.puzzleBoardController.solveTheGame();
+            this.puzzleBoardController.showPuzzleBoard();
+        } else if (dialogResult == JOptionPane.NO_OPTION) {
+            this.resumeGame();
+        }
+    }
+
     private void handleGameOver(int gameResult) {
-        this.isGameOver = true;
         this.pauseGame();
         switch (gameResult) {
             case GAME_RESULT_TIME_UP:
+                this.isGameOver = true;
                 if (this.puzzleBoardController.isSolved()) {
                     handleUserSolvePuzzle();
                 } else {
@@ -565,10 +628,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 }
                 break;
             case GAME_RESULT_USER_SOLVE_PUZZLE:
+                this.isGameOver = true;
                 handleUserSolvePuzzle();
                 break;
             case GAME_RESULT_USER_GIVE_UP:
-                // todo: handle when user gives up
+                handleUserGaveUp();
                 break;
         }
     }
