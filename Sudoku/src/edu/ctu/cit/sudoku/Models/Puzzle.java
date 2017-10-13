@@ -20,7 +20,6 @@ import java.util.StringTokenizer;
  * @author charlie
  */
 public final class Puzzle {
-
     public static final int BOARD_SIZE = 9;
     public static final int N_PRESET_CELLS = 30;
 
@@ -82,9 +81,9 @@ public final class Puzzle {
     private int[][] randomBoard(int nCell) {
         Random r = new Random(System.currentTimeMillis());
         int[][] resultBoard = new int[BOARD_SIZE][BOARD_SIZE];
-        boolean[][] colMark = new boolean[BOARD_SIZE][20];
-        boolean[][] rowMark = new boolean[BOARD_SIZE][20];
-        boolean[][][] groupMark = new boolean[BOARD_SIZE][BOARD_SIZE][20];
+        boolean[][] colMark = new boolean[BOARD_SIZE][10];
+        boolean[][] rowMark = new boolean[BOARD_SIZE][10];
+        boolean[][][] groupMark = new boolean[BOARD_SIZE][BOARD_SIZE][10];
         ArrayList<Cell> can = new ArrayList<>();
 
         for (int i = 0; i < BOARD_SIZE; i++) {
