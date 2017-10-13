@@ -28,6 +28,7 @@ public class PuzzleFactory {
     }
 
     public Puzzle createPuzzle(GameDifficulties difficulties) {
+        
         switch (difficulties) {
             case EXTREMELY_EASY:
                 break;
@@ -42,11 +43,11 @@ public class PuzzleFactory {
             default:
                 throw new EnumConstantNotPresentException(GameDifficulties.class, difficulties.toString());
         }
+        
         return null;
     }
 
-    // Las Vegas Alogorithm
-    private Puzzle createTerminalPattern() {
+    private Puzzle lasVegas() {
         Random random = new Random(System.currentTimeMillis());
         int[][] resultPuzzle = new int[BOARD_SIZE][BOARD_SIZE];
         boolean[][] colMark = new boolean[BOARD_SIZE][10];
@@ -84,5 +85,15 @@ public class PuzzleFactory {
         }
 
         return candidates.isEmpty() ? null : new Puzzle(resultPuzzle);
+    }
+    
+    public Puzzle createTerminalPattern() {
+        while (true) {
+            Puzzle puzzle = this.lasVegas();
+            int[][] solvedMatrix = puzzle.solve();
+            if (solvedMatrix != null) {
+               return new Puzzle(solvedMatrix);
+            }
+        }
     }
 }
