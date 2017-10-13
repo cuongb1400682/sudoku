@@ -345,10 +345,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuHintForRepeatedNumbersActionPerformed
 
     private void menuPauseActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuPauseActionPerformed
-        if (this.timer.isRunning()) {
-            this.pauseGame();
-        } else {
-            this.resumeGame();
+        if (!this.isGameOver) {
+            if (this.timer.isRunning()) {
+                this.pauseGame();
+            } else {
+                this.resumeGame();
+            }
         }
     }//GEN-LAST:event_menuPauseActionPerformed
 
@@ -376,11 +378,15 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuManuallyNumbersInputActionPerformed
 
     private void menuUndoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuUndoActionPerformed
-        this.puzzleBoardController.undo();
+        if (!this.isGameOver) {
+            this.puzzleBoardController.undo();
+        }
     }//GEN-LAST:event_menuUndoActionPerformed
 
     private void menuRedoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuRedoActionPerformed
-        this.puzzleBoardController.redo();
+        if (!this.isGameOver) {
+            this.puzzleBoardController.redo();
+        }
     }//GEN-LAST:event_menuRedoActionPerformed
 
     private void formWindowClosing(java.awt.event.WindowEvent evt) {//GEN-FIRST:event_formWindowClosing
@@ -394,25 +400,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_formWindowClosing
 
     private void menuGiveUpActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuGiveUpActionPerformed
-        this.pauseGame();
-        final int dialogResult = JOptionPane.showConfirmDialog(
-                this,
-                "Do you really want to show all the solution?",
-                "Give up?",
-                JOptionPane.YES_NO_OPTION,
-                JOptionPane.QUESTION_MESSAGE
-        );
-        if (dialogResult == JOptionPane.YES_OPTION) {
-            this.isGameOver = true;
-            this.statusController.showMessage("Click Game > New game to start new puzzle", StatusController.STATUS_ERROR);
-            this.labelTime.setForeground(Color.red);
-            this.labelTime.setText("Gave up!");
-            this.timer.stop();
-            this.puzzleBoardController.solveTheGame();
-            this.puzzleBoardController.showPuzzleBoard();
-        } else if (dialogResult == JOptionPane.NO_OPTION) {
-            this.resumeGame();
-        }
+        this.handleGameOver(MainWindow.GAME_RESULT_USER_GIVE_UP);
     }//GEN-LAST:event_menuGiveUpActionPerformed
 
     private void menuHighScoreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuHighScoreActionPerformed
@@ -447,7 +435,9 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }//GEN-LAST:event_menuExitActionPerformed
 
     private void menuClearPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuClearPuzzleActionPerformed
-        puzzleBoardController.clearPuzzle();
+        if (!this.isGameOver) {
+            puzzleBoardController.clearPuzzle();
+        }
     }//GEN-LAST:event_menuClearPuzzleActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
@@ -605,11 +595,32 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         newGame();
     }
 
+    private void handleUserGaveUp() {
+        final int dialogResult = JOptionPane.showConfirmDialog(
+                this,
+                "Do you really want to show all the solution?",
+                "Give up?",
+                JOptionPane.YES_NO_OPTION,
+                JOptionPane.QUESTION_MESSAGE
+        );
+        if (dialogResult == JOptionPane.YES_OPTION) {
+            this.isGameOver = true;
+            this.statusController.showMessage("Game > New game to start new puzzle", StatusController.STATUS_ERROR);
+            this.labelTime.setForeground(Color.red);
+            this.labelTime.setText("Gave up!");
+            this.timer.stop();
+            this.puzzleBoardController.solveTheGame();
+            this.puzzleBoardController.showPuzzleBoard();
+        } else if (dialogResult == JOptionPane.NO_OPTION) {
+            this.resumeGame();
+        }
+    }
+
     private void handleGameOver(int gameResult) {
-        this.isGameOver = true;
         this.pauseGame();
         switch (gameResult) {
             case GAME_RESULT_TIME_UP:
+                this.isGameOver = true;
                 if (this.puzzleBoardController.isSolved()) {
                     handleUserSolvePuzzle();
                 } else {
@@ -617,10 +628,11 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
                 }
                 break;
             case GAME_RESULT_USER_SOLVE_PUZZLE:
+                this.isGameOver = true;
                 handleUserSolvePuzzle();
                 break;
             case GAME_RESULT_USER_GIVE_UP:
-                // todo: handle when user gives up
+                handleUserGaveUp();
                 break;
         }
     }
