@@ -8,6 +8,7 @@ package edu.ctu.cit.sudoku.Factories;
 import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import static edu.ctu.cit.sudoku.Models.Puzzle.BOARD_SIZE;
+import edu.ctu.cit.sudoku.Utils.ArrayShuffle;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -27,8 +28,14 @@ public class PuzzleFactory {
         EVIL
     }
 
+    public enum DiggingHoleSequences {
+        LEFT_RIGHT_TOP_BOTTOM,
+        S_WANDERING,
+        JUMP_ON_ONE_CELL,
+        RANDOMLY
+    }
+
     public Puzzle createPuzzle(GameDifficulties difficulties) {
-        
         switch (difficulties) {
             case EXTREMELY_EASY:
                 break;
@@ -43,7 +50,7 @@ public class PuzzleFactory {
             default:
                 throw new EnumConstantNotPresentException(GameDifficulties.class, difficulties.toString());
         }
-        
+
         return null;
     }
 
@@ -61,7 +68,7 @@ public class PuzzleFactory {
             }
         }
 
-        for (int cellLimit = PuzzleFactory.TERMINAL_PATTERN_GIVENS_LIMIT; cellLimit > 0 && !candidates.isEmpty(); ) {
+        for (int cellLimit = PuzzleFactory.TERMINAL_PATTERN_GIVENS_LIMIT; cellLimit > 0 && !candidates.isEmpty();) {
             int randomCellIndex = Math.abs(random.nextInt()) % candidates.size();
             int x = candidates.get(randomCellIndex).getX();
             int y = candidates.get(randomCellIndex).getY();
@@ -86,14 +93,36 @@ public class PuzzleFactory {
 
         return candidates.isEmpty() ? null : new Puzzle(resultPuzzle);
     }
-    
+
     public Puzzle createTerminalPattern() {
         while (true) {
             Puzzle puzzle = this.lasVegas();
             int[][] solvedMatrix = puzzle.solve();
             if (solvedMatrix != null) {
-               return new Puzzle(solvedMatrix);
+                return new Puzzle(solvedMatrix);
             }
         }
+    }
+
+    public ArrayList<Cell> generateCellJumpingSequence(DiggingHoleSequences diggingHoleSequences) {
+        ArrayList<Cell> orderedCells = new ArrayList<>();
+        switch (diggingHoleSequences) {
+            case RANDOMLY:
+                for (int i = 0; i < BOARD_SIZE; i++) {
+                    for (int j = 0; j < BOARD_SIZE; j++) {
+                        orderedCells.add(new Cell(i, j));
+                    }
+                }   ArrayShuffle.shuffle(orderedCells);
+                break;
+            case S_WANDERING:
+                break;
+            case JUMP_ON_ONE_CELL:
+                break;
+            case LEFT_RIGHT_TOP_BOTTOM:
+                break;
+            default:
+                break;
+        }
+        return orderedCells;
     }
 }
