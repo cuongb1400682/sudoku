@@ -21,6 +21,7 @@ import java.util.StringTokenizer;
  * @author charlie
  */
 public final class Puzzle {
+
     public static final int BOARD_SIZE = 9;
     public static final int N_PRESET_CELLS = 30;
 
@@ -48,6 +49,7 @@ public final class Puzzle {
 
     public Puzzle(int[][] board) {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
+        this.clear();
         for (int i = 0; i < BOARD_SIZE; i++) {
             System.arraycopy(board[i], 0, this.board[i], 0, BOARD_SIZE);
         }
@@ -263,7 +265,6 @@ public final class Puzzle {
         return true;
     }
 
-
     public void generateNewPuzzle() {
         do {
             this.board = this.randomBoard(N_PRESET_CELLS);
@@ -277,7 +278,7 @@ public final class Puzzle {
         short[] colMark = new short[BOARD_SIZE];
         short[] rowMark = new short[BOARD_SIZE];
         short[][] groupMark = new short[BOARD_SIZE][BOARD_SIZE];
-        
+
         for (int i = 0; i < BOARD_SIZE; i++) {
             System.arraycopy(this.board[i], 0, board[i], 0, BOARD_SIZE);
         }
@@ -305,6 +306,32 @@ public final class Puzzle {
         );
 
         return isSolvable ? resultBoard : null;
+    }
+
+    public ArrayList<Integer> enumerateCellProbabilities(final int rowIndex, final int colIndex) {
+        boolean[] isSelected = new boolean[10];
+        
+        for (int index = 0; index < BOARD_SIZE; index++) {
+            isSelected[this.get(rowIndex, index)] = true;
+            isSelected[this.get(index, colIndex)] = true;
+        }
+        
+        final int rowGroupIndex = 3 * (int) (rowIndex / 3);
+        final int colGroupIndex = 3 * (int) (colIndex / 3);
+        for (int i = rowGroupIndex; i < rowGroupIndex + 3; i++) {
+            for (int j = colGroupIndex; j < colGroupIndex + 3; j++) {
+                isSelected[this.get(i, j)] = true;
+            }
+        }
+        
+        ArrayList<Integer> probabilities = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) {
+            if (!isSelected[i]) {
+                probabilities.add(i);
+            }
+        }
+        
+        return probabilities;
     }
 
     @Override
