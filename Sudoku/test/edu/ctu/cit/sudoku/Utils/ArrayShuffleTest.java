@@ -41,14 +41,14 @@ public class ArrayShuffleTest {
     }
 
     /**
-     * Test of shuffle method, of class ArrayShuffle.
+     * Test of shuffle method, of class ArrayListRandomUtils.
      */
     @Test
     public void testShuffle() {
         System.out.println("shuffle");
         ArrayList<Integer> initalArray = new ArrayList<>(Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8));
         ArrayList<Integer> shuffledArray = (ArrayList<Integer>) initalArray.clone();
-        ArrayShuffle.shuffle(shuffledArray);
+        ArrayListRandomUtils.shuffle(shuffledArray);
 
         System.out.println("initalArray   = " + initalArray.toString());
         System.out.println("shuffledArray = " + shuffledArray.toString());

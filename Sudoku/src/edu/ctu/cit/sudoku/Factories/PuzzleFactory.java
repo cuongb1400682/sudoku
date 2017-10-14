@@ -8,7 +8,7 @@ package edu.ctu.cit.sudoku.Factories;
 import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import static edu.ctu.cit.sudoku.Models.Puzzle.BOARD_SIZE;
-import edu.ctu.cit.sudoku.Utils.ArrayShuffle;
+import edu.ctu.cit.sudoku.Utils.ArrayListRandomUtils;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -28,12 +28,6 @@ public class PuzzleFactory {
         EVIL
     }
 
-    public enum DiggingHoleSequences {
-        LEFT_RIGHT_TOP_BOTTOM,
-        S_WANDERING,
-        JUMP_ON_ONE_CELL,
-        RANDOMLY
-    }
 
     public Puzzle createPuzzle(GameDifficulties difficulties) {
         switch (difficulties) {
@@ -104,25 +98,5 @@ public class PuzzleFactory {
         }
     }
 
-    public ArrayList<Cell> generateCellJumpingSequence(DiggingHoleSequences diggingHoleSequences) {
-        ArrayList<Cell> orderedCells = new ArrayList<>();
-        switch (diggingHoleSequences) {
-            case RANDOMLY:
-                for (int i = 0; i < BOARD_SIZE; i++) {
-                    for (int j = 0; j < BOARD_SIZE; j++) {
-                        orderedCells.add(new Cell(i, j));
-                    }
-                }   ArrayShuffle.shuffle(orderedCells);
-                break;
-            case S_WANDERING:
-                break;
-            case JUMP_ON_ONE_CELL:
-                break;
-            case LEFT_RIGHT_TOP_BOTTOM:
-                break;
-            default:
-                break;
-        }
-        return orderedCells;
-    }
+
 }

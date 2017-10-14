@@ -12,8 +12,8 @@ import java.util.Random;
  *
  * @author charlie
  */
-public class ArrayShuffle {
-    public static <T> void shuffle(ArrayList<T> array) {
+public class ArrayListRandomUtils {
+    public static <T> ArrayList<T> shuffle(ArrayList<T> array) {
         Random random = new Random(System.currentTimeMillis());
         for (int currentIndex = 0; currentIndex < array.size(); currentIndex++) {
             int randomIndex = Math.abs(random.nextInt()) % array.size();
@@ -21,5 +21,6 @@ public class ArrayShuffle {
             array.set(currentIndex, array.get(randomIndex));
             array.set(randomIndex, temporaryValue);
         }
+        return array;
     }
 }
