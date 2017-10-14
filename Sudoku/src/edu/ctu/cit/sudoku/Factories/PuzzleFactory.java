@@ -9,6 +9,7 @@ import edu.ctu.cit.sudoku.Models.Cell;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import static edu.ctu.cit.sudoku.Models.Puzzle.BOARD_SIZE;
 import edu.ctu.cit.sudoku.Utils.ArrayListRandomUtils;
+import edu.ctu.cit.sudoku.Utils.DiggingSequencesUtils;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -20,30 +21,46 @@ public class PuzzleFactory {
 
     private static final int TERMINAL_PATTERN_GIVENS_LIMIT = 11;
 
-    public enum GameDifficulties {
-        EXTREMELY_EASY,
-        EASY,
-        MEDIUM,
-        DIFFICULT,
-        EVIL
+    public static enum GameDifficulties {
+        EXTREMELY_EASY(52, 5),
+        EASY(40, 4),
+        MEDIUM(33, 3),
+        DIFFICULT(30, 2),
+        EVIL(25, 0);
+
+        private GameDifficulties(int boardGivenLimit, int rowColGivenLimit) {
+            this.boardGivenLimit = boardGivenLimit;
+            this.rowColGivenLimit = rowColGivenLimit;
+        }
+
+        public final int boardGivenLimit;
+        public final int rowColGivenLimit;
+    }
+
+    private ArrayList<Cell> determineSequenceOfDiggingHoles(GameDifficulties difficulties) {
+        ArrayList<Cell> orderedCells = new ArrayList<>();
+        switch (difficulties) {
+            case EXTREMELY_EASY:
+            case EASY:
+                orderedCells = DiggingSequencesUtils.generateCellJumpingSequence(DiggingSequencesUtils.DiggingHoleSequenceType.RANDOMLY);
+                break;
+            case MEDIUM:
+                orderedCells = DiggingSequencesUtils.generateCellJumpingSequence(DiggingSequencesUtils.DiggingHoleSequenceType.JUMP_ON_ONE_CELL);
+                break;
+            case DIFFICULT:
+                orderedCells = DiggingSequencesUtils.generateCellJumpingSequence(DiggingSequencesUtils.DiggingHoleSequenceType.S_WANDERING);
+                break;
+            case EVIL:
+                orderedCells = DiggingSequencesUtils.generateCellJumpingSequence(DiggingSequencesUtils.DiggingHoleSequenceType.LEFT_RIGHT_TOP_BOTTOM);
+                break;
+        }
+        return orderedCells;
     }
 
     public Puzzle createPuzzle(GameDifficulties difficulties) {
-        switch (difficulties) {
-            case EXTREMELY_EASY:
-                break;
-            case EASY:
-                break;
-            case MEDIUM:
-                break;
-            case DIFFICULT:
-                break;
-            case EVIL:
-                break;
-            default:
-                throw new EnumConstantNotPresentException(GameDifficulties.class, difficulties.toString());
+        for (Cell cell : this.determineSequenceOfDiggingHoles(difficulties)) {
+            
         }
-
         return null;
     }
 
@@ -96,6 +113,5 @@ public class PuzzleFactory {
             }
         }
     }
-
 
 }
