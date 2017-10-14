@@ -58,10 +58,27 @@ public class PuzzleFactory {
     }
 
     public Puzzle createPuzzle(GameDifficulties difficulties) {
+        Puzzle result = createTerminalPattern();
         for (Cell cell : this.determineSequenceOfDiggingHoles(difficulties)) {
-            
+            int x = cell.getX();
+            int y = cell.getY();
+            if (result.get(x, y) > 0) {
+                if (!violateRestriction(x, y, difficulties, result)) {
+                    if (existUniqueSolutionAfterDigging(x, y, result)) {
+                        result.set(x, y, 0);
+                    }
+                }
+            }
         }
-        return null;
+        return result;
+    }
+
+    private boolean violateRestriction(int x, int y, GameDifficulties difficulties, Puzzle result) {
+        return false;
+    }
+    
+    private boolean existUniqueSolutionAfterDigging(int x, int y, Puzzle result) {
+        return false;
     }
 
     private Puzzle lasVegas() {
