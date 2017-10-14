@@ -28,7 +28,6 @@ public class PuzzleFactory {
         EVIL
     }
 
-
     public Puzzle createPuzzle(GameDifficulties difficulties) {
         switch (difficulties) {
             case EXTREMELY_EASY:

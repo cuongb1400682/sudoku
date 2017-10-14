@@ -359,8 +359,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         ManuallyNewGameDialog dialog = new ManuallyNewGameDialog(this, true);
         dialog.setLocationRelativeTo(this);
         dialog.setOnUserPressOk(puzzle -> {
-            System.out.println("isvalid = " + puzzle.isValidPuzzleBoard());
-            if (puzzle.isValidPuzzleBoard()) {
+            System.out.println("isvalid = " + puzzle.isValidPuzzle());
+            if (puzzle.isValidPuzzle()) {
                 MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
                 MainWindow.this.resetTimer();
             } else {

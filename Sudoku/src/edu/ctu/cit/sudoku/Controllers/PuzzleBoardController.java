@@ -60,7 +60,7 @@ public class PuzzleBoardController {
 
     public void fromFile(File file) throws FileNotFoundException, Puzzle.InvalidPuzzleException {
         Puzzle puzzle = Puzzle.fromFile(file.getAbsolutePath());
-        if (!puzzle.isValidPuzzleBoard()) {
+        if (!puzzle.isValidPuzzle()) {
             throw new Puzzle.InvalidPuzzleException("Selected file contains invalid puzzle!");
         }
         this.puzzleBoard.setPuzzle(puzzle);
@@ -88,8 +88,8 @@ public class PuzzleBoardController {
     }
 
     public boolean isSolved() {
-        return this.puzzle.isValidPuzzleBoard() && 
-                (this.puzzle.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE);
+        return this.puzzle.isValidPuzzle() && 
+                (this.puzzle.countNonEmptyCells() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE);
     }
    
     public void setUseWonTheGameHandler(PuzzleBoard.OnUserWonTheGame onUserWonTheGame) {

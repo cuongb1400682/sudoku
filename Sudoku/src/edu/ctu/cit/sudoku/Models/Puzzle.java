@@ -5,6 +5,7 @@
  */
 package edu.ctu.cit.sudoku.Models;
 
+import edu.ctu.cit.sudoku.Utils.PuzzleSolverUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -145,7 +146,7 @@ public final class Puzzle {
         }
     }
 
-    public ArrayList<Cell> checkColumn(int columnNumber) {
+    public ArrayList<Cell> enumerateRepeatedCellsInColumn(int columnNumber) {
         Cell[] colMark = new Cell[20];
         boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
         ArrayList<Cell> violatedCells = new ArrayList<>();
@@ -171,7 +172,7 @@ public final class Puzzle {
         return violatedCells;
     }
 
-    public ArrayList<Cell> checkRow(int rowNumber) {
+    public ArrayList<Cell> enumerateRepeatedCellsInRow(int rowNumber) {
         Cell[] rowMark = new Cell[20];
         boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
         ArrayList<Cell> violatedCells = new ArrayList<>();
@@ -197,7 +198,7 @@ public final class Puzzle {
         return violatedCells;
     }
 
-    public ArrayList<Cell> checkGroup(int rowIndex, int colIndex) {
+    public ArrayList<Cell> enumerateRepeatedCellsInGroup(int rowIndex, int colIndex) {
         Cell[] groupMark = new Cell[20];
         boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
         ArrayList<Cell> violatedCells = new ArrayList<>();
@@ -227,7 +228,7 @@ public final class Puzzle {
         return violatedCells;
     }
 
-    public int countNonZero() {
+    public int countNonEmptyCells() {
         int nonZeroCount = 0;
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
@@ -239,68 +240,29 @@ public final class Puzzle {
         return nonZeroCount;
     }
 
-    public boolean isValidPuzzleBoard() {
+    public boolean isValidPuzzle() {
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
-            if (this.checkRow(i).size() > 0) {
+            if (this.enumerateRepeatedCellsInRow(i).size() > 0) {
                 return false;
             }
 
-            if (this.checkColumn(i).size() > 0) {
+            if (this.enumerateRepeatedCellsInColumn(i).size() > 0) {
                 return false;
             }
         }
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (this.checkGroup(i, j).size() > 0) {
+                if (this.enumerateRepeatedCellsInGroup(i, j).size() > 0) {
                     return false;
                 }
             }
         }
 
-        //return this.countNonZero() == Puzzle.N_PRESET_CELLS;
+        //return this.countNonEmptyCells() == Puzzle.N_PRESET_CELLS;
         return true;
     }
 
-    private boolean exhaustedSearch(
-            int currIndex,
-            ArrayList<Cell> candidateCells,
-            int[][] board,
-            int[][] resultBoard,
-            short[] colMark,
-            short[] rowMark,
-            short[][] groupMark) {
-
-        if (currIndex >= candidateCells.size()) {
-            for (int i = 0; i < BOARD_SIZE; i++) {
-                System.arraycopy(board[i], 0, resultBoard[i], 0, BOARD_SIZE);
-            }
-            return true;
-        }
-
-        int currentX = candidateCells.get(currIndex).getX();
-        int currentY = candidateCells.get(currIndex).getY();
-
-        short mark = (short) (colMark[currentY] | rowMark[currentX] | groupMark[currentX / 3][currentY / 3]);
-        for (int i = 0; i < 9; i++) {
-            if (((mark >> i) & 1) == 0) {
-                int candidateNumbers = (int) i + 1;
-                board[currentX][currentY] = candidateNumbers;
-                colMark[currentY] |= 1 << i;
-                rowMark[currentX] |= 1 << i;
-                groupMark[currentX / 3][currentY / 3] |= 1 << i;
-                if (exhaustedSearch(currIndex + 1, candidateCells, board, resultBoard, colMark, rowMark, groupMark)) {
-                    return true;
-                }
-                board[currentX][currentY] = 0;
-                colMark[currentY] &= ~(1 << i);
-                rowMark[currentX] &= ~(1 << i);
-                groupMark[currentX / 3][currentY / 3] &= ~(1 << i);
-            }
-        }
-
-        return false;
-    }
 
     public void generateNewPuzzle() {
         do {
@@ -332,7 +294,7 @@ public final class Puzzle {
             }
         }
 
-        boolean isSolvable = this.exhaustedSearch(
+        boolean isSolvable = PuzzleSolverUtils.exhaustedSearch(
                 0,
                 candidateCells,
                 board,

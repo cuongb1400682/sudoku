@@ -136,8 +136,8 @@ public class PuzzleBoard extends javax.swing.JPanel {
         numberChooser.setNumberSelected((int number) -> {
             if (PuzzleBoard.this.selectedPuzzleCell != null) {
                 PuzzleBoard.this.remote.change(selectedPuzzleCellX, selectedPuzzleCellY, number);
-                if (PuzzleBoard.this.puzzleUserAnswer.isValidPuzzleBoard()
-                        && this.puzzleUserAnswer.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE) {
+                if (PuzzleBoard.this.puzzleUserAnswer.isValidPuzzle()
+                        && this.puzzleUserAnswer.countNonEmptyCells() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE) {
                     if (PuzzleBoard.this.onUserWonTheGame != null) {
                         PuzzleBoard.this.onUserWonTheGame.onUserWonTheGame();
                     }
@@ -260,17 +260,17 @@ public class PuzzleBoard extends javax.swing.JPanel {
             clearMistakes();
             for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
                 puzzleUserAnswer
-                        .checkRow(i)
+                        .enumerateRepeatedCellsInRow(i)
                         .forEach(markRepeatedCell);
                 puzzleUserAnswer
-                        .checkColumn(i)
+                        .enumerateRepeatedCellsInColumn(i)
                         .forEach(markRepeatedCell);
             }
 
             for (int i = 0; i < 3; i++) {
                 for (int j = 0; j < 3; j++) {
                     puzzleUserAnswer
-                            .checkGroup(i, j)
+                            .enumerateRepeatedCellsInGroup(i, j)
                             .forEach(markRepeatedCell);
                 }
             }

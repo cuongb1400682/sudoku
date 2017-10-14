@@ -54,7 +54,7 @@ public class PuzzleTest {
     }
 
     /**
-     * Test of checkColumn method, of class Puzzle.
+     * Test of enumerateRepeatedCellsInColumn method, of class Puzzle.
      */
     @Test
     public void testCheckColumn() {
