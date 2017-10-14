@@ -59,6 +59,7 @@ public class PuzzleFactory {
 
     public Puzzle createPuzzle(GameDifficulties difficulties) {
         Puzzle result = createTerminalPattern();
+        int dugCellCount = 0;
         for (Cell cell : this.determineSequenceOfDiggingHoles(difficulties)) {
             int x = cell.getX();
             int y = cell.getY();
@@ -66,15 +67,35 @@ public class PuzzleFactory {
                 if (!violateRestriction(x, y, difficulties, result)) {
                     if (existUniqueSolutionAfterDigging(x, y, result)) {
                         result.set(x, y, 0);
+                        dugCellCount++;
                     }
                 }
             }
+            if (dugCellCount >= difficulties.boardGivenLimit) {
+                break;
+            } 
         }
         return result;
     }
 
     private boolean violateRestriction(int x, int y, GameDifficulties difficulties, Puzzle result) {
-        return false;
+        int rowGivenCount = -1;
+        int colGivenCount = -1;
+        for (int i = 0; i < BOARD_SIZE; i++) {
+            if (result.get(x, i) > 0) {
+                rowGivenCount++;
+                if (rowGivenCount < difficulties.rowColGivenLimit) {
+                    return false;
+                }
+            }            
+            if (result.get(i, y) > 0) {
+                colGivenCount++;
+                if (colGivenCount < difficulties.rowColGivenLimit) {
+                    return false;
+                }
+            }
+        }
+        return true;
     }
     
     private boolean existUniqueSolutionAfterDigging(int x, int y, Puzzle result) {
