@@ -10,6 +10,7 @@ import edu.ctu.cit.sudoku.Models.Puzzle;
 import static edu.ctu.cit.sudoku.Models.Puzzle.BOARD_SIZE;
 import edu.ctu.cit.sudoku.Utils.ArrayListRandomUtils;
 import edu.ctu.cit.sudoku.Utils.DiggingSequencesUtils;
+import edu.ctu.cit.sudoku.Utils.PuzzleSolverUtils;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -22,19 +23,19 @@ public class PuzzleFactory {
     private static final int TERMINAL_PATTERN_GIVENS_LIMIT = 11;
 
     public static enum GameDifficulties {
-        EXTREMELY_EASY(52, 5),
-        EASY(40, 4),
-        MEDIUM(33, 3),
-        DIFFICULT(30, 2),
-        EVIL(25, 0);
+        EXTREMELY_EASY(31, 4),
+        EASY(45, 5),
+        MEDIUM(49, 6),
+        DIFFICULT(53, 7),
+        EVIL(59, 9);
 
         private GameDifficulties(int boardGivenLimit, int rowColGivenLimit) {
             this.boardGivenLimit = boardGivenLimit;
-            this.rowColGivenLimit = rowColGivenLimit;
+            this.rowColEmptyCellLowerBound = rowColGivenLimit;
         }
 
         public final int boardGivenLimit;
-        public final int rowColGivenLimit;
+        public final int rowColEmptyCellLowerBound;
     }
 
     private ArrayList<Cell> determineSequenceOfDiggingHoles(GameDifficulties difficulties) {
@@ -59,6 +60,7 @@ public class PuzzleFactory {
 
     public Puzzle createPuzzle(GameDifficulties difficulties) {
         Puzzle result = createTerminalPattern();
+        System.out.println(result);
         int dugCellCount = 0;
         for (Cell cell : this.determineSequenceOfDiggingHoles(difficulties)) {
             int x = cell.getX();
@@ -73,36 +75,44 @@ public class PuzzleFactory {
             }
             if (dugCellCount >= difficulties.boardGivenLimit) {
                 break;
-            } 
+            }
         }
         return result;
     }
 
     private boolean violateRestriction(int x, int y, GameDifficulties difficulties, Puzzle result) {
-        int rowGivenCount = -1;
-        int colGivenCount = -1;
+        int rowEmptyCellCount = -1;
+        int colEmptyCellCount = -1;
         for (int i = 0; i < BOARD_SIZE; i++) {
             if (result.get(x, i) > 0) {
-                rowGivenCount++;
-                if (rowGivenCount < difficulties.rowColGivenLimit) {
-                    return false;
-                }
-            }            
+                rowEmptyCellCount++;
+            }
             if (result.get(i, y) > 0) {
-                colGivenCount++;
-                if (colGivenCount < difficulties.rowColGivenLimit) {
-                    return false;
-                }
+                colEmptyCellCount++;
+            }
+        }
+        return (rowEmptyCellCount >= difficulties.rowColEmptyCellLowerBound) || (colEmptyCellCount >= difficulties.rowColEmptyCellLowerBound);
+    }
+
+    private boolean existUniqueSolutionAfterDigging(int x, int y, Puzzle result) {
+        final int oldValue = result.get(x, y);
+        System.out.println(result);
+        System.out.println(result.enumerateCellProbabilities(x, y));
+        for (Integer probability : result.enumerateCellProbabilities(x, y)) {
+            if (probability.equals(oldValue)) {
+                continue;
+            }
+            result.set(x, y, probability);
+            if (result.solve() != null) {
+                result.set(x, y, oldValue);
+                return false;
             }
         }
         return true;
     }
-    
-    private boolean existUniqueSolutionAfterDigging(int x, int y, Puzzle result) {
-        return false;
-    }
 
     private Puzzle lasVegas() {
+        System.out.println("in lasVegas():");
         Random random = new Random(System.currentTimeMillis());
         int[][] resultPuzzle = new int[BOARD_SIZE][BOARD_SIZE];
         boolean[][] colMark = new boolean[BOARD_SIZE][10];
@@ -115,12 +125,14 @@ public class PuzzleFactory {
                 candidates.add(new Cell(i, j));
             }
         }
-
+        
         for (int cellLimit = PuzzleFactory.TERMINAL_PATTERN_GIVENS_LIMIT; cellLimit > 0 && !candidates.isEmpty();) {
             int randomCellIndex = Math.abs(random.nextInt()) % candidates.size();
             int x = candidates.get(randomCellIndex).getX();
             int y = candidates.get(randomCellIndex).getY();
             candidates.remove(randomCellIndex);
+            
+            System.out.println("choose: " + x + ", " + y);
 
             int number = 1;
             while (colMark[y][number] || rowMark[x][number] || groupMark[x / 3][y / 3][number]) {
@@ -139,13 +151,17 @@ public class PuzzleFactory {
             }
         }
 
+        System.out.println("return from lasVegas()");
         return candidates.isEmpty() ? null : new Puzzle(resultPuzzle);
     }
-
+    
     public Puzzle createTerminalPattern() {
         while (true) {
+            System.out.println("createTermPatt");
             Puzzle puzzle = this.lasVegas();
+            System.out.println("puzzle = " + puzzle);
             int[][] solvedMatrix = puzzle.solve();
+            System.out.println("solvedMatrix != null: " + (solvedMatrix != null));
             if (solvedMatrix != null) {
                 return new Puzzle(solvedMatrix);
             }

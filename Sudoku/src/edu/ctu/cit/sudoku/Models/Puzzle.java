@@ -339,7 +339,8 @@ public final class Puzzle {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                builder.append(String.format("%5d", this.board[i][j]));
+                final int value = this.board[i][j];
+                builder.append(String.format("%5s", value == 0 ? "." : value));
             }
             builder.append("\n");
         }
