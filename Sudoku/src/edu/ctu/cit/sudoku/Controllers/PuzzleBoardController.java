@@ -5,6 +5,7 @@
  */
 package edu.ctu.cit.sudoku.Controllers;
 
+import edu.ctu.cit.sudoku.Factories.PuzzleFactory;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import edu.ctu.cit.sudoku.Views.PuzzleBoard;
 import java.awt.Component;
@@ -28,9 +29,10 @@ public class PuzzleBoardController {
         this.puzzleBoard.setPuzzle(puzzle);
     }
 
-    public void newPuzzleBoard() {
-        this.puzzle.generateNewPuzzle();
-        this.puzzleBoard.setPuzzle(puzzle);
+    public void newPuzzleBoard(PuzzleFactory.GameDifficulties difficulties) {
+        PuzzleFactory factory = new PuzzleFactory();
+        this.puzzle = factory.createPuzzle(difficulties);
+        this.puzzleBoard.setPuzzle(this.puzzle);
     }
 
     public PuzzleBoard getPuzzleBoard() {
@@ -60,7 +62,7 @@ public class PuzzleBoardController {
 
     public void fromFile(File file) throws FileNotFoundException, Puzzle.InvalidPuzzleException {
         Puzzle puzzle = Puzzle.fromFile(file.getAbsolutePath());
-        if (!puzzle.isValidPuzzleBoard()) {
+        if (!puzzle.isValidPuzzle()) {
             throw new Puzzle.InvalidPuzzleException("Selected file contains invalid puzzle!");
         }
         this.puzzleBoard.setPuzzle(puzzle);
@@ -88,8 +90,8 @@ public class PuzzleBoardController {
     }
 
     public boolean isSolved() {
-        return this.puzzle.isValidPuzzleBoard() && 
-                (this.puzzle.countNonZero() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE);
+        return this.puzzle.isValidPuzzle() && 
+                (this.puzzle.countNonEmptyCells() == Puzzle.BOARD_SIZE * Puzzle.BOARD_SIZE);
     }
    
     public void setUseWonTheGameHandler(PuzzleBoard.OnUserWonTheGame onUserWonTheGame) {

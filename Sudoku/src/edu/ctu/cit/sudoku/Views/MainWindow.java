@@ -8,6 +8,7 @@ package edu.ctu.cit.sudoku.Views;
 import edu.ctu.cit.sudoku.Controllers.PuzzleBoardController;
 import edu.ctu.cit.sudoku.Controllers.StatusController;
 import edu.ctu.cit.sudoku.Databases.HighScoreDbHelper;
+import edu.ctu.cit.sudoku.Factories.PuzzleFactory;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -139,7 +140,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         menuGame.setText("Game");
 
         menuNewGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        menuNewGame.setText("New game");
+        menuNewGame.setText("New game...");
         menuNewGame.setName("menuNewGame"); // NOI18N
         menuNewGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -282,7 +283,17 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     }
 
     private void menuNewGameActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuNewGameActionPerformed
-        newGame();
+        this.pauseGame();
+        NewGameDialog newGameDialog = new NewGameDialog(this, true)
+                .setOnGameDifficultiesSelected((PuzzleFactory.GameDifficulties difficulties) -> {
+                    MainWindow.this.previousGameDifficulties = difficulties;
+                    MainWindow.this.newGame();
+                });
+        newGameDialog.focusOnDifficulty(this.previousGameDifficulties);
+        newGameDialog.setLocationRelativeTo(this);
+        newGameDialog.setVisible(true);
+        this.resumeGame();
+
     }//GEN-LAST:event_menuNewGameActionPerformed
 
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
@@ -359,8 +370,8 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         ManuallyNewGameDialog dialog = new ManuallyNewGameDialog(this, true);
         dialog.setLocationRelativeTo(this);
         dialog.setOnUserPressOk(puzzle -> {
-            System.out.println("isvalid = " + puzzle.isValidPuzzleBoard());
-            if (puzzle.isValidPuzzleBoard()) {
+            System.out.println("isvalid = " + puzzle.isValidPuzzle());
+            if (puzzle.isValidPuzzle()) {
                 MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
                 MainWindow.this.resetTimer();
             } else {
@@ -469,6 +480,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     // End of variables declaration//GEN-END:variables
 
     private final PuzzleBoardController puzzleBoardController = new PuzzleBoardController(this);
+    private PuzzleFactory.GameDifficulties previousGameDifficulties = PuzzleFactory.GameDifficulties.EXTREMELY_EASY;
     private StatusController statusController = null;
     private Timer timer = new Timer(1000, (ActionListener) this);
     private int tickCount;
@@ -499,7 +511,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private boolean isGameOver = false;
 
     private void newGame() {
-        this.puzzleBoardController.newPuzzleBoard();
+        this.puzzleBoardController.newPuzzleBoard(this.previousGameDifficulties);
         this.resetTimer();
     }
 

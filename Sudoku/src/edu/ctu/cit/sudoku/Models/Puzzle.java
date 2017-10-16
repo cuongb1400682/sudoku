@@ -5,6 +5,7 @@
  */
 package edu.ctu.cit.sudoku.Models;
 
+import edu.ctu.cit.sudoku.Utils.PuzzleSolverUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
@@ -20,9 +21,11 @@ import java.util.StringTokenizer;
  * @author charlie
  */
 public final class Puzzle {
-
     public static final int BOARD_SIZE = 9;
-    public static final int N_PRESET_CELLS = 30;
+
+    public boolean isSolvable() {
+        return this.solve() != null;
+    }
 
     public static class InvalidPuzzleException extends Exception {
 
@@ -48,6 +51,7 @@ public final class Puzzle {
 
     public Puzzle(int[][] board) {
         this.board = new int[BOARD_SIZE][BOARD_SIZE];
+        this.clear();
         for (int i = 0; i < BOARD_SIZE; i++) {
             System.arraycopy(board[i], 0, this.board[i], 0, BOARD_SIZE);
         }
@@ -79,46 +83,6 @@ public final class Puzzle {
         }
     }
 
-    private int[][] randomBoard(int nCell) {
-        Random r = new Random(System.currentTimeMillis());
-        int[][] resultBoard = new int[BOARD_SIZE][BOARD_SIZE];
-        boolean[][] colMark = new boolean[BOARD_SIZE][20];
-        boolean[][] rowMark = new boolean[BOARD_SIZE][20];
-        boolean[][][] groupMark = new boolean[BOARD_SIZE][BOARD_SIZE][20];
-        ArrayList<Cell> can = new ArrayList<>();
-
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                can.add(new Cell(i, j));
-            }
-        }
-
-        while (nCell > 0 && !can.isEmpty()) {
-            int randomCellIndex = Math.abs(r.nextInt()) % can.size();
-            int x = can.get(randomCellIndex).getX();
-            int y = can.get(randomCellIndex).getY();
-            can.remove(randomCellIndex);
-
-            int number = 1;
-            while (colMark[y][number] || rowMark[x][number] || groupMark[x / 3][y / 3][number]) {
-                number++;
-                if (number > 9) {
-                    break;
-                }
-            }
-
-            if (number <= 9) {
-                colMark[y][number] = true;
-                rowMark[x][number] = true;
-                groupMark[x / 3][y / 3][number] = true;
-                resultBoard[x][y] = number;
-                nCell--;
-            }
-        }
-
-        return can.isEmpty() ? null : resultBoard;
-    }
-
     public static Puzzle fromFile(String inputFile) throws FileNotFoundException {
         Scanner scanner = new Scanner(new File(inputFile));
         int rowIndex = 0;
@@ -146,7 +110,7 @@ public final class Puzzle {
         }
     }
 
-    public ArrayList<Cell> checkColumn(int columnNumber) {
+    public ArrayList<Cell> enumerateRepeatedCellsInColumn(int columnNumber) {
         Cell[] colMark = new Cell[20];
         boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
         ArrayList<Cell> violatedCells = new ArrayList<>();
@@ -172,7 +136,7 @@ public final class Puzzle {
         return violatedCells;
     }
 
-    public ArrayList<Cell> checkRow(int rowNumber) {
+    public ArrayList<Cell> enumerateRepeatedCellsInRow(int rowNumber) {
         Cell[] rowMark = new Cell[20];
         boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
         ArrayList<Cell> violatedCells = new ArrayList<>();
@@ -198,7 +162,7 @@ public final class Puzzle {
         return violatedCells;
     }
 
-    public ArrayList<Cell> checkGroup(int rowIndex, int colIndex) {
+    public ArrayList<Cell> enumerateRepeatedCellsInGroup(int rowIndex, int colIndex) {
         Cell[] groupMark = new Cell[20];
         boolean[][] inResult = new boolean[BOARD_SIZE][BOARD_SIZE];
         ArrayList<Cell> violatedCells = new ArrayList<>();
@@ -228,7 +192,7 @@ public final class Puzzle {
         return violatedCells;
     }
 
-    public int countNonZero() {
+    public int countNonEmptyCells() {
         int nonZeroCount = 0;
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
             for (int j = 0; j < Puzzle.BOARD_SIZE; j++) {
@@ -240,73 +204,27 @@ public final class Puzzle {
         return nonZeroCount;
     }
 
-    public boolean isValidPuzzleBoard() {
+    public boolean isValidPuzzle() {
         for (int i = 0; i < Puzzle.BOARD_SIZE; i++) {
-            if (this.checkRow(i).size() > 0) {
+            if (this.enumerateRepeatedCellsInRow(i).size() > 0) {
                 return false;
             }
 
-            if (this.checkColumn(i).size() > 0) {
+            if (this.enumerateRepeatedCellsInColumn(i).size() > 0) {
                 return false;
             }
         }
 
         for (int i = 0; i < 3; i++) {
             for (int j = 0; j < 3; j++) {
-                if (this.checkGroup(i, j).size() > 0) {
+                if (this.enumerateRepeatedCellsInGroup(i, j).size() > 0) {
                     return false;
                 }
             }
         }
 
-        //return this.countNonZero() == Puzzle.N_PRESET_CELLS;
+        //return this.countNonEmptyCells() == Puzzle.N_PRESET_CELLS;
         return true;
-    }
-
-    private boolean exhaustedSearch(
-            int currIndex,
-            ArrayList<Cell> candidateCells,
-            int[][] board,
-            int[][] resultBoard,
-            short[] colMark,
-            short[] rowMark,
-            short[][] groupMark) {
-
-        if (currIndex >= candidateCells.size()) {
-            for (int i = 0; i < BOARD_SIZE; i++) {
-                System.arraycopy(board[i], 0, resultBoard[i], 0, BOARD_SIZE);
-            }
-            return true;
-        }
-
-        int currentX = candidateCells.get(currIndex).getX();
-        int currentY = candidateCells.get(currIndex).getY();
-
-        short mark = (short) (colMark[currentY] | rowMark[currentX] | groupMark[currentX / 3][currentY / 3]);
-        for (int i = 0; i < 9; i++) {
-            if (((mark >> i) & 1) == 0) {
-                int candidateNumbers = (int) i + 1;
-                board[currentX][currentY] = candidateNumbers;
-                colMark[currentY] |= 1 << i;
-                rowMark[currentX] |= 1 << i;
-                groupMark[currentX / 3][currentY / 3] |= 1 << i;
-                if (exhaustedSearch(currIndex + 1, candidateCells, board, resultBoard, colMark, rowMark, groupMark)) {
-                    return true;
-                }
-                board[currentX][currentY] = 0;
-                colMark[currentY] &= ~(1 << i);
-                rowMark[currentX] &= ~(1 << i);
-                groupMark[currentX / 3][currentY / 3] &= ~(1 << i);
-            }
-        }
-
-        return false;
-    }
-
-    public void generateNewPuzzle() {
-        do {
-            this.board = this.randomBoard(N_PRESET_CELLS);
-        } while (this.solve() == null);
     }
 
     public int[][] solve() {
@@ -316,7 +234,7 @@ public final class Puzzle {
         short[] colMark = new short[BOARD_SIZE];
         short[] rowMark = new short[BOARD_SIZE];
         short[][] groupMark = new short[BOARD_SIZE][BOARD_SIZE];
-        
+
         for (int i = 0; i < BOARD_SIZE; i++) {
             System.arraycopy(this.board[i], 0, board[i], 0, BOARD_SIZE);
         }
@@ -333,7 +251,7 @@ public final class Puzzle {
             }
         }
 
-        boolean isSolvable = this.exhaustedSearch(
+        boolean isSolvable = PuzzleSolverUtils.exhaustedSearch(
                 0,
                 candidateCells,
                 board,
@@ -346,12 +264,39 @@ public final class Puzzle {
         return isSolvable ? resultBoard : null;
     }
 
+    public ArrayList<Integer> enumerateCellProbabilities(final int rowIndex, final int colIndex) {
+        boolean[] isSelected = new boolean[10];
+        
+        for (int index = 0; index < BOARD_SIZE; index++) {
+            isSelected[this.get(rowIndex, index)] = true;
+            isSelected[this.get(index, colIndex)] = true;
+        }
+        
+        final int rowGroupIndex = 3 * (int) (rowIndex / 3);
+        final int colGroupIndex = 3 * (int) (colIndex / 3);
+        for (int i = rowGroupIndex; i < rowGroupIndex + 3; i++) {
+            for (int j = colGroupIndex; j < colGroupIndex + 3; j++) {
+                isSelected[this.get(i, j)] = true;
+            }
+        }
+        
+        ArrayList<Integer> probabilities = new ArrayList<>();
+        for (int i = 1; i <= 9; i++) {
+            if (!isSelected[i]) {
+                probabilities.add(i);
+            }
+        }
+        
+        return probabilities;
+    }
+
     @Override
     public String toString() {
         StringBuilder builder = new StringBuilder();
         for (int i = 0; i < BOARD_SIZE; i++) {
             for (int j = 0; j < BOARD_SIZE; j++) {
-                builder.append(String.format("%5d", this.board[i][j]));
+                final int value = this.board[i][j];
+                builder.append(String.format("%5s", value == 0 ? "." : value));
             }
             builder.append("\n");
         }
