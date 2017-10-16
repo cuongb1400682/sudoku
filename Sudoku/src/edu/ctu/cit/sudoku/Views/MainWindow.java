@@ -140,7 +140,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         menuGame.setText("Game");
 
         menuNewGame.setAccelerator(javax.swing.KeyStroke.getKeyStroke(java.awt.event.KeyEvent.VK_F2, 0));
-        menuNewGame.setText("New game");
+        menuNewGame.setText("New game...");
         menuNewGame.setName("menuNewGame"); // NOI18N
         menuNewGame.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {

@@ -14,7 +14,7 @@
                 <Property name="accelerator" type="javax.swing.KeyStroke" editor="org.netbeans.modules.form.editors.KeyStrokeEditor">
                   <KeyStroke key="F2"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="New game"/>
+                <Property name="text" type="java.lang.String" value="New game..."/>
                 <Property name="name" type="java.lang.String" value="menuNewGame" noResource="true"/>
               </Properties>
               <Events>
