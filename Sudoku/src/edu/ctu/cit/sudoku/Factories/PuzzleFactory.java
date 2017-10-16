@@ -63,6 +63,7 @@ public class PuzzleFactory {
         //System.out.println(result);
         int dugCellCount = 0;
         for (Cell cell : this.determineSequenceOfDiggingHoles(difficulties)) {
+            //System.out.println(cell);
             int x = cell.getX();
             int y = cell.getY();
             if (result.get(x, y) > 0) {

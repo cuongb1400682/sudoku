@@ -5,6 +5,7 @@
  */
 package edu.ctu.cit.sudoku.Controllers;
 
+import edu.ctu.cit.sudoku.Factories.PuzzleFactory;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import edu.ctu.cit.sudoku.Views.PuzzleBoard;
 import java.awt.Component;
@@ -28,9 +29,10 @@ public class PuzzleBoardController {
         this.puzzleBoard.setPuzzle(puzzle);
     }
 
-    public void newPuzzleBoard() {
-        this.puzzle.generateNewPuzzle();
-        this.puzzleBoard.setPuzzle(puzzle);
+    public void newPuzzleBoard(PuzzleFactory.GameDifficulties difficulties) {
+        PuzzleFactory factory = new PuzzleFactory();
+        this.puzzle = factory.createPuzzle(difficulties);
+        this.puzzleBoard.setPuzzle(this.puzzle);
     }
 
     public PuzzleBoard getPuzzleBoard() {

@@ -21,9 +21,11 @@ import java.util.StringTokenizer;
  * @author charlie
  */
 public final class Puzzle {
-
     public static final int BOARD_SIZE = 9;
-    public static final int N_PRESET_CELLS = 30;
+
+    public boolean isSolvable() {
+        return this.solve() != null;
+    }
 
     public static class InvalidPuzzleException extends Exception {
 
@@ -79,46 +81,6 @@ public final class Puzzle {
                 board[i][j] = 0;
             }
         }
-    }
-
-    private int[][] randomBoard(int nCell) {
-        Random r = new Random(System.currentTimeMillis());
-        int[][] resultBoard = new int[BOARD_SIZE][BOARD_SIZE];
-        boolean[][] colMark = new boolean[BOARD_SIZE][10];
-        boolean[][] rowMark = new boolean[BOARD_SIZE][10];
-        boolean[][][] groupMark = new boolean[BOARD_SIZE][BOARD_SIZE][10];
-        ArrayList<Cell> can = new ArrayList<>();
-
-        for (int i = 0; i < BOARD_SIZE; i++) {
-            for (int j = 0; j < BOARD_SIZE; j++) {
-                can.add(new Cell(i, j));
-            }
-        }
-
-        while (nCell > 0 && !can.isEmpty()) {
-            int randomCellIndex = Math.abs(r.nextInt()) % can.size();
-            int x = can.get(randomCellIndex).getX();
-            int y = can.get(randomCellIndex).getY();
-            can.remove(randomCellIndex);
-
-            int number = 1;
-            while (colMark[y][number] || rowMark[x][number] || groupMark[x / 3][y / 3][number]) {
-                number++;
-                if (number > 9) {
-                    break;
-                }
-            }
-
-            if (number <= 9) {
-                colMark[y][number] = true;
-                rowMark[x][number] = true;
-                groupMark[x / 3][y / 3][number] = true;
-                resultBoard[x][y] = number;
-                nCell--;
-            }
-        }
-
-        return can.isEmpty() ? null : resultBoard;
     }
 
     public static Puzzle fromFile(String inputFile) throws FileNotFoundException {
@@ -263,12 +225,6 @@ public final class Puzzle {
 
         //return this.countNonEmptyCells() == Puzzle.N_PRESET_CELLS;
         return true;
-    }
-
-    public void generateNewPuzzle() {
-        do {
-            this.board = this.randomBoard(N_PRESET_CELLS);
-        } while (this.solve() == null);
     }
 
     public int[][] solve() {

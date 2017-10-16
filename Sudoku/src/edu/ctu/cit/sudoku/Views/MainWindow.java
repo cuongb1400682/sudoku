@@ -8,6 +8,7 @@ package edu.ctu.cit.sudoku.Views;
 import edu.ctu.cit.sudoku.Controllers.PuzzleBoardController;
 import edu.ctu.cit.sudoku.Controllers.StatusController;
 import edu.ctu.cit.sudoku.Databases.HighScoreDbHelper;
+import edu.ctu.cit.sudoku.Factories.PuzzleFactory;
 import edu.ctu.cit.sudoku.Models.Puzzle;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -499,7 +500,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private boolean isGameOver = false;
 
     private void newGame() {
-        this.puzzleBoardController.newPuzzleBoard();
+        this.puzzleBoardController.newPuzzleBoard(PuzzleFactory.GameDifficulties.EVIL);
         this.resetTimer();
     }
 

@@ -44,10 +44,14 @@ public class PuzzleFactoryTest {
     @Test
     public void testCreatePuzzle() {
         System.out.println("createPuzzle");
+        //for (int i = 0; i < 100000; i++) {
+        //System.out.println("i = " + i);
         PuzzleFactory.GameDifficulties difficulties = PuzzleFactory.GameDifficulties.EVIL;
         PuzzleFactory instance = new PuzzleFactory();
         Puzzle result = instance.createPuzzle(difficulties);
-        System.out.println(result);
+        //System.out.println("created puzzle");
+        //System.out.println(result);
+        //}
     }
 
     /**
@@ -56,13 +60,9 @@ public class PuzzleFactoryTest {
     @Test
     public void testCreateTerminalPattern() {
         System.out.println("createTerminalPattern");
-        for (int i = 0; i < 1000; i++) {
-            PuzzleFactory instance = new PuzzleFactory();
-            Puzzle expResult = null;
-            Puzzle result = instance.createTerminalPattern();
-            //System.out.println(result);
-        }
-        assertEquals(0, 0);
+        PuzzleFactory instance = new PuzzleFactory();
+        Puzzle expResult = null;
+        Puzzle result = instance.createTerminalPattern();
     }
 
 }

@@ -190,18 +190,6 @@ public class PuzzleTest {
     }
 
     /**
-     * Test of generateNewPuzzle method, of class Puzzle.
-     */
-    @Test
-    public void testGenerateNewPuzzle() {
-        System.out.println("generateNewPuzzle");
-        Puzzle instance = new Puzzle();
-        instance.generateNewPuzzle();
-        // TODO review the generated test code and remove the default call to fail.
-        fail("The test case is a prototype.");
-    }
-
-    /**
      * Test of solve method, of class Puzzle.
      */
     @Test
