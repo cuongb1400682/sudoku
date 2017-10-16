@@ -20,7 +20,7 @@ import java.util.Random;
  */
 public class PuzzleFactory {
 
-    private static final int TERMINAL_PATTERN_GIVENS_LIMIT = 11;
+    private static final int TERMINAL_PATTERN_GIVENS_LIMIT = 30;
 
     public static enum GameDifficulties {
         EXTREMELY_EASY(31, 4),
@@ -58,9 +58,9 @@ public class PuzzleFactory {
         return orderedCells;
     }
 
-    public Puzzle createPuzzle(GameDifficulties difficulties) {
+    public Puzzle __createPuzzle(GameDifficulties difficulties) {
         Puzzle result = createTerminalPattern();
-        System.out.println(result);
+        //System.out.println(result);
         int dugCellCount = 0;
         for (Cell cell : this.determineSequenceOfDiggingHoles(difficulties)) {
             int x = cell.getX();
@@ -79,15 +79,24 @@ public class PuzzleFactory {
         }
         return result;
     }
+    
+    public Puzzle createPuzzle(GameDifficulties difficulties) {
+        while (true) {
+            Puzzle p = this.__createPuzzle(difficulties);
+            if (p.isSolvable()) {
+                return p;
+            }
+        }
+    }
 
     private boolean violateRestriction(int x, int y, GameDifficulties difficulties, Puzzle result) {
         int rowEmptyCellCount = -1;
         int colEmptyCellCount = -1;
         for (int i = 0; i < BOARD_SIZE; i++) {
-            if (result.get(x, i) > 0) {
+            if (result.get(x, i) == 0) {
                 rowEmptyCellCount++;
             }
-            if (result.get(i, y) > 0) {
+            if (result.get(i, y) == 0) {
                 colEmptyCellCount++;
             }
         }
@@ -96,14 +105,14 @@ public class PuzzleFactory {
 
     private boolean existUniqueSolutionAfterDigging(int x, int y, Puzzle result) {
         final int oldValue = result.get(x, y);
-        System.out.println(result);
-        System.out.println(result.enumerateCellProbabilities(x, y));
+        //System.out.println(result);
+        //System.out.println(result.enumerateCellProbabilities(x, y));
         for (Integer probability : result.enumerateCellProbabilities(x, y)) {
             if (probability.equals(oldValue)) {
                 continue;
             }
             result.set(x, y, probability);
-            if (result.solve() != null) {
+            if (result.isSolvable()) {
                 result.set(x, y, oldValue);
                 return false;
             }
@@ -112,7 +121,7 @@ public class PuzzleFactory {
     }
 
     private Puzzle lasVegas() {
-        System.out.println("in lasVegas():");
+//        System.out.println("in lasVegas():");
         Random random = new Random(System.currentTimeMillis());
         int[][] resultPuzzle = new int[BOARD_SIZE][BOARD_SIZE];
         boolean[][] colMark = new boolean[BOARD_SIZE][10];
@@ -132,7 +141,7 @@ public class PuzzleFactory {
             int y = candidates.get(randomCellIndex).getY();
             candidates.remove(randomCellIndex);
             
-            System.out.println("choose: " + x + ", " + y);
+           // System.out.println("choose: " + x + ", " + y);
 
             int number = 1;
             while (colMark[y][number] || rowMark[x][number] || groupMark[x / 3][y / 3][number]) {
@@ -151,17 +160,17 @@ public class PuzzleFactory {
             }
         }
 
-        System.out.println("return from lasVegas()");
+        //System.out.println("return from lasVegas()");
         return candidates.isEmpty() ? null : new Puzzle(resultPuzzle);
     }
     
     public Puzzle createTerminalPattern() {
         while (true) {
-            System.out.println("createTermPatt");
+            //System.out.println("createTermPatt");
             Puzzle puzzle = this.lasVegas();
-            System.out.println("puzzle = " + puzzle);
+            //System.out.println("puzzle = " + puzzle);
             int[][] solvedMatrix = puzzle.solve();
-            System.out.println("solvedMatrix != null: " + (solvedMatrix != null));
+            //System.out.println("solvedMatrix != null: " + (solvedMatrix != null));
             if (solvedMatrix != null) {
                 return new Puzzle(solvedMatrix);
             }
