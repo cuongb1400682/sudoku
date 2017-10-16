@@ -83,6 +83,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
         upperPanel = new javax.swing.JPanel();
         labelTime = new javax.swing.JLabel();
+        jButton1 = new javax.swing.JButton();
         labelStatus = new javax.swing.JLabel();
         mainMenu = new javax.swing.JMenuBar();
         menuGame = new javax.swing.JMenu();
@@ -129,6 +130,14 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         labelTime.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
         labelTime.setText("00:00");
         upperPanel.add(labelTime, java.awt.BorderLayout.CENTER);
+
+        jButton1.setText("jButton1");
+        jButton1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jButton1ActionPerformed(evt);
+            }
+        });
+        upperPanel.add(jButton1, java.awt.BorderLayout.LINE_END);
 
         getContentPane().add(upperPanel, java.awt.BorderLayout.PAGE_START);
 
@@ -441,7 +450,12 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         }
     }//GEN-LAST:event_menuClearPuzzleActionPerformed
 
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_jButton1ActionPerformed
+
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton jButton1;
     private javax.swing.JPopupMenu.Separator jSeparator1;
     private javax.swing.JPopupMenu.Separator jSeparator2;
     private javax.swing.JPopupMenu.Separator jSeparator3;

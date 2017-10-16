@@ -80,7 +80,7 @@ public class PuzzleFactory {
         }
         return result;
     }
-    
+
     public Puzzle createPuzzle(GameDifficulties difficulties) {
         while (true) {
             Puzzle p = this.__createPuzzle(difficulties);
@@ -135,15 +135,14 @@ public class PuzzleFactory {
                 candidates.add(new Cell(i, j));
             }
         }
-        
+
         for (int cellLimit = PuzzleFactory.TERMINAL_PATTERN_GIVENS_LIMIT; cellLimit > 0 && !candidates.isEmpty();) {
             int randomCellIndex = Math.abs(random.nextInt()) % candidates.size();
             int x = candidates.get(randomCellIndex).getX();
             int y = candidates.get(randomCellIndex).getY();
             candidates.remove(randomCellIndex);
-            
-           // System.out.println("choose: " + x + ", " + y);
 
+            // System.out.println("choose: " + x + ", " + y);
             int number = 1;
             while (colMark[y][number] || rowMark[x][number] || groupMark[x / 3][y / 3][number]) {
                 number++;
@@ -164,7 +163,7 @@ public class PuzzleFactory {
         //System.out.println("return from lasVegas()");
         return candidates.isEmpty() ? null : new Puzzle(resultPuzzle);
     }
-    
+
     public Puzzle createTerminalPattern() {
         while (true) {
             //System.out.println("createTermPatt");
