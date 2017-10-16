@@ -8,6 +8,7 @@ package edu.ctu.cit.sudoku.Views;
 import edu.ctu.cit.sudoku.Factories.PuzzleFactory;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import javax.swing.JButton;
@@ -19,9 +20,10 @@ import javax.swing.JButton;
 public class NewGameDialog extends javax.swing.JDialog {
 
     public interface OnGameDifficultiesSelected {
+
         public void onGameDifficultiesSelected(PuzzleFactory.GameDifficulties difficulties);
     }
-    
+
     /**
      * Creates new form NewGameDialog
      */
@@ -33,9 +35,8 @@ public class NewGameDialog extends javax.swing.JDialog {
             buttonNewGameEasy,
             buttonNewGameMedium,
             buttonNewGameDifficult,
-            buttonNewGameEvil,
-        };
-        
+            buttonNewGameEvil,};
+
         for (int i = 0; i < this.buttons.length; i++) {
             final int index = i;
             buttons[i].addActionListener(evt -> this.buttonClicked(index));
@@ -124,10 +125,16 @@ public class NewGameDialog extends javax.swing.JDialog {
         this.dispose();
     }
 
-    public void setOnGameDifficultiesSelected(OnGameDifficultiesSelected onGameDifficultiesSelected) {
+    public NewGameDialog setOnGameDifficultiesSelected(OnGameDifficultiesSelected onGameDifficultiesSelected) {
         this.onGameDifficultiesSelected = onGameDifficultiesSelected;
+        return this;
     }
-    
+
+    public void focusOnDifficulty(PuzzleFactory.GameDifficulties previousGameDifficulties) {
+        final int index = Arrays.asList(PuzzleFactory.GameDifficulties.values()).indexOf(previousGameDifficulties);
+        this.buttons[index].requestFocus();
+    }
+
     private JButton[] buttons = null;
     private OnGameDifficultiesSelected onGameDifficultiesSelected;
     // Variables declaration - do not modify//GEN-BEGIN:variables

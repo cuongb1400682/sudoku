@@ -6,7 +6,6 @@
 package edu.ctu.cit.sudoku;
 
 import edu.ctu.cit.sudoku.Views.MainWindow;
-import edu.ctu.cit.sudoku.Views.NewGameDialog;
 import java.lang.reflect.InvocationTargetException;
 
 /**
@@ -22,8 +21,7 @@ public class Main {
         java.awt.EventQueue.invokeAndWait(new Runnable() {
             @Override
             public void run() {
-                //new MainWindow().setVisible(true);
-                new NewGameDialog(null, false).show();
+                new MainWindow().setVisible(true);
             }
         });
     }
