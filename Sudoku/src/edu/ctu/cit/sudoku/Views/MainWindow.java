@@ -300,6 +300,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.pauseGame();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setFileFilter(this.textFileFilter);
+        fileChooser.setAcceptAllFileFilterUsed(false);
         int retVal = fileChooser.showOpenDialog(this);
         if (retVal == JFileChooser.APPROVE_OPTION) {
             File file = this.fileChooser.getSelectedFile();
@@ -326,6 +327,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         this.pauseGame();
         fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
         fileChooser.setFileFilter(this.textFileFilter);
+        fileChooser.setAcceptAllFileFilterUsed(false);
         int retVal = fileChooser.showSaveDialog(this);
         if (retVal == JFileChooser.APPROVE_OPTION) {
             File file = this.fileChooser.getSelectedFile();
