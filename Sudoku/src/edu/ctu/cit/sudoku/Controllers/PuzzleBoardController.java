@@ -22,6 +22,7 @@ import javax.swing.JMenuItem;
 public class PuzzleBoardController {
     private Puzzle puzzle = null;
     private PuzzleBoard puzzleBoard = null;
+    private final PuzzleFactory factory = new PuzzleFactory();
 
     public PuzzleBoardController(Component parent) {
         this.puzzle = new Puzzle();
@@ -30,8 +31,8 @@ public class PuzzleBoardController {
     }
 
     public void newPuzzleBoard(PuzzleFactory.GameDifficulties difficulties) {
-        PuzzleFactory factory = new PuzzleFactory();
-        this.puzzle = factory.createPuzzle(difficulties);
+        this.puzzle = this.factory.createPuzzle(difficulties);
+        System.out.println(new Puzzle(this.puzzle.solve()));
         this.puzzleBoard.setPuzzle(this.puzzle);
     }
 

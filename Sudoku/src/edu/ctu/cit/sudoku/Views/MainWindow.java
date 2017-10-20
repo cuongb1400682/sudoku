@@ -56,12 +56,22 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
      * Creates new form MainWindow
      */
     public MainWindow() {
-        initComponents();
+        this.initComponents();
+        this.initControllers();
+        this.initFileChooser();
+        this.makeMainWindowCenterScreen();
+        this.initDbHelper();
+    }
+
+    private void initControllers() {
         statusController = new StatusController(this.labelStatus);
         getContentPane().add(this.puzzleBoardController.getPuzzleBoard(), java.awt.BorderLayout.CENTER);
         this.menuHintForRepeatedNumbers.setSelected(true);
         this.puzzleBoardController.setRepeatedCellCheck(true);
         this.puzzleBoardController.setUseWonTheGameHandler(this.onUserWonTheGame);
+    }
+
+    private void initDbHelper() {
         try {
             this.dbHelper = new HighScoreDbHelper();
             this.dbHelper.open();
@@ -69,7 +79,30 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         } catch (SQLException ex) {
             ex.printStackTrace();
         }
-        this.makeMainWindowCenterScreen();
+    }
+
+    private void initFileChooser() {
+        this.fileChooser = new JFileChooser();
+        fileChooser.setFileFilter(new FileFilter() {
+            @Override
+            public boolean accept(File f) {
+                Path path = FileSystems.getDefault().getPath(f.getParent(), f.getName());
+                String mimeType = "";
+                try {
+                    mimeType = Files.probeContentType(path);
+                } catch (IOException ex) {
+                    Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
+                }
+                return mimeType.toLowerCase().startsWith("text") || mimeType.toLowerCase().contains("directory");
+            }
+
+            @Override
+            public String getDescription() {
+                return "Text files";
+            }
+        });
+        fileChooser.setAcceptAllFileFilterUsed(false);
+        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
     }
 
     /**
@@ -298,9 +331,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void menuLoadPuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuLoadPuzzleActionPerformed
         this.pauseGame();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setFileFilter(this.textFileFilter);
-        fileChooser.setAcceptAllFileFilterUsed(false);
         int retVal = fileChooser.showOpenDialog(this);
         if (retVal == JFileChooser.APPROVE_OPTION) {
             File file = this.fileChooser.getSelectedFile();
@@ -325,9 +355,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
 
     private void menuSavePuzzleActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_menuSavePuzzleActionPerformed
         this.pauseGame();
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
-        fileChooser.setFileFilter(this.textFileFilter);
-        fileChooser.setAcceptAllFileFilterUsed(false);
         int retVal = fileChooser.showSaveDialog(this);
         if (retVal == JFileChooser.APPROVE_OPTION) {
             File file = this.fileChooser.getSelectedFile();
@@ -385,7 +412,6 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
         ManuallyNewGameDialog dialog = new ManuallyNewGameDialog(this, true);
         dialog.setLocationRelativeTo(this);
         dialog.setOnUserPressOk(puzzle -> {
-            System.out.println("isvalid = " + puzzle.isValidPuzzle());
             if (puzzle.isValidPuzzle()) {
                 MainWindow.this.puzzleBoardController.setPuzzle(puzzle);
                 MainWindow.this.resetTimer();
@@ -499,25 +525,7 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
     private StatusController statusController = null;
     private Timer timer = new Timer(1000, (ActionListener) this);
     private int tickCount;
-    private final JFileChooser fileChooser = new JFileChooser();
-    private final FileFilter textFileFilter = new FileFilter() {
-        @Override
-        public boolean accept(File f) {
-            Path path = FileSystems.getDefault().getPath(f.getParent(), f.getName());
-            String mimeType = "";
-            try {
-                mimeType = Files.probeContentType(path);
-            } catch (IOException ex) {
-                Logger.getLogger(MainWindow.class.getName()).log(Level.SEVERE, null, ex);
-            }
-            return mimeType.toLowerCase().startsWith("text") || mimeType.toLowerCase().contains("directory");
-        }
-
-        @Override
-        public String getDescription() {
-            return "Text files";
-        }
-    };
+    private JFileChooser fileChooser;
     private String oldUserName = "";
     private HighScoreDbHelper dbHelper = null;
     private final PuzzleBoard.OnUserWonTheGame onUserWonTheGame = () -> {
