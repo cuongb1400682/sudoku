@@ -331,9 +331,22 @@ public class MainWindow extends javax.swing.JFrame implements ActionListener {
             File file = this.fileChooser.getSelectedFile();
             try {
                 if (file != null) {
-                    puzzleBoardController.toFile(file);
-                    JOptionPane.showMessageDialog(this, String.format("Saved to '%s'", file.getAbsoluteFile()));
-                    this.timer.stop();
+                    boolean willWriteToFile = true;
+                    if (file.exists()) {
+                        final int fileExistsOption = JOptionPane.showConfirmDialog(
+                                this,
+                                String.format("Do you want to overwrite the existing '%s'?", file.getAbsolutePath()),
+                                "File existing",
+                                JOptionPane.YES_NO_OPTION,
+                                JOptionPane.QUESTION_MESSAGE
+                        );
+                        willWriteToFile = fileExistsOption == JOptionPane.YES_OPTION;
+                    }
+
+                    if (willWriteToFile) {
+                        puzzleBoardController.toFile(file);
+                        JOptionPane.showMessageDialog(this, String.format("Saved to '%s'", file.getAbsoluteFile()));
+                    }
                 }
             } catch (Exception ex) {
                 JOptionPane.showMessageDialog(
