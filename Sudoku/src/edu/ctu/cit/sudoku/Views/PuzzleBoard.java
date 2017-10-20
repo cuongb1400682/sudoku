@@ -191,7 +191,7 @@ public class PuzzleBoard extends javax.swing.JPanel {
                 final int finalI = i;
                 final int finalJ = j;
 
-                System.out.printf("i = %d, j = %d\n", i, j);
+                //System.out.printf("i = %d, j = %d\n", i, j);
                 grid[i][j].setBorderConfig(PuzzleBoard.CELL_BORDER_CONFIG[i % 3][j % 3]);
                 grid[i][j].setOnPuzzleCellClicked((PuzzleCell cell) -> {
                     if (selectedPuzzleCell != null) {
