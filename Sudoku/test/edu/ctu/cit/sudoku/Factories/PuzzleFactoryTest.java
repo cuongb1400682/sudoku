@@ -38,31 +38,28 @@ public class PuzzleFactoryTest {
     public void tearDown() {
     }
 
-    /**
-     * Test of createPuzzle method, of class PuzzleFactory.
-     */
-    @Test
-    public void testCreatePuzzle() {
-        System.out.println("createPuzzle");
-        //for (int i = 0; i < 100000; i++) {
-        //System.out.println("i = " + i);
-        PuzzleFactory.GameDifficulties difficulties = PuzzleFactory.GameDifficulties.EVIL;
-        PuzzleFactory instance = new PuzzleFactory();
-        Puzzle result = instance.createPuzzle(difficulties);
-        //System.out.println("created puzzle");
-        //System.out.println(result);
-        //}
-    }
 
     /**
-     * Test of createTerminalPattern method, of class PuzzleFactory.
+     * Test of lasVegas method, of class PuzzleFactory.
      */
     @Test
-    public void testCreateTerminalPattern() {
-        System.out.println("createTerminalPattern");
+    public void testLasVegas() {
+        System.out.println("lasVegas");
         PuzzleFactory instance = new PuzzleFactory();
-        Puzzle expResult = null;
-        Puzzle result = instance.createTerminalPattern();
+        int[] limits = {
+            6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 20, 25, 30, 35, 40, 50, 60, 70, 80
+        };
+        for (Integer lim : limits) {
+            int count = 0;
+            for (int i = 1; i <= 1000; i++) {
+                Puzzle result = instance.lasVegas(lim);
+                if (result.isSolvable()) {
+                    count++;
+                }
+                //System.out.println("i = " + i);
+            }
+            System.out.printf("%-5s: %5s\n", lim, count);
+        }
     }
 
 }

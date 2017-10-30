@@ -121,7 +121,7 @@ public class PuzzleFactory {
         return true;
     }
 
-    private Puzzle lasVegas() {
+    public Puzzle lasVegas(final int __lim) {
 //        System.out.println("in lasVegas():");
         Random random = new Random(System.currentTimeMillis());
         int[][] resultPuzzle = new int[BOARD_SIZE][BOARD_SIZE];
@@ -136,7 +136,7 @@ public class PuzzleFactory {
             }
         }
 
-        for (int cellLimit = PuzzleFactory.TERMINAL_PATTERN_GIVENS_LIMIT; cellLimit > 0 && !candidates.isEmpty();) {
+        for (int cellLimit = __lim; cellLimit > 0 && !candidates.isEmpty();) {
             int randomCellIndex = Math.abs(random.nextInt()) % candidates.size();
             int x = candidates.get(randomCellIndex).getX();
             int y = candidates.get(randomCellIndex).getY();
@@ -162,6 +162,10 @@ public class PuzzleFactory {
 
         //System.out.println("return from lasVegas()");
         return candidates.isEmpty() ? null : new Puzzle(resultPuzzle);
+    }
+    
+    private Puzzle lasVegas() {
+        return lasVegas(PuzzleFactory.TERMINAL_PATTERN_GIVENS_LIMIT);
     }
 
     public Puzzle createTerminalPattern() {

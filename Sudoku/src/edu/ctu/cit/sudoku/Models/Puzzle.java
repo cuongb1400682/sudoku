@@ -251,6 +251,7 @@ public final class Puzzle {
             }
         }
 
+        PuzzleSolverUtils.beginningTimeTick = System.currentTimeMillis();
         boolean isSolvable = PuzzleSolverUtils.exhaustedSearch(
                 0,
                 candidateCells,

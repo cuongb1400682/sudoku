@@ -14,6 +14,10 @@ import java.util.ArrayList;
  * @author charlie
  */
 public class PuzzleSolverUtils {
+    
+    public static long beginningTimeTick = 0;
+    
+    public static final long SEARCH_TIME_LIMIT = 3000;
 
     public static boolean exhaustedSearch(
             int currIndex,
@@ -23,6 +27,10 @@ public class PuzzleSolverUtils {
             short[] colMark,
             short[] rowMark,
             short[][] groupMark) {
+        
+        if (System.currentTimeMillis() - beginningTimeTick > SEARCH_TIME_LIMIT) {
+            return false;
+        }
 
         if (currIndex >= candidateCells.size()) {
             for (int i = 0; i < BOARD_SIZE; i++) {
