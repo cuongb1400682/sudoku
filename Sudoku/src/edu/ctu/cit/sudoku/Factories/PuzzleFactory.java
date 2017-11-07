@@ -30,11 +30,11 @@ public class PuzzleFactory {
         EVIL(59, 9);
 
         private GameDifficulties(int boardGivenLimit, int rowColGivenLimit) {
-            this.boardGivenLimit = boardGivenLimit;
+            this.emptyCellUpperBound = boardGivenLimit;
             this.rowColEmptyCellLowerBound = rowColGivenLimit;
         }
 
-        public final int boardGivenLimit;
+        public final int emptyCellUpperBound;
         public final int rowColEmptyCellLowerBound;
     }
 
@@ -74,7 +74,7 @@ public class PuzzleFactory {
                     }
                 }
             }
-            if (dugCellCount >= difficulties.boardGivenLimit) {
+            if (dugCellCount >= difficulties.emptyCellUpperBound) {
                 break;
             }
         }

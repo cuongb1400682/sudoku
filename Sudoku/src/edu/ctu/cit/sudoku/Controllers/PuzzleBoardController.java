@@ -33,6 +33,8 @@ public class PuzzleBoardController {
     public void newPuzzleBoard(PuzzleFactory.GameDifficulties difficulties) {
         this.puzzle = this.factory.createPuzzle(difficulties);
         this.puzzleBoard.setPuzzle(this.puzzle);
+        System.out.println("newPuzzleBoard: Solution for this is:");
+        System.out.println(new Puzzle(this.puzzle.solve()));
     }
 
     public PuzzleBoard getPuzzleBoard() {
